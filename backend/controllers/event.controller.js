@@ -47,7 +47,7 @@ export const getEvents = async(req, res, next) => {
                limit(limitNumber).
                sort({createdAt : -1}),
             
-            Event.countDocuments(filters)
+            Event.countDocuments()
         ]);
 
         return res.status(200).json({

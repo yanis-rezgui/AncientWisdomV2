@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getHistoricalFigure, getHistoricalFigures } from "../controllers/historicalFigure.controller.js";
+import { getFiguresOptions, getHistoricalFigure, getHistoricalFigures } from "../controllers/historicalFigure.controller.js";
 
 
 
@@ -7,6 +7,8 @@ const figuresRouter = new Router();
 
 
 figuresRouter.get('/', getHistoricalFigures);
+
+figuresRouter.get('/options', getFiguresOptions);
 
 figuresRouter.get('/:id', getHistoricalFigure);
 

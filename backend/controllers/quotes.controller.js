@@ -53,7 +53,7 @@ export const getQuotes = async(req, res, next) => {
                 .skip(skip)
                 .limit(limitNumber),
 
-            Quote.countDocuments(filters)
+            Quote.countDocuments()
             ]);
 
             return res.status(200).json({

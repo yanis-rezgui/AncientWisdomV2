@@ -39,7 +39,7 @@ export const getEras = async(req , res , next) => {
             skip(skip).
             limit(limitNumber).
             sort({createdAt : -1}),
-            HistoricalEra.countDocuments(filters)
+            HistoricalEra.countDocuments()
         ]);
 
 
@@ -96,3 +96,23 @@ export const getEra = async(req, res, next) => {
         next(err);
     }
 }
+
+
+export const getErasOptions = async (req, res, next) => {
+    try {
+        const eras = await HistoricalEra
+            .find({})
+            .select("_id name")
+            .sort({ name: 1 })
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            message: "Era options fetched successfully",
+            data: eras
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};

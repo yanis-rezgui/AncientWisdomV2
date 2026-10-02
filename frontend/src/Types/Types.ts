@@ -131,3 +131,9 @@ export interface QuoteFilterType{
     era : string,
     author : string
 }
+
+
+export interface FilterOptionsType{
+    _id : string;
+    name : string;
+}

@@ -46,7 +46,7 @@ export const getHistoricalFigures = async(req, res, next) => {
                .skip(skip)
                .limit(limitNumber),
 
-            Figure.countDocuments(filters)
+            Figure.countDocuments()
         ]);
 
                     return res.status(200).json({
@@ -101,3 +101,23 @@ export const getHistoricalFigure = async(req, res, next) => {
         next(err);
     }
 }
+
+
+export const getFiguresOptions = async (req, res, next) => {
+    try {
+        const figures = await Figure
+            .find({})
+            .select("_id name")
+            .sort({ name: 1 })
+            .lean();
+
+        return res.status(200).json({
+            success: true,
+            message: "Figure options fetched successfully",
+            data: figures
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
