@@ -9,6 +9,8 @@ import quotesRouter from "./routes/quotes.routes.js";
 import eraRouter from "./routes/era.routes.js";
 import figuresRouter from "./routes/figures.routes.js";
 import eventRouter from "./routes/event.routes.js";
+import authRouter from "./routes/auth.routes.js";
+import savedItemsRouter from "./routes/savedItems.routes.js";
 
 
 const app = express();
@@ -38,6 +40,8 @@ app.use('/api/v1/quotes', quotesRouter);
 app.use('/api/v1/era', eraRouter);
 app.use('/api/v1/figure', figuresRouter);
 app.use('/api/v1/event', eventRouter);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/saved-items', savedItemsRouter);
 
 app.use(errorMiddleware);
 
