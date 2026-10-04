@@ -137,3 +137,14 @@ export interface FilterOptionsType{
     _id : string;
     name : string;
 }
+
+
+export interface User{
+    firstName : string;
+    lastName: string;
+    email : string;
+    password? : string;
+    role: string;
+}
+
+export type ItemType = "Quote" | "Figure" | "Event";

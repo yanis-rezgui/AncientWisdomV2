@@ -1,17 +1,18 @@
 import { Router } from "express";
 import { getSavedEvents, getSavedFigures, getSavedQuotes, toggleItem } from "../controllers/savedItems.controller.js";
+import authorize from "../middlewares/auth.middleware.js";
 
 
 const savedItemsRouter = new Router();
 
 
-savedItemsRouter.get('/quotes', getSavedQuotes);
+savedItemsRouter.get('/quotes', authorize, getSavedQuotes);
 
-savedItemsRouter.get('/figures', getSavedFigures);
+savedItemsRouter.get('/figures', authorize, getSavedFigures);
 
-savedItemsRouter.get('/events', getSavedEvents);
+savedItemsRouter.get('/events', authorize, getSavedEvents);
 
-savedItemsRouter.post('/toggle', toggleItem);
+savedItemsRouter.post('/toggle/:id', authorize, toggleItem);
 
 
 export default savedItemsRouter;

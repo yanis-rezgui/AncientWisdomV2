@@ -1,6 +1,6 @@
 import SavedItem from "../models/savedItem.model.js";
 import Quote from "../models/quote.model.js";
-import Figure from "../models/figure.model.js";
+import Figure from "../models/historicalFigure.model.js";
 import Event from "../models/event.model.js";
 
 

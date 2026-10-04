@@ -7,6 +7,7 @@ import { FiguresProvider } from './Contexts/FiguresContext'
 import Header from './Pages/Header'
 import Quotes from './Pages/Quotes'
 import { EventProvider } from './Contexts/EventContext'
+import { AuthProvider } from './Contexts/AuthContext'
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <QuotesProvider>
           <FiguresProvider>
             <EventProvider>
+              <AuthProvider>
        <Routes>
 
         <Route path="/" element={
@@ -34,6 +36,7 @@ function App() {
             </>
           }/>
        </Routes>
+       </AuthProvider>
        </EventProvider>
        </FiguresProvider>
        </QuotesProvider>
