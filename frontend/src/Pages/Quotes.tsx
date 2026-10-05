@@ -28,7 +28,7 @@ const Quotes = () => {
             <SearchBar/>
             <QuotesFilter/>
 
-            <div className="mt-10 flex flew-wrap justify-center items-baseline gap-5 px-10">
+            <div className="mt-10 flex flex-wrap justify-center items-baseline gap-5 px-10 w-full">
                 {quotes.map((q)=>{
                     return(
                         <QuoteCard quote={q} key={q._id}/>

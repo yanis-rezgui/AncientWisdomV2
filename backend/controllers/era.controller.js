@@ -38,7 +38,7 @@ export const getEras = async(req , res , next) => {
             HistoricalEra.find(filters).
             skip(skip).
             limit(limitNumber).
-            sort({createdAt : -1}),
+            sort({startYear : 1}),
             HistoricalEra.countDocuments()
         ]);
 

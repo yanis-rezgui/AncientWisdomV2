@@ -19,6 +19,8 @@ interface SavedItemsContextType{
 
     toggleFavorite : (itemType: ItemType, itemId : string)=>Promise<void>;
     loadingToggleFavorite : boolean;
+
+    isFavorite: (itemType: ItemType, itemId: string) => boolean;
 }
 
 
@@ -139,7 +141,7 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
                     "Content-Type": "application/json",
                     Authorization : `Bearer ${token}`
                 },
-                body : JSON.stringify({itemType, itemId})
+                body : JSON.stringify({itemType, item : itemId})
             });
 
             const data = await res.json();
@@ -159,7 +161,24 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     }
 
 
+    const isFavorite = (itemType: ItemType, itemId: string): boolean => {
+    switch (itemType) {
+        case "Quote":
+            return savedQuotes.some(item => item._id === itemId);
+
+        case "Event":
+            return savedEvents.some(item => item._id === itemId);
+
+        case "Figure":
+            return savedFigures.some(item => item._id === itemId);
+
+        default:
+            return false;
+    }
+};
+
     useEffect(()=>{
+        if(!token || !user) return;
         getSavedEvents();
         getSavedFigures();
         getSavedQuotes();
@@ -179,7 +198,9 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     getSavedFigures ,
 
     toggleFavorite ,
-    loadingToggleFavorite
+    loadingToggleFavorite,
+
+    isFavorite
     }}>
         {children}
     </SavedItemsContext.Provider>

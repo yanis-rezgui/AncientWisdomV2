@@ -1,23 +1,42 @@
 import { memo } from "react"
 import type { Quote } from "../../Types/Types";
-import { Heart } from "lucide-react";
+
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../Contexts/AuthContext";
+import { useSavedItemsContext } from "../../Contexts/SavedItemsContext";
 
 
 
 const QuoteCard = ({quote} : {quote : Quote}) => {
 
+    const {user} = useAuthContext();
+    const {isFavorite, toggleFavorite} = useSavedItemsContext();
+
     return( 
-        <div className="flex flex-col bg-[#F5F5F5] p-3 rounded-[5px] shadow-2xl w-[200px]">
+        <div className="flex flex-col bg-[#F5F5F5] p-3 rounded-[5px] shadow-2xl w-[200px] transition-transform 
+        duration-200 hover:scale-105
+        ">
             
             <div className="flex flex-row justify-between w-full items-center">
                <h3 className="text-[14px] text-red-900 font-[600]">
                 {quote.era.name.toUpperCase()}
                </h3>
 
-               <div>
-                <Heart size={15}/>
-               </div>
+              
+                  
+                <div>
+                <i className="fa-solid fa-heart text-[15px] cursor-pointer"
+                onClick={()=>toggleFavorite("Quote", quote._id)}
+                style={{
+                    color : isFavorite("Quote", quote._id) ? "#B91C1C" : "gray"
+                }}
+                ></i>
+                </div>
+               
+                
+            
+               
+               
             </div>
 
             <div>

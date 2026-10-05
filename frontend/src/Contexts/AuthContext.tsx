@@ -14,6 +14,14 @@ interface AuthContextType{
 
     signOut : ()=>Promise<void>;
     loadingSignOut : boolean;
+
+    showSignIn : boolean;
+    setShowSignIn : (b : boolean)=>void;
+
+
+    msg : string | null;
+    loadingGetUser : boolean;
+    getUser : ()=>Promise<void>;
 }
 
 
@@ -33,6 +41,12 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
         return saved ? JSON.parse(saved) : null;
     });
 
+    const [msg, setMsg] = useState<string | null>(null);
+
+    const [showSignIn, setShowSignIn] = useState<boolean>(true);
+
+    const [loadingGetUser, setLoadingGetUser] = useState<boolean>(false);
+
 
     useEffect(()=>{
         localStorage.setItem('user', JSON.stringify(user));
@@ -45,7 +59,6 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
     const [loadingSignIn, setLoadingSignIn] = useState<boolean>(false);
     const [loadingSignUp, setLoadingSignUp] = useState<boolean>(false);
     const [loadingSignOut, setLoadingSignOut] = useState<boolean>(false);
-
 
 
     const signIn = async(email : string, password : string) => {
@@ -65,6 +78,7 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
             const data = await res.json();
 
             if(!res.ok){
+                setMsg(data.error || data.message || "Error in signing in")
                 throw new Error(data.error || data.message || "Error in signing in");
             }
 
@@ -95,6 +109,7 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
             const data = await res.json();
 
             if(!res.ok){
+                setMsg(data.error || data.message || "Error in signing up")
                 throw new Error(data.error || data.message || "Error in signing up");
             }
 
@@ -138,6 +153,40 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
     }
 
 
+    const getUser = async() => {
+
+        try{
+
+            setLoadingGetUser(true);
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/user`, {
+                method : "GET",
+                headers : {
+                    Authorization : `Bearer ${token}`
+                }
+            });
+
+            const data = await res.json();
+
+            if(!res.ok){
+                throw new Error(data.error || data.message || "Error in getting user");
+            }
+
+            setUser(data.data);
+            console.log("Current User : ", data.data);
+        }catch(err){
+            console.error(err);
+        }finally{
+            setLoadingGetUser(false);
+        }
+    }
+
+    useEffect(()=>{
+        if(!token) return;
+        getUser();
+    }, []);
+
+
     return <AuthContext.Provider value={{
     user,
     token ,
@@ -146,7 +195,13 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
     signUp ,
     loadingSignUp ,
     signOut ,
-    loadingSignOut
+    loadingSignOut,
+
+    showSignIn,
+    setShowSignIn,
+    msg,
+    loadingGetUser,
+    getUser
     }}>
         {children}
     </AuthContext.Provider>

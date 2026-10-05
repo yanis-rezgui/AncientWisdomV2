@@ -2,7 +2,10 @@ import jwt from "jsonwebtoken"
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt"
 import mongoose from "mongoose";
-
+import {
+    JWT_SECRET,
+    JWT_EXPIRES_IN
+} from "../config/env.js";
 
 
 
@@ -74,17 +77,19 @@ export const signUp = async(req, res, next) => {
                 {
                     firstName: firstName.trim(),
                     lastName: lastName.trim(),
-                    email: normalizedEmail,
+                    email,
                     password: hashedPassword
                 }
             ],
             { session }
         );
 
-        await session.commitTransaction();
+        
 
 
         const token = jwt.sign({userId : newUser._id}, JWT_SECRET, {expiresIn : JWT_EXPIRES_IN});
+
+        await session.commitTransaction();
 
         const userResponse = {
             _id: newUser._id,
@@ -177,6 +182,48 @@ export const signOut = async(req , res , next) => {
             success : true,
             message: "User signed out successfully"
         });
+    }catch(err){
+        next(err);
+    }
+}
+
+
+export const getUser = async(req, res, next) => {
+
+    try{
+
+        const userId = req.user._id;
+
+        if(!mongoose.isValidObjectId(userId)){
+            return res.status(400).json({
+                success : false,
+                message : "invalid userId in the request, (middleware level)"
+            });
+        }
+
+        const existingUser = await User.findById(userId);
+
+        if(!existingUser){
+            return res.status(404).json({
+                success : false,
+                message : "Error user not found"
+            });
+        }
+
+        const userResponse = {
+            _id : existingUser._id,
+            firstName : existingUser.firstName,
+            lastName : existingUser.lastName,
+            email : existingUser.email,
+            role : existingUser.role
+        }
+
+        return res.status(200).json({
+            success : true,
+            message : "User fetched successfully",
+            data : userResponse
+        });
+
     }catch(err){
         next(err);
     }

@@ -12,7 +12,7 @@ savedItemsRouter.get('/figures', authorize, getSavedFigures);
 
 savedItemsRouter.get('/events', authorize, getSavedEvents);
 
-savedItemsRouter.post('/toggle/:id', authorize, toggleItem);
+savedItemsRouter.post('/toggle', authorize, toggleItem);
 
 
 export default savedItemsRouter;
