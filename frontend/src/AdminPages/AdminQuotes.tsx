@@ -3,6 +3,10 @@ import QuotesFilter from "../Components/QuoteComponents/QuotesFilter";
 import SearchBar from "../Components/QuoteComponents/SearchBar";
 import { useQuotesContext } from "../Contexts/QuotesContext";
 import QuoteAdminCard from "../AdminComponents/AdminQuotesComponents/QuoteAdminCard";
+import { useQuotesAdminContext } from "../AdminContexts/QuotesAdminContext";
+import AddQuotePop from "../AdminComponents/AdminQuotesComponents/AddQuotePop";
+import UpdateQuotePop from "../AdminComponents/AdminQuotesComponents/UpdateQuotePop";
+import DeleteQuotePop from "../AdminComponents/AdminQuotesComponents/DeleteQuotePop";
 
 
 
@@ -10,6 +14,7 @@ import QuoteAdminCard from "../AdminComponents/AdminQuotesComponents/QuoteAdminC
 const AdminQuotes = () => {
 
     const {quotes, totalQuotes} = useQuotesContext();
+    const {showAddPop, setShowAddPop, showUpdatePop, showDeletePop} = useQuotesAdminContext();
 
     return(
         <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6]">
@@ -22,7 +27,12 @@ const AdminQuotes = () => {
                 Manage the historical quotations of Ancient Wisdom.
             </p>
 
-            <button className="bg-[#3E3025] text-white p-2 rounded-[5px] text-[14px] font-[600] mt-4">
+            <button 
+            onClick={()=>setShowAddPop(true)}
+            className="bg-[#3E3025] text-white p-2 rounded-[5px] text-[14px] font-[600] mt-4
+            cursor-pointer transition-opacity duration-200 hover:opacity-80 
+            active:opacity-60
+            ">
                 + Add Quote
             </button>
 
@@ -45,6 +55,11 @@ const AdminQuotes = () => {
                 )
             })}
             </div>
+
+            {showAddPop && <AddQuotePop/>}
+            {showUpdatePop && <UpdateQuotePop/>}
+            {showDeletePop && <DeleteQuotePop/>}
+
         </section>
     )
 }

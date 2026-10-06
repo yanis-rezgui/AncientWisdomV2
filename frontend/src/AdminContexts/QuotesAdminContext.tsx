@@ -5,14 +5,22 @@ import type { Quote } from "../Types/Types";
 
 
 
+interface QuoteFormData {
+    text: string;
+    source: string;
+    era: string;
+    author: string;
+    tags: string[];
+}
 
 interface QuotesAdminContextType{
-    addQuote : (formData : FormData)=>Promise<void>;
+    addQuote : (dataForm : QuoteFormData)=>Promise<void>;
     loadingAddQuote : boolean;
     showAddPop : boolean;
     setShowAddPop : (b : boolean)=>void;
 
-    updateQuote : (id : string, formData : FormData)=>Promise<void>;
+    updateQuote : (id: string,
+    dataForm: Partial<QuoteFormData>)=>Promise<void>;
     loadingUpdateQuote : boolean;
     showUpdatePop : boolean;
     setShowUpdatePop : (b : boolean)=>void;
@@ -43,7 +51,7 @@ export const QuotesAdminProvider = ({children} : {children : React.ReactNode}) =
 
     const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
 
-    const addQuote = async(formData : FormData) => {
+    const addQuote = async(dataForm :QuoteFormData) => {
 
         try{
 
@@ -52,9 +60,10 @@ export const QuotesAdminProvider = ({children} : {children : React.ReactNode}) =
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/quotes/`, {
                 method : "POST",
                 headers : {
+                    "Content-Type": "application/json",
                    Authorization : `Bearer ${token}`
                 },
-                body : formData
+                body : JSON.stringify(dataForm)
             })
 
             const data = await res.json();
@@ -75,7 +84,8 @@ export const QuotesAdminProvider = ({children} : {children : React.ReactNode}) =
     }
 
 
-    const updateQuote = async(id : string, formDate : FormData) => {
+    const updateQuote = async(id: string,
+    dataForm: Partial<QuoteFormData>) => {
 
         try{
 
@@ -84,9 +94,10 @@ export const QuotesAdminProvider = ({children} : {children : React.ReactNode}) =
             const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/quotes/${id}`,{
                  method : "PUT",
                  headers : {
+                    "Content-Type" : "application/json",
                      Authorization : `Bearer ${token}`
                  },
-                 body : formDate
+                 body : JSON.stringify(dataForm)
             });
 
             const data = await res.json();

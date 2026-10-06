@@ -8,7 +8,15 @@ import { useQuotesAdminContext } from "../../AdminContexts/QuotesAdminContext";
 const QuoteAdminCard = ({quote} : {quote : Quote}) => {
 
 
-    const {setShowUpdatePop, setShowDeletePop, setSelectedQuote} = useQuotesAdminContext();
+    
+
+
+    const {setShowUpdatePop, setShowDeletePop, setSelectedQuote, 
+
+       
+    } = useQuotesAdminContext();
+
+
 
           return (
         <article
@@ -130,6 +138,7 @@ const QuoteAdminCard = ({quote} : {quote : Quote}) => {
                 transition-opacity duration-200 hover:opacity-80 active:opacity-60
                 cursor-pointer
                 "
+                
                 >
                     Update Quote
                 </button>
@@ -146,7 +155,6 @@ const QuoteAdminCard = ({quote} : {quote : Quote}) => {
                     Delete Quote
                 </button>
             </div>
-        
 
         </article>
     );

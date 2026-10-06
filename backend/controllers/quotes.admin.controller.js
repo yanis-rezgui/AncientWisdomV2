@@ -219,51 +219,43 @@ export const updateQuote = async(req, res, next) => {
         }
 
 
-        let normalizedTags
+if (tags !== undefined) {
+    let parsedTags = [];
 
-        if (tags !== undefined) {
+    try {
+        parsedTags =
+            typeof tags === "string"
+                ? JSON.parse(tags)
+                : tags;
+    } catch {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid tags format"
+        });
+    }
 
-            let parsedTags = [];
+    if (!Array.isArray(parsedTags)) {
+        return res.status(400).json({
+            success: false,
+            message: "Tags must be an array"
+        });
+    }
 
-            try {
-                parsedTags =
-                    typeof tags === "string"
-                        ? JSON.parse(tags)
-                        : tags;
+    if (!parsedTags.every(tag => typeof tag === "string")) {
+        return res.status(400).json({
+            success: false,
+            message: "Each tag must be a string"
+        });
+    }
 
-                if (!Array.isArray(parsedTags)) {
-                    return res.status(400).json({
-                        success: false,
-                        message: "Les caractéristiques sont invalides"
-                    });
-                }
-
-            } catch {
-                return res.status(400).json({
-                    success: false,
-                    message: "Format des caractéristiques invalide"
-                });
-            }
-
-            if (
-                !parsedTags.every(
-                    (tag) => typeof tag === "string"
-                )
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Tags must be an array"
-                });
-            }
-
-            normalizedTags = parsedTags
-                .map((feature) => feature.trim())
-                .filter(Boolean);
-        } else {
-            normalizedTags = [];
-        }
-
-        updates.tags = normalizedTags;
+    updates.tags = [
+        ...new Set(
+            parsedTags
+                .map(tag => tag.trim())
+                .filter(Boolean)
+        )
+    ];
+}
 
     
         const updatedQuote = await Quote.findByIdAndUpdate(
