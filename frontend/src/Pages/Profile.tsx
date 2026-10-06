@@ -8,7 +8,7 @@ import SignUp from "../Components/AuthComponents/SignUp";
 const Profile = () => {
 
     
-    const {showSignIn, user} = useAuthContext();
+    const {showSignIn, user, signOut} = useAuthContext();
 
     return(
 
@@ -29,7 +29,15 @@ const Profile = () => {
                    : 
                       <SignUp/>
                 : 
-                <></>
+                <>
+                   <button
+                   onClick={()=>{
+                    signOut();
+                   }}
+                   >
+                    Sign Out
+                   </button>
+                </>
             }
         </section>
     )

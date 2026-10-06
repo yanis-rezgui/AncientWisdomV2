@@ -23,6 +23,7 @@ export interface HistoricalEra {
     image: Image;
     createdAt: string;
     updatedAt: string;
+    sections : BiographySection[];
 }
 
 

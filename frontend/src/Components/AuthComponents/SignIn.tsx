@@ -57,8 +57,8 @@ const SignIn = () => {
 
                    <div className="relative w-full">
                     <input 
-                    name="password"
-                    type="password" 
+                    name={"password"}
+                    type={showPassword ? "text":"password"} 
                     placeholder="8+ characters, uppercase, number & special character"
                     className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px] w-full"
                     />

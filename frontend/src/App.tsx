@@ -4,7 +4,6 @@ import Home from './Pages/Home'
 import { EraProvider } from './Contexts/EraContext'
 import { QuotesProvider } from './Contexts/QuotesContext'
 import { FiguresProvider } from './Contexts/FiguresContext'
-import Header from './Pages/Header'
 import Quotes from './Pages/Quotes'
 import { EventProvider } from './Contexts/EventContext'
 import { AuthProvider } from './Contexts/AuthContext'
@@ -16,6 +15,15 @@ import FigureDetails from './Pages/FigureDetails'
 import Events from './Pages/Events'
 import EventDetails from './Pages/EventDetails'
 import Eras from './Pages/Eras'
+import EraDetails from './Pages/EraDetails'
+import QuoteDetails from './Pages/QuoteDetails'
+import PublicRoute from './Layouts/PublicRoute'
+import PublicLayout from './Layouts/PublicLayout'
+import AdminRoute from './Layouts/AdminRoute'
+import AdminLayout from './Layouts/AdminLayout'
+import Dashboard from './AdminPages/Dashboard'
+import AdminQuotes from './AdminPages/AdminQuotes'
+import { QuotesAdminProvider } from './AdminContexts/QuotesAdminContext'
 
 function App() {
 
@@ -28,47 +36,57 @@ function App() {
             <EventProvider>
               <AuthProvider>
                 <SavedItemsProvider>
+                  <QuotesAdminProvider>
        <Routes>
+
+        <Route element={
+          <PublicRoute>
+            <PublicLayout/>
+          </PublicRoute>
+        }>
+
+
+      
 
         <Route path="/" element={
           <>
 
-          <Header/>
+          
           <Home/>
           
           </>}/>
 
           <Route path='/quotes' element={
             <>
-              <Header/>
+              
               <Quotes/>
             </>
           }/>
 
           <Route path='/user' element={
             <>
-               <Header/>
+               
                <Profile/>
             </>
           }/>
 
           <Route path='/explore' element={
             <>
-              <Header/>
+              
               <Explore/>
             </>
           }/>
 
           <Route path='/figures' element={
             <>
-               <Header/>
+               
                <Figures/>
             </>
           }/>
 
           <Route path='/figure/:id' element={
             <>
-              <Header/>
+              
               <FigureDetails/>
             </>
           }/>
@@ -76,26 +94,56 @@ function App() {
 
           <Route path='/events' element={
             <>
-              <Header/>
+              
               <Events/>
             </>
           }/>
 
           <Route path='/event/:id' element={
             <>
-              <Header/>
+              
               <EventDetails />
             </>
           }/>
 
           <Route path='/eras' element={
             <>
-              <Header/>
+              
               <Eras/>
             </>
           }/>
+
+          <Route path='/era/:id' element={
+            <>
+               
+               <EraDetails/>
+            </>
+          }/>
+
+          <Route path='/quote/:id' element={
+            <>
+              
+              <QuoteDetails/>
+            </>
+          }/>
+
+            </Route>
+
+
+            <Route path='/admin/*' element={
+              <AdminRoute>
+                <AdminLayout/>
+              </AdminRoute>
+            }>
+
+               <Route path='dashboard' element={<Dashboard/>}/>
+               <Route path='quotes' element={<AdminQuotes/>}/>
+            </Route>
        </Routes>
 
+       
+
+         </QuotesAdminProvider>
        </SavedItemsProvider>
        </AuthProvider>
        </EventProvider>

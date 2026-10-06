@@ -2,12 +2,14 @@ import { memo } from "react"
 import EventsFilter from "../Components/EventsComponents/EventsFilter";
 import { useEventContext } from "../Contexts/EventContext";
 import EventComponent from "../Components/EventsComponents/EventComponent";
+import { useNavigate } from "react-router-dom";
 
 
 const Events = () => {
 
 
     const {events} = useEventContext();
+    const navigate = useNavigate();
 
     return(
         <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6] relative">
@@ -30,6 +32,16 @@ const Events = () => {
                 )
              })}
              </div>
+
+             <button
+            onClick={()=>navigate(-1)}
+            className="bg-[#3E3025] text-white absolute left-2 top-2
+            flex flex-row justify-center items-center gap-2 px-4 py-1 rounded-[10px]
+            cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
+            ">
+                <i className="fa-solid fa-arrow-left-long"></i>
+                Back
+            </button>
         </section>
     )
 }

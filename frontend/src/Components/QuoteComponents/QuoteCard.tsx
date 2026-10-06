@@ -1,84 +1,196 @@
-import { memo } from "react"
-import type { Quote } from "../../Types/Types";
-
+import { memo } from "react";
+import { Heart, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
+
+import type { Quote } from "../../Types/Types";
 import { useAuthContext } from "../../Contexts/AuthContext";
 import { useSavedItemsContext } from "../../Contexts/SavedItemsContext";
 
+interface QuoteCardProps {
+    quote: Quote;
+}
+
+const QuoteCard = ({ quote }: QuoteCardProps) => {
+
+    const { user } = useAuthContext();
+    const { isFavorite, toggleFavorite } = useSavedItemsContext();
+
+    const favorite = isFavorite("Quote", quote._id);
+
+    const handleFavorite = () => {
+        if (!user) return;
+
+        toggleFavorite("Quote", quote._id);
+    };
+
+    return (
+        <article
+            className="
+                group relative flex w-[290px] flex-col
+                rounded-[8px]
+                border border-[#E7DED2]
+                bg-[#F8F5EF]
+                p-5
+                shadow-lg
+                transition-all duration-300
+                hover:-translate-y-1
+                hover:shadow-xl
+            "
+        >
+
+            {/* Header */}
+            <header className="flex items-center justify-between">
+
+                <Link
+                    to={`/eras/${quote.era._id}`}
+                    className="
+                        text-[11px]
+                        font-[700]
+                        uppercase
+                        tracking-[0.12em]
+                        text-[#8B2E2E]
+                        transition-colors
+                        hover:text-[#5F1F1F]
+                    "
+                >
+                    {quote.era.name}
+                </Link>
+
+                <button
+                    type="button"
+                    onClick={handleFavorite}
+                    disabled={!user}
+                    aria-label={
+                        favorite
+                            ? "Remove quote from favorites"
+                            : "Add quote to favorites"
+                    }
+                    className="
+                        flex h-8 w-8 items-center justify-center
+                        rounded-full
+                        transition-all duration-200
+                        hover:bg-[#EDE4D8]
+                        disabled:cursor-not-allowed
+                        disabled:opacity-50
+                    "
+                >
+                    <Heart
+                        size={16}
+                        strokeWidth={1.8}
+                        fill={favorite ? "#B91C1C" : "none"}
+                        className={
+                            favorite
+                                ? "text-[#B91C1C]"
+                                : "text-[#6B6259]"
+                        }
+                    />
+                </button>
+
+            </header>
 
 
-const QuoteCard = ({quote} : {quote : Quote}) => {
+            {/* Quote */}
+            <div className="mt-5">
 
-    const {user} = useAuthContext();
-    const {isFavorite, toggleFavorite} = useSavedItemsContext();
-
-    return( 
-        <div className="flex flex-col bg-[#F5F5F5] p-3 rounded-[5px] shadow-2xl w-[200px] transition-transform 
-        duration-200 hover:scale-105
-        ">
-            
-            <div className="flex flex-row justify-between w-full items-center">
-               <h3 className="text-[14px] text-red-900 font-[600]">
-                {quote.era.name.toUpperCase()}
-               </h3>
-
-              
-                  
-                <div>
-                <i className="fa-solid fa-heart text-[15px] cursor-pointer"
-                onClick={()=>toggleFavorite("Quote", quote._id)}
-                style={{
-                    color : isFavorite("Quote", quote._id) ? "#B91C1C" : "gray"
-                }}
-                ></i>
-                </div>
-               
-                
-            
-               
-               
-            </div>
-
-            <div>
-                <div>
-                <span>
+                <span
+                    aria-hidden="true"
+                    className="
+                        block
+                        font-serif
+                        text-[42px]
+                        leading-[20px]
+                        text-[#B89B72]
+                    "
+                >
                     “
                 </span>
-                <span></span>
-                </div>
 
-                <p className="font-['sans-serif'] text-[#3E3025] text-[15px] font-[600]">
+                <p
+                    className="
+                        px-2
+                        py-2
+                        font-serif
+                        text-[17px]
+                        font-[500]
+                        leading-[1.65]
+                        text-[#3E3025]
+                    "
+                >
                     {quote.text}
                 </p>
 
-                <div className="flex flex-row w-full justify-between items-center">
-                    <span></span>
-                <span>
-                    “
+                <span
+                    aria-hidden="true"
+                    className="
+                        block
+                        text-right
+                        font-serif
+                        text-[42px]
+                        leading-[20px]
+                        text-[#B89B72]
+                    "
+                >
+                    ”
                 </span>
-                </div>
+
             </div>
 
-            <hr className="bg-[#3E3025] h-[1px] w-full"/>
 
-            <div className="flex flex-col  mt-3">
-                <Link to={``} className="text-[15px] font-[600] underline">{quote.author.name}</Link>
-                <p className="text-[15px]">
-                    {quote.source}
-                </p>
+            {/* Author / Source */}
+            <div className="mt-5 border-t border-[#DED3C5] pt-4">
+
+                <Link
+                    to={`/author/${quote.author._id}`}
+                    className="
+                        block
+                        text-[15px]
+                        font-[700]
+                        text-[#3E3025]
+                        transition-colors
+                        hover:text-[#8B2E2E]
+                    "
+                >
+                    {quote.author.name}
+                </Link>
+
+                {quote.source && (
+                    <p className="
+                        mt-1
+                        text-[12px]
+                        italic
+                        text-[#756A5F]
+                    ">
+                        {quote.source}
+                    </p>
+                )}
+
             </div>
 
-           <div className="flex flex-row w-full justify-between items-center mt-2">
-            <button className="bg-[#3E3025] text-white text-[14px] font-[500] py-1 px-2 rounded-[5px]
-            cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
-            ">
-                Explore quote →
-            </button>
 
-            <span></span>
-           </div>
-        </div>
-    )
-}
+            {/* Footer */}
+            <Link
+                to={`/quote/${quote._id}`}
+                className="
+                    mt-5
+                    flex
+                    items-center
+                    gap-1
+                    self-start
+                    text-[13px]
+                    font-[600]
+                    text-[#3E3025]
+                    transition-all duration-200
+                    group-hover:gap-2
+                    hover:text-[#8B2E2E]
+                "
+            >
+                Explore quote
+                <ArrowUpRight size={14} strokeWidth={2} />
+            </Link>
+
+        </article>
+    );
+};
 
 export default memo(QuoteCard);
+

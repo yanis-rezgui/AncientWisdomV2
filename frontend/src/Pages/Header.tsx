@@ -46,7 +46,7 @@ const Header = () => {
     return(
         <>
         <header className="flex flex-row justify-between w-full items-center h-[70px] bg-[#F7F1E3] px-4
-        text-[#3E3025] shadow-2xl top-0 fixed
+        text-[#3E3025] shadow-2xl top-0 fixed z-50
         ">
             <Link to='/' className="text-[2em]  font-['Playfair_Display'] font-bold">
                Ancient Wisdom
