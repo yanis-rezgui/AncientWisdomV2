@@ -2,12 +2,16 @@ import { memo } from "react"
 import ErasSearch from "../Components/ErasComponents/ErasSearch";
 import EraTimeLine from "../Components/ErasComponents/EraTimeLine";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../Components/Pagination/Pagination";
+import { useEraContext } from "../Contexts/EraContext";
 
 
 
 const Eras = () => {
 
     const navigate = useNavigate();
+    const {page, limit, totalEras,totalPages, setPage, setLimit
+    } = useEraContext();
     return(
         <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6] relative">
 
@@ -23,6 +27,15 @@ const Eras = () => {
             <ErasSearch/>
 
             <EraTimeLine/>
+
+                <Pagination
+                         page={page}
+                         totalPages={totalPages} 
+                         totalItems={totalEras} 
+                         limit={limit} 
+                         setPage={setPage} 
+                         setLimit={setLimit} 
+                         />
 
              <button
             onClick={()=>navigate(-1)}

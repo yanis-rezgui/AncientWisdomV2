@@ -7,13 +7,14 @@ import { useQuotesAdminContext } from "../AdminContexts/QuotesAdminContext";
 import AddQuotePop from "../AdminComponents/AdminQuotesComponents/AddQuotePop";
 import UpdateQuotePop from "../AdminComponents/AdminQuotesComponents/UpdateQuotePop";
 import DeleteQuotePop from "../AdminComponents/AdminQuotesComponents/DeleteQuotePop";
+import Pagination from "../Components/Pagination/Pagination";
 
 
 
 
 const AdminQuotes = () => {
 
-    const {quotes, totalQuotes} = useQuotesContext();
+    const {quotes, totalQuotes, page, totalPages, limit, setPage, setLimit} = useQuotesContext();
     const {showAddPop, setShowAddPop, showUpdatePop, showDeletePop} = useQuotesAdminContext();
 
     return(
@@ -48,13 +49,23 @@ const AdminQuotes = () => {
                 {totalQuotes}
               </p>
            </div>
-           <div className="flex flex-wrap gap-5 px-10 justify-center items-baseline mt-5">
+           <div className="flex flex-wrap gap-5 px-10 justify-center items-baseline mt-5 mb-10">
             {quotes.map((q)=>{
                 return(
                     <QuoteAdminCard quote={q} key={q._id}/>
                 )
             })}
             </div>
+
+            <Pagination 
+            
+            page={page}
+            totalPages={totalPages} 
+            totalItems={totalQuotes} 
+            limit={limit} 
+            setPage={setPage} 
+            setLimit={setLimit} 
+            />
 
             {showAddPop && <AddQuotePop/>}
             {showUpdatePop && <UpdateQuotePop/>}

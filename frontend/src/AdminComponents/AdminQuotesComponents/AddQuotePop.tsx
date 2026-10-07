@@ -165,11 +165,14 @@ const AddQuotePop = () => {
                         onChange={(e)=>setTag(e.target.value)}
                         onKeyDown={(e)=>{
                             if(e.key === "Enter"){
+                                e.preventDefault();
                                 addTag(tag)
                             }
                         }}
                         />
-                        <button onClick={()=>addTag(tag)}
+                        <button 
+                       type="button"
+                        onClick={()=>addTag(tag)}
                         className="w-[80px] p-2 bg-[#3E3025] font-[600] rounded-[5px] text-white
                         cursor-pointer transition-opacity duration-200 hover:opacity-80 
                         active:opacity-60

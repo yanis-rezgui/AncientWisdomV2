@@ -24,6 +24,14 @@ import AdminLayout from './Layouts/AdminLayout'
 import Dashboard from './AdminPages/Dashboard'
 import AdminQuotes from './AdminPages/AdminQuotes'
 import { QuotesAdminProvider } from './AdminContexts/QuotesAdminContext'
+import { ErasAdminProvider } from './AdminContexts/ErasAdminContext'
+import AdminEras from './AdminPages/AdminEras'
+import AdminEraAjout from './AdminPages/AdminEraAjout'
+import AdminEraUpdate from './AdminPages/AdminEraUpdate'
+import AdminFigures from './AdminPages/AdminFigures'
+import { FiguresAdminProvider } from './AdminContexts/FigureAdminContext'
+import AdminFigureUpdate from './AdminPages/AdminFigureUpdate'
+import AdminFigureAjout from './AdminPages/AdminFigureAjout'
 
 function App() {
 
@@ -37,6 +45,8 @@ function App() {
               <AuthProvider>
                 <SavedItemsProvider>
                   <QuotesAdminProvider>
+                    <ErasAdminProvider>
+                      <FiguresAdminProvider>
        <Routes>
 
         <Route element={
@@ -138,11 +148,19 @@ function App() {
 
                <Route path='dashboard' element={<Dashboard/>}/>
                <Route path='quotes' element={<AdminQuotes/>}/>
+               <Route path='eras' element={<AdminEras/>}/>
+               <Route path='addEra' element={<AdminEraAjout/>}/>
+               <Route path='era/:id' element={<AdminEraUpdate/>}/>
+               <Route path='figures' element={<AdminFigures/>}/>
+               <Route path='figure/:id' element={<AdminFigureUpdate/>}/>
+               <Route path='addFigure' element={<AdminFigureAjout/>}/>
             </Route>
        </Routes>
 
        
 
+                </FiguresAdminProvider>
+           </ErasAdminProvider>
          </QuotesAdminProvider>
        </SavedItemsProvider>
        </AuthProvider>

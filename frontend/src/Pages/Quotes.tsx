@@ -4,13 +4,14 @@ import QuotesStatsComponent from "../Components/QuoteComponents/QuotesStatsCompo
 import SearchBar from "../Components/QuoteComponents/SearchBar";
 import QuotesFilter from "../Components/QuoteComponents/QuotesFilter";
 import QuoteCard from "../Components/QuoteComponents/QuoteCard";
+import Pagination from "../Components/Pagination/Pagination";
 
 
 
 const Quotes = () => {
 
 
-    const {quotes} = useQuotesContext();
+    const {quotes, page, setLimit, setPage, totalPages,totalQuotes, limit} = useQuotesContext();
 
     return(
         <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6]">
@@ -28,13 +29,22 @@ const Quotes = () => {
             <SearchBar/>
             <QuotesFilter/>
 
-            <div className="mt-10 flex flex-wrap justify-center items-baseline gap-5 px-10 w-full">
+            <div className="mt-10 flex flex-wrap justify-center items-baseline gap-5 px-10 w-full mb-5">
                 {quotes.map((q)=>{
                     return(
                         <QuoteCard quote={q} key={q._id}/>
                     )
                 })}
             </div>
+
+             <Pagination
+                                     page={page}
+                                     totalPages={totalPages} 
+                                     totalItems={totalQuotes} 
+                                     limit={limit} 
+                                     setPage={setPage} 
+                                     setLimit={setLimit} 
+                                     />
 
         </section>
     )
