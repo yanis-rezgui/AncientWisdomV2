@@ -1,379 +1,1201 @@
 import mongoose from "mongoose";
 
 import HistoricalEra from "../models/historicalEra.model.js";
+import HistoricalFigure from "../models/historicalFigure.model.js";
 
-const seedDatabase = async () => {
+
+/* ============================================================
+   GET ERA IDS
+============================================================ */
+
+const getEraIds = async (eraNames) => {
+    const eras = await HistoricalEra.find({
+        name: { $in: eraNames }
+    }).select("_id name");
+
+    const eraMap = new Map(
+        eras.map((era) => [era.name, era._id])
+    );
+
+    const missingEras = eraNames.filter(
+        (name) => !eraMap.has(name)
+    );
+
+    if (missingEras.length > 0) {
+        throw new Error(
+            `Missing eras: ${missingEras.join(", ")}`
+        );
+    }
+
+    return eraNames.map(
+        (name) => eraMap.get(name)
+    );
+};
+
+
+/* ============================================================
+   SEED HISTORICAL FIGURES
+============================================================ */
+
+const seedFigures = async () => {
+
     try {
 
-        // =========================================================
-        // HISTORICAL ERA - INSERT / UPDATE NEW DOCUMENTS
-        // =========================================================
+        /*
+         * ======================================================
+         * ERA IDS
+         * ======================================================
+         *
+         * On récupère les ObjectId directement depuis MongoDB
+         * à partir du nom des ères.
+         */
 
-       
+        const classicalGreece = await getEraIds([
+            "Classical Greece"
+        ]);
+
+        const ancientRome = await getEraIds([
+            "Ancient Rome"
+        ]);
+
+        const imperialChina = await getEraIds([
+            "Imperial China"
+        ]);
+
+        const mongolEmpire = await getEraIds([
+            "Mongol Empire"
+        ]);
+
+        const ancientNumidia = await getEraIds([
+            "Ancient Numidia and Berber Kingdoms"
+        ]);
+
+        const ageOfExploration = await getEraIds([
+            "Age of Exploration"
+        ]);
+
+        const modernEra = await getEraIds([
+            "Modern Era"
+        ]);
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Ancient Numidia and Berber Kingdoms" },
+        /* ======================================================
+           NAPOLEON BONAPARTE
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Napoleon Bonaparte" },
             {
-                name: "Ancient Numidia and Berber Kingdoms",
-                startYear: 300,
-                endYear: 700,
-                description:
-                    "Ancient Numidia and the wider Berber kingdoms represent an important chapter in the history of North Africa. Located primarily in present-day Algeria and Tunisia, Numidia emerged as a powerful regional kingdom during the centuries surrounding the Punic Wars and played an important role in the political struggles between Carthage and Rome. The region was inhabited by diverse Amazigh and Berber communities with their own political traditions, languages, economic networks, and cultural practices. After the Roman conquest, North Africa remained a major center of agriculture, trade, and urban civilization before undergoing major transformations during Late Antiquity and the arrival of Arab-Muslim powers.",
-                image: {
-                    url: "https://example.com/images/ancient-numidia.jpg",
-                    publicId: "seed/ancient-numidia"
-                },
-                sections: [
+                name: "Napoleon Bonaparte",
+
+                birthDate: "August 15, 1769",
+                deathDate: "May 5, 1821",
+
+                birthPlace: "Ajaccio, Corsica",
+                deathPlace: "Longwood, Saint Helena",
+
+                eras: modernEra,
+
+                tags: [
+                    "Napoleon",
+                    "France",
+                    "French Revolution",
+                    "Emperor",
+                    "military",
+                    "Europe",
+                    "warfare",
+                    "politics"
+                ],
+
+                biography: [
                     {
-                        title: "The Peoples of Ancient North Africa",
+                        title: "Early Life and Rise",
                         content:
-                            "North Africa was inhabited by numerous communities commonly grouped by ancient writers under broad terms such as Berbers or Libyans. These populations included different tribes and kingdoms with distinct political identities. They lived across the Mediterranean coast, highlands, plains, and desert regions and developed economies based on agriculture, pastoralism, trade, and control of strategic routes. Their societies interacted extensively with Phoenician and Carthaginian settlements along the coast while maintaining their own political and cultural traditions."
+                            "Napoleon Bonaparte was born in 1769 in Ajaccio, Corsica, shortly after the island became part of France. Educated in French military schools, he developed exceptional abilities in artillery and military organization. The political instability created by the French Revolution provided opportunities for ambitious officers, and Napoleon rapidly distinguished himself through his leadership during the revolutionary wars. His victories in Italy established him as a national hero and gave him enormous political influence."
                     },
                     {
-                        title: "The Rise of Numidia",
+                        title: "The Rise to Power",
                         content:
-                            "Numidia emerged as a major political entity in the third century BCE. Two important Numidian groups, the Massylians and Masaesylians, competed for power in eastern and western Numidia. The kingdom became increasingly important during the conflict between Rome and Carthage. Numidian cavalry were particularly valued for their mobility, endurance, and effectiveness in open terrain. Their military role gave Numidian rulers considerable influence in Mediterranean politics."
+                            "Napoleon returned to France as one of its most celebrated generals and took advantage of political instability within the revolutionary government. In 1799, he participated in the coup of 18 Brumaire and became First Consul. He gradually concentrated political authority in his own hands before proclaiming himself Emperor of the French in 1804. His government introduced major administrative and legal reforms, most famously the Napoleonic Code, while simultaneously building a powerful centralized state."
                     },
                     {
-                        title: "Massinissa and the Unification of Numidia",
+                        title: "The Napoleonic Wars",
                         content:
-                            "King Massinissa became one of the most important rulers in Numidian history. Initially connected to Carthage, he eventually allied himself with Rome during the Second Punic War. After the defeat of Carthage, Massinissa expanded and consolidated his kingdom. He encouraged agriculture, settlement, and political centralization and transformed Numidia into a powerful North African state. His long reign demonstrated the strategic importance of Numidia between the Mediterranean powers of Rome and Carthage."
+                            "Napoleon's armies dominated much of continental Europe during the early nineteenth century. Victories at Austerlitz, Jena, and Friedland demonstrated his ability to combine rapid movement, concentrated force, and battlefield coordination. He reorganized territories, created dependent states, and attempted to weaken Britain economically through the Continental System. However, continuous warfare also created powerful resistance among European populations and gradually stretched French military resources beyond their limits."
                     },
                     {
-                        title: "Jugurtha and Roman Expansion",
+                        title: "The Russian Campaign",
                         content:
-                            "The later history of Numidia became increasingly connected with Rome. King Jugurtha resisted Roman interference and attempted to preserve Numidian independence. The Jugurthine War between Rome and Jugurtha exposed both the military strength of Numidia and political corruption within the Roman Republic. Jugurtha was eventually defeated and captured. Numidia was subsequently reorganized under increasing Roman control, marking a major transformation in the political history of North Africa."
+                            "Napoleon's invasion of Russia in 1812 marked a decisive turning point. Although French forces entered Moscow, the campaign became disastrous because of enormous distances, logistical difficulties, Russian resistance, and the harsh retreat. The Grande Armée suffered catastrophic losses. Napoleon's weakened position encouraged European powers to form a new coalition against France, leading eventually to his defeat and abdication in 1814."
                     },
                     {
-                        title: "From Roman Africa to the Early Medieval Maghreb",
+                        title: "Waterloo and Exile",
                         content:
-                            "Roman rule transformed much of North Africa through the development of cities, roads, agricultural estates, ports, and administrative centers. The region became one of the Roman world's most productive agricultural areas. Christianity also became deeply established, producing influential figures such as Augustine of Hippo. After the decline of Roman authority and the Vandal and Byzantine periods, Arab-Muslim armies entered North Africa during the seventh century. The region gradually became integrated into the emerging Islamic world while retaining important elements of its indigenous Berber heritage."
+                            "Napoleon escaped from exile on Elba in 1815 and briefly returned to power during the period known as the Hundred Days. European powers immediately mobilized against him. At the Battle of Waterloo, British and allied forces under the Duke of Wellington, supported by Prussian forces, defeated Napoleon's army. He was subsequently exiled to the remote island of Saint Helena, where he remained until his death in 1821."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Napoleon remains one of the most influential and controversial figures in European history. His military campaigns caused enormous destruction, but his administrative and legal reforms had lasting consequences. The Napoleonic Code influenced legal systems across Europe and beyond, while his wars accelerated the development of nationalism and transformed the political map of Europe. His career continues to generate debate over the relationship between military genius, political ambition, authoritarian power, and revolutionary ideals."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/napoleon.jpg",
+                    publicId: "seed/napoleon"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Imperial China" },
+        /* ======================================================
+           LEONIDAS I
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Leonidas I" },
             {
-                name: "Imperial China",
-                startYear: 221,
-                endYear: 1912,
-                description:
-                    "Imperial China describes one of the longest continuous political and cultural traditions in world history. Beginning with the unification of China under Qin Shi Huang in 221 BCE, successive dynasties findOneAndUpdated centralized states that governed enormous territories and diverse populations. The Han, Tang, Song, Yuan, Ming, and Qing dynasties each shaped Chinese civilization in different ways. Imperial China witnessed major developments in philosophy, government, science, technology, literature, commerce, art, and military organization before the imperial system finally ended with the fall of the Qing dynasty in 1912.",
-                image: {
-                    url: "https://example.com/images/imperial-china.jpg",
-                    publicId: "seed/imperial-china"
-                },
-                sections: [
+                name: "Leonidas I",
+
+                birthDate: "c. 540 BC",
+                deathDate: "480 BC",
+
+                birthPlace: "Sparta, Greece",
+                deathPlace: "Thermopylae, Greece",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Leonidas",
+                    "Sparta",
+                    "Thermopylae",
+                    "Persian Wars",
+                    "military",
+                    "Greek"
+                ],
+
+                biography: [
                     {
-                        title: "The Qin Unification",
+                        title: "King of Sparta",
                         content:
-                            "Before 221 BCE, China was divided among competing states during the Warring States period. Qin Shi Huang conquered his rivals and established the first unified imperial state. The Qin government centralized political authority, standardized weights and measures, promoted a common writing system, and constructed major infrastructure projects. Although the Qin dynasty lasted only a short time, many of its political reforms influenced Chinese government for centuries."
+                            "Leonidas I was one of the kings of Sparta and belonged to the Agiad royal dynasty. Sparta was organized around an exceptionally demanding military culture in which discipline, endurance, obedience, and collective loyalty were considered essential virtues. Leonidas inherited this tradition and became king during a period when the Persian Empire was expanding toward the Greek mainland."
                     },
                     {
-                        title: "The Han Dynasty and the Silk Road",
+                        title: "The Persian Invasion",
                         content:
-                            "The Han dynasty succeeded the Qin and established one of the most influential periods in early Chinese history. Han rulers expanded China's territory into Central Asia, Korea, and other regions while strengthening administrative institutions. Trade routes later known as the Silk Road connected China with Central Asia, Persia, the Middle East, and eventually the Mediterranean world. Silk, ceramics, metals, horses, ideas, technologies, and religions traveled along these networks, creating long-distance cultural exchanges."
+                            "In 480 BC, King Xerxes I launched a massive invasion of Greece. Several Greek city-states attempted to organize a common defense despite their political rivalries. Leonidas was chosen to lead a relatively small Spartan force toward the strategically important pass of Thermopylae, where the narrow terrain could reduce the Persian numerical advantage."
                     },
                     {
-                        title: "Golden Ages and Cultural Development",
+                        title: "The Battle of Thermopylae",
                         content:
-                            "Several later dynasties presided over periods of extraordinary cultural and economic development. The Tang dynasty became a major center of international trade, poetry, art, and cosmopolitan culture. The Song dynasty witnessed major technological and economic transformations, including advances in printing, navigation, engineering, and the widespread use of paper money. Chinese scholars also made significant contributions to astronomy, mathematics, medicine, and philosophy."
+                            "Leonidas and his Greek allies held Thermopylae against the Persian army for several days. The narrow pass allowed the defenders to use their heavily armed infantry effectively against much larger Persian forces. According to ancient accounts, a Greek named Ephialtes revealed a mountain route that allowed Persian troops to outflank the defenders."
                     },
                     {
-                        title: "Mongol and Ming Rule",
+                        title: "The Final Stand",
                         content:
-                            "In the thirteenth century, the Mongols conquered China and established the Yuan dynasty under Kublai Khan. The empire connected China more closely with the wider Eurasian world. After the Yuan dynasty collapsed, the Ming dynasty restored Chinese rule and oversaw major construction projects, maritime expeditions, and cultural achievements. The voyages of Admiral Zheng He demonstrated the scale of China's naval capabilities and connected the Chinese court with numerous states around the Indian Ocean."
+                            "Once the Persian army had discovered the route around Thermopylae, Leonidas dismissed many of the allied Greek forces. He remained with the Spartans and several other contingents. The defenders were eventually surrounded and killed. Leonidas's decision became one of the most famous examples of military sacrifice in ancient history."
                     },
                     {
-                        title: "The Qing Dynasty and the End of Imperial China",
+                        title: "Spartan Ideals",
                         content:
-                            "The Qing dynasty, established by the Manchus in the seventeenth century, became China's final imperial dynasty. It expanded the empire considerably and presided over a large population and prosperous economy for much of its early history. During the nineteenth century, however, China faced internal rebellions, foreign intervention, military defeats, and economic pressures. The Opium Wars and unequal treaties weakened Qing authority. Revolutionary movements eventually led to the abdication of the last emperor, Puyi, in 1912, bringing more than two thousand years of imperial rule to an end."
+                            "The story of Leonidas became closely associated with Spartan ideals of courage, discipline, and loyalty to the community. Spartan society emphasized the willingness of citizens to endure hardship for the collective good. Leonidas's death therefore became more than a military event: it was remembered as an expression of the values Sparta wanted to associate with its warrior elite."
+                    },
+                    {
+                        title: "Historical Legacy",
+                        content:
+                            "Although Thermopylae ended in a Persian victory, the Greek resistance continued and eventually contributed to the defeat of Xerxes's invasion. Leonidas became one of the most recognizable military figures of ancient Greece. His story has been repeatedly retold in literature, historical works, films, and popular culture, often as a symbol of resistance against overwhelming odds."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/leonidas.jpg",
+                    publicId: "seed/leonidas"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Mongol Empire" },
+        /* ======================================================
+           ACHILLES
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Achilles" },
             {
-                name: "Mongol Empire",
-                startYear: 1206,
-                endYear: 1368,
-                description:
-                    "The Mongol Empire was the largest contiguous land empire in recorded history. It emerged in the early thirteenth century under Genghis Khan and rapidly expanded across Central Asia, China, Persia, the Middle East, and Eastern Europe. Mongol armies combined exceptional mobility, disciplined organization, intelligence gathering, and sophisticated military tactics. Although the empire eventually fragmented into several major khanates, Mongol rule transformed Eurasian political structures and intensified connections between regions that had previously been separated by distance and conflict.",
-                image: {
-                    url: "https://example.com/images/mongol-empire.jpg",
-                    publicId: "seed/mongol-empire"
-                },
-                sections: [
+                name: "Achilles",
+
+                birthDate: "Mythological",
+                deathDate: "Mythological",
+
+                birthPlace: "Phthia, Thessaly",
+                deathPlace: "Troy",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Achilles",
+                    "Greek mythology",
+                    "Trojan War",
+                    "Homer",
+                    "hero",
+                    "warrior"
+                ],
+
+                biography: [
                     {
-                        title: "Genghis Khan and the Unification of the Mongols",
+                        title: "The Greatest Greek Warrior",
                         content:
-                            "Temüjin, later known as Genghis Khan, was born into a fragmented world of competing steppe tribes. Through warfare, diplomacy, alliances, and political organization, he gradually united many Mongol and Turkic groups. In 1206, he was proclaimed Genghis Khan. He reorganized his followers into a disciplined military and political structure and began a series of campaigns that would dramatically change the history of Eurasia."
+                            "Achilles is one of the central heroes of Greek mythology and the most prominent warrior in Homer's Iliad. He is presented as the son of Peleus, king of the Myrmidons, and Thetis, a divine sea goddess. His exceptional strength, speed, and courage made him the most formidable Greek fighter during the Trojan War."
                     },
                     {
-                        title: "The Mongol Military System",
+                        title: "The Trojan War",
                         content:
-                            "Mongol military power depended heavily on speed, organization, and mobility. Mounted archers could travel enormous distances while maintaining high combat effectiveness. Mongol armies used coordinated formations, reconnaissance, psychological warfare, and elaborate communication systems. They also adapted technologies and military specialists from conquered peoples, including engineers capable of constructing siege weapons. Their ability to combine steppe warfare with siege technology allowed them to defeat both nomadic rivals and fortified cities."
+                            "According to Greek tradition, Achilles joined the Greek expedition against Troy with his Myrmidon warriors. His presence was crucial to the Greek war effort, and his reputation alone inspired fear among the Trojans. However, Achilles was also characterized by an intense sense of personal honor and pride, which repeatedly brought him into conflict with Agamemnon, the leader of the Greek forces."
                     },
                     {
-                        title: "Expansion Across Eurasia",
+                        title: "The Wrath of Achilles",
                         content:
-                            "Under Genghis Khan and his successors, Mongol armies conquered enormous territories. They defeated states in Central Asia, invaded Persia and the Middle East, conquered much of China, and reached Eastern Europe. Different branches of the Mongol imperial family established powerful successor states, including the Golden Horde, the Chagatai Khanate, the Ilkhanate, and the Yuan dynasty in China. These states were politically distinct but remained connected by shared Mongol traditions."
+                            "The central conflict of the Iliad begins when Agamemnon takes Briseis, a captive woman awarded to Achilles. Feeling publicly dishonored, Achilles withdraws from the fighting. His absence allows the Trojans to gain the advantage and demonstrates how deeply personal honor was connected to heroic identity in the world represented by Homer."
                     },
                     {
-                        title: "The Pax Mongolica and Cultural Exchange",
+                        title: "Patroclus",
                         content:
-                            "Mongol rule contributed to greater movement across large portions of Eurasia. Merchants, diplomats, missionaries, scholars, and travelers could travel through territories controlled by related Mongol regimes. Trade routes became increasingly connected, allowing goods, technologies, artistic influences, and knowledge to move between East and West. Figures such as Marco Polo became associated with these long-distance connections, although many details of his account remain debated by historians."
+                            "Achilles's closest companion was Patroclus. When the Greek position became desperate, Patroclus entered battle wearing Achilles's armor in an attempt to inspire the Greeks and frighten the Trojans. He was killed by Hector, the greatest Trojan warrior. His death transformed Achilles's anger into a desire for revenge and convinced him to return to battle."
                     },
                     {
-                        title: "Fragmentation and Decline",
+                        title: "The Death of Hector",
                         content:
-                            "The Mongol Empire never remained a single centralized state for long after its greatest period of expansion. Rivalries among members of the ruling dynasty and the enormous geographical scale of the empire contributed to political fragmentation. In China, Mongol Yuan rule eventually faced rebellions and was overthrown by the Ming dynasty in 1368. Other Mongol successor states survived for longer, but the unified imperial structure findOneAndUpdated by Genghis Khan had disappeared."
+                            "Achilles returned to the battlefield and confronted Hector outside the walls of Troy. He defeated and killed the Trojan prince and then dishonored his body before eventually returning it to Priam, Hector's father. The encounter represents both the destructive power of Achilles's anger and the possibility of compassion and recognition between enemies."
+                    },
+                    {
+                        title: "The Myth of Achilles",
+                        content:
+                            "Later traditions expanded the story of Achilles beyond Homer's Iliad. His supposed invulnerability and the famous 'Achilles' heel' became central elements of later mythology, although the heel story does not appear in the Iliad. Achilles ultimately became an enduring symbol of heroic excellence, extraordinary strength, personal pride, and the tragic cost of glory."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/achilles.jpg",
+                    publicId: "seed/achilles"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Ottoman Empire" },
+        /* ======================================================
+           NICCOLÒ MACHIAVELLI
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Niccolò Machiavelli" },
             {
-                name: "Ottoman Empire",
-                startYear: 1299,
-                endYear: 1922,
-                description:
-                    "The Ottoman Empire was one of the longest-lasting imperial states in world history. Founded in Anatolia at the end of the thirteenth century, it gradually expanded across southeastern Europe, the Middle East, North Africa, and parts of the Caucasus. The empire became a major center of Islamic civilization and a bridge between Europe, Asia, and Africa. Its capital, Constantinople, renamed Istanbul in common usage after the Ottoman conquest, became one of the world's great imperial cities. The empire survived for more than six centuries before its dissolution following the First World War.",
-                image: {
-                    url: "https://example.com/images/ottoman-empire.jpg",
-                    publicId: "seed/ottoman-empire"
-                },
-                sections: [
+                name: "Niccolò Machiavelli",
+
+                birthDate: "May 3, 1469",
+                deathDate: "June 21, 1527",
+
+                birthPlace: "Florence, Italy",
+                deathPlace: "Florence, Italy",
+
+                eras: ageOfExploration,
+
+                tags: [
+                    "Machiavelli",
+                    "Florence",
+                    "politics",
+                    "philosophy",
+                    "political theory",
+                    "The Prince",
+                    "Renaissance"
+                ],
+
+                biography: [
                     {
-                        title: "The Origins of the Ottoman State",
+                        title: "Life in Renaissance Florence",
                         content:
-                            "The Ottoman state emerged from the political fragmentation of Anatolia following the decline of the Seljuk Sultanate of Rum and the weakening of Byzantine authority. Osman I and his successors built a small frontier principality into a growing regional power. Ottoman rulers benefited from military organization, strategic alliances, and the political divisions among neighboring states. Their location allowed them to expand simultaneously toward Byzantine territories and into the Balkans."
+                            "Niccolò Machiavelli was born in Florence in 1469 during the Italian Renaissance. Florence was one of Europe's major centers of art, commerce, diplomacy, and political competition. Machiavelli entered public service during a period of intense rivalry between Italian states and European powers, giving him direct experience with diplomacy, warfare, and political administration."
                     },
                     {
-                        title: "The Conquest of Constantinople",
+                        title: "Diplomat and Political Observer",
                         content:
-                            "One of the most significant events in Ottoman history occurred in 1453, when Sultan Mehmed II captured Constantinople. The Byzantine capital had resisted numerous attacks for centuries, but Ottoman artillery, military organization, and strategic planning eventually overcame its defenses. Mehmed II transformed the city into the capital of a powerful empire. The conquest had enormous symbolic importance and marked the final end of the Byzantine Empire."
+                            "Machiavelli served the Florentine Republic as a diplomat and official. His missions brought him into contact with powerful figures across Europe, including Cesare Borgia. These experiences shaped his understanding of political power. Rather than studying politics only through philosophical ideals, Machiavelli examined how rulers actually obtained, maintained, and lost authority."
                     },
                     {
-                        title: "Ottoman Society and Administration",
+                        title: "The Prince",
                         content:
-                            "The Ottoman Empire governed a remarkable diversity of peoples, languages, and religions. Its administrative institutions combined Islamic law, imperial decrees, and established local practices. Non-Muslim communities were often organized through religious structures that gave them a degree of internal autonomy. The empire's cities became centers of commerce, craftsmanship, scholarship, and artistic production. Ottoman architecture reached extraordinary levels under architects such as Mimar Sinan."
+                            "Machiavelli's most famous work, The Prince, examined the practical realities of political leadership. He argued that successful rulers sometimes had to act in ways that traditional morality would consider harsh or deceptive if such actions were necessary to preserve political stability. The work's provocative arguments made Machiavelli one of the most controversial political thinkers in European history."
                     },
                     {
-                        title: "Expansion and Imperial Power",
+                        title: "Virtù and Political Power",
                         content:
-                            "During the sixteenth century, the Ottoman Empire reached a peak of territorial and political influence. Sultan Suleiman the Magnificent expanded Ottoman power in southeastern Europe, the Middle East, and North Africa. Ottoman fleets competed for dominance in the Mediterranean, while the empire controlled important trade routes connecting Europe and Asia. Istanbul became one of the world's major political and commercial centers."
+                            "One of Machiavelli's important concepts was virtù, a combination of political skill, courage, adaptability, and strategic ability. He contrasted this with fortuna, the unpredictable forces of circumstance and chance. For Machiavelli, successful leaders needed the ability to recognize opportunities and adapt to changing conditions rather than simply relying on fixed moral rules or good fortune."
                     },
                     {
-                        title: "Reform, Decline, and Dissolution",
+                        title: "The Republican Machiavelli",
                         content:
-                            "The Ottoman Empire experienced periods of military and political difficulty from the seventeenth century onward, although the idea of a simple continuous decline is too simplistic. The empire underwent major reforms during the nineteenth century in an attempt to modernize its military, administration, education, and economy. Nationalist movements and European intervention nevertheless placed increasing pressure on Ottoman authority. After its defeat in the First World War, the empire was dismantled, and the Turkish Republic was established in 1923 following the abolition of the sultanate in 1922."
+                            "Although Machiavelli is often remembered primarily for The Prince, his political thought was broader. In works such as the Discourses on Livy, he explored republican government, civic participation, political institutions, and the importance of public virtue. He believed that political freedom could depend on strong institutions and citizens willing to defend their community."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Machiavelli's writings had an enormous influence on political thought. The adjective 'Machiavellian' later became associated with manipulation and ruthless political behavior, although this simplified image does not capture the full complexity of his work. Modern scholars continue to study him as a foundational thinker in political science, particularly for his attempt to analyze political power realistically rather than through purely idealized principles."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/niccolo.jpg",
+                    publicId: "seed/niccolo"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Age of Exploration" },
+        /* ======================================================
+           SOCRATES
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Socrates" },
             {
-                name: "Age of Exploration",
-                startYear: 1400,
-                endYear: 1700,
-                description:
-                    "The Age of Exploration was a period of intensified maritime exploration and global contact that transformed relationships between Europe, Africa, Asia, and the Americas. European kingdoms developed new navigation techniques, ships, maps, and commercial ambitions that allowed sailors to travel across previously difficult oceanic routes. Voyages by figures such as Christopher Columbus, Vasco da Gama, Ferdinand Magellan, and others connected previously separate regions into increasingly global networks. The era produced major exchanges of goods, crops, technologies, and ideas, but it also brought conquest, colonization, slavery, and devastating demographic consequences for indigenous peoples.",
-                image: {
-                    url: "https://example.com/images/age-of-exploration.jpg",
-                    publicId: "seed/age-of-exploration"
-                },
-                sections: [
+                name: "Socrates",
+
+                birthDate: "c. 470 BC",
+                deathDate: "399 BC",
+
+                birthPlace: "Athens, Greece",
+                deathPlace: "Athens, Greece",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Socrates",
+                    "philosophy",
+                    "Athens",
+                    "Greek philosophy",
+                    "ethics",
+                    "Socratic method"
+                ],
+
+                biography: [
                     {
-                        title: "The Motives for Exploration",
+                        title: "Life in Athens",
                         content:
-                            "European exploration was driven by several overlapping motives. States sought new commercial routes to Asia, particularly routes to valuable spices and luxury goods. Monarchies also wanted to expand political influence and acquire wealth, while religious motivations encouraged the spread of Christianity. Improvements in navigation and shipbuilding made long-distance voyages increasingly possible. Competition between Portugal, Spain, England, France, and the Netherlands accelerated maritime exploration."
+                            "Socrates was born in Athens around 470 BC and spent most of his life engaging with citizens in the city's public spaces. Unlike later philosophers who established formal schools, Socrates did not charge tuition and left no writings of his own. Much of what is known about him comes from later authors, especially Plato and Xenophon, making it difficult to separate the historical philosopher from the literary figure created by his students."
                     },
                     {
-                        title: "Portuguese Expansion",
+                        title: "The Socratic Method",
                         content:
-                            "Portugal played a pioneering role in Atlantic and African exploration. Portuguese sailors gradually explored the western coast of Africa and developed maritime routes toward the Indian Ocean. Bartolomeu Dias reached the southern tip of Africa, demonstrating that the Atlantic and Indian Oceans were connected around the Cape of Good Hope. Vasco da Gama later reached India by sea, establishing a direct maritime connection between Europe and South Asia."
+                            "Socrates became famous for questioning people who claimed to possess knowledge. Rather than presenting long philosophical lectures, he asked a series of questions designed to reveal contradictions and assumptions. This method encouraged participants to examine what they believed they knew. The approach became known as the Socratic method and remains influential in philosophy, education, law, and critical thinking."
                     },
                     {
-                        title: "Columbus and the Americas",
+                        title: "Philosophy and Virtue",
                         content:
-                            "Christopher Columbus sailed west across the Atlantic in 1492 under the sponsorship of the Spanish monarchy. He believed that he could reach Asia by traveling west but instead encountered islands in the Caribbean. His voyages opened the way for sustained European involvement in the Americas. The resulting encounters transformed world history, leading to conquest and colonization as well as enormous exchanges of plants, animals, populations, technologies, and diseases between the Old and New Worlds."
+                            "Socrates focused much of his thought on questions of ethics, justice, courage, knowledge, and the good life. He repeatedly challenged the idea that wealth, reputation, or political power automatically made a person successful. For Socrates, examining one's own beliefs and character was essential to living well. His philosophical approach placed moral self-examination at the center of human life."
                     },
                     {
-                        title: "The First Global Connections",
+                        title: "The Trial",
                         content:
-                            "The voyages of exploration gradually findOneAndUpdated interconnected global maritime networks. European ships reached the Americas, Africa, India, Southeast Asia, and eventually the Pacific. Ferdinand Magellan's expedition, completed after his death by his crew, became the first expedition to circumnavigate the globe. These journeys demonstrated the enormous scale of the world's oceans and findOneAndUpdated new opportunities for trade and imperial expansion."
+                            "In 399 BC, Socrates was brought to trial in Athens. He was accused of impiety and of corrupting the city's youth. The political and social tensions surrounding the trial were connected to the turbulent history of Athens following the Peloponnesian War. Socrates defended himself but was found guilty by the jury."
                     },
                     {
-                        title: "Consequences of Exploration",
+                        title: "The Death of Socrates",
                         content:
-                            "The Age of Exploration had profound and contradictory consequences. Crops such as maize, potatoes, tomatoes, and cacao spread beyond the Americas, while horses, wheat, and other organisms were introduced to the New World. Global trade expanded dramatically. At the same time, European conquest caused the destruction of indigenous political systems and contributed to catastrophic population decline through warfare, exploitation, and disease. The expansion of Atlantic slavery also became a central feature of the emerging global economy."
+                            "Socrates was sentenced to death and executed by drinking hemlock. According to Plato's account, he refused opportunities to escape and accepted the judgment of the Athenian legal system. His final conversations focused on philosophy, death, and the nature of the soul. The image of Socrates calmly facing execution became one of the most influential examples of philosophical commitment in Western thought."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Socrates profoundly influenced the development of Western philosophy despite leaving no written works. Plato became his most famous student and presented Socrates as the central character in many philosophical dialogues. Through Plato, Xenophon, and later philosophers, Socrates became an enduring symbol of intellectual humility, critical inquiry, moral courage, and the willingness to question established assumptions."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/socrates.jpg",
+                    publicId: "seed/socrates"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Scientific Revolution" },
+        /* ======================================================
+           PLATO
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Plato" },
             {
-                name: "Scientific Revolution",
-                startYear: 1540,
-                endYear: 1700,
-                description:
-                    "The Scientific Revolution was a major transformation in European approaches to understanding nature that unfolded primarily during the sixteenth and seventeenth centuries. Scholars increasingly emphasized observation, mathematical reasoning, experimentation, and systematic investigation. Figures such as Nicolaus Copernicus, Johannes Kepler, Galileo Galilei, and Isaac Newton challenged established models of the natural world and helped establish foundations for modern science. The transformation was not a sudden rejection of all earlier knowledge but rather a gradual development built upon ancient, medieval, Islamic, and European intellectual traditions.",
-                image: {
-                    url: "https://example.com/images/scientific-revolution.jpg",
-                    publicId: "seed/scientific-revolution"
-                },
-                sections: [
+                name: "Plato",
+
+                birthDate: "c. 428 BC",
+                deathDate: "c. 348 BC",
+
+                birthPlace: "Athens, Greece",
+                deathPlace: "Athens, Greece",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Plato",
+                    "philosophy",
+                    "Athens",
+                    "Academy",
+                    "Greek philosophy",
+                    "Republic"
+                ],
+
+                biography: [
                     {
-                        title: "The Copernican Revolution",
+                        title: "Student of Socrates",
                         content:
-                            "Nicolaus Copernicus proposed a heliocentric model in which the Earth and other planets revolved around the Sun. His theory challenged the dominant geocentric model inherited from ancient astronomy and supported by centuries of philosophical and theological interpretation. Although Copernicus's original model still contained important limitations, it fundamentally changed the way European scholars conceptualized the structure of the cosmos."
+                            "Plato was born into an aristocratic Athenian family during a period of political instability. He became one of the most important students of Socrates and was deeply affected by his teacher's trial and execution. Socrates's death encouraged Plato to question the strengths and weaknesses of democratic politics and to investigate what kind of knowledge and character were necessary for good government."
                     },
                     {
-                        title: "Kepler and the Laws of Planetary Motion",
+                        title: "The Academy",
                         content:
-                            "Johannes Kepler used astronomical observations, particularly those collected by Tycho Brahe, to develop a more accurate description of planetary movement. He demonstrated that planets travel in elliptical rather than perfectly circular orbits and formulated mathematical laws describing their motion. Kepler's work strengthened the mathematical foundation of heliocentric astronomy and showed that celestial movements could be described through precise mathematical relationships."
+                            "Plato founded the Academy in Athens, one of the earliest institutions dedicated to sustained philosophical and intellectual study. The Academy became a major center of learning and attracted students from different parts of the Greek world. Aristotle would later study there for many years. The institution survived in various forms for centuries and became a symbol of organized philosophical education."
                     },
                     {
-                        title: "Galileo and Experimental Science",
+                        title: "The Theory of Forms",
                         content:
-                            "Galileo Galilei used the newly improved telescope to make observations that challenged traditional assumptions about the heavens. He observed mountains on the Moon, the phases of Venus, sunspots, and moons orbiting Jupiter. These discoveries provided powerful evidence that the heavens were not perfect and unchanging in the way some classical models had assumed. Galileo also contributed to the study of motion and developed methods emphasizing measurement and mathematical analysis."
+                            "A central feature of Plato's philosophy is the Theory of Forms. Plato argued that the physical world perceived through the senses is constantly changing and imperfect, while true knowledge concerns stable and intelligible realities. Concepts such as justice, beauty, and goodness were therefore treated as having a deeper reality than their imperfect manifestations in the material world."
                     },
                     {
-                        title: "Newton and Universal Laws",
+                        title: "The Republic",
                         content:
-                            "Isaac Newton brought together several developments of the Scientific Revolution into a broader mathematical framework. His laws of motion and universal gravitation demonstrated that the same physical principles could explain both terrestrial and celestial phenomena. His work showed that the motion of falling objects and the movement of planets could be understood through related mathematical laws. Newton's achievements became one of the foundations of classical physics."
+                            "In The Republic, Plato explored justice, education, political organization, and the nature of the ideal state. He presented the famous image of the philosopher-king, arguing that rulers should possess genuine knowledge and wisdom rather than simply seeking power. The work also contains the Allegory of the Cave, a powerful metaphor for the movement from ignorance toward understanding."
                     },
                     {
-                        title: "The Development of Modern Scientific Thought",
+                        title: "Politics and Philosophy",
                         content:
-                            "The Scientific Revolution contributed to a broader transformation in intellectual culture. Scholars increasingly emphasized evidence, reproducibility, mathematical reasoning, and systematic experimentation. Scientific societies and institutions helped researchers communicate their findings. The period also contributed to later developments associated with the Enlightenment and modern scientific institutions. Modern science emerged from many traditions rather than from a single historical moment, but the Scientific Revolution represents a crucial stage in that development."
+                            "Plato's political philosophy emerged from his concerns about the instability of Greek city-states. He examined different forms of government and the ways political institutions could become corrupted. His ideal political system emphasized education, discipline, specialization, and rule by those capable of understanding justice and the common good."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Plato became one of the most influential philosophers in history. His writings shaped later philosophy, theology, political theory, mathematics, and education. His dialogues remain central to the study of ancient philosophy, and questions raised by his works—about reality, knowledge, justice, education, and political power—continue to influence philosophical debates more than two thousand years after his death."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/plato.jpg",
+                    publicId: "seed/plato"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Modern Era" },
+        /* ======================================================
+           SUN TZU
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Sun Tzu" },
             {
-                name: "Modern Era",
-                startYear: 1789,
-                endYear: 1914,
-                description:
-                    "The Modern Era began with profound political, intellectual, economic, and social transformations that reshaped societies across the world. The French Revolution challenged traditional systems of monarchy and privilege, while industrialization transformed production, transportation, cities, and labor. Nationalism and liberal political ideas spread widely, contributing to the formation and transformation of modern states. European imperialism expanded dramatically across Africa and Asia, while technological and scientific developments accelerated the pace of global change. By the beginning of the twentieth century, the world had become increasingly interconnected but also increasingly divided by imperial competition and nationalism.",
-                image: {
-                    url: "https://example.com/images/modern-era.jpg",
-                    publicId: "seed/modern-era"
-                },
-                sections: [
+                name: "Sun Tzu",
+
+                birthDate: "c. 544 BC",
+                deathDate: "c. 496 BC",
+
+                birthPlace: "Qi, China",
+                deathPlace: "Wu, China",
+
+                eras: imperialChina,
+
+                tags: [
+                    "Sun Tzu",
+                    "China",
+                    "military strategy",
+                    "The Art of War",
+                    "warfare",
+                    "strategy"
+                ],
+
+                biography: [
                     {
-                        title: "The French Revolution",
+                        title: "A Military Strategist",
                         content:
-                            "The French Revolution began in 1789 amid financial crisis, social inequality, political conflict, and intellectual challenges to traditional authority. The revolution abolished many feudal privileges, declared new principles of citizenship and political rights, and transformed France's political system. It also became increasingly radical, particularly during the Reign of Terror. The revolution had consequences far beyond France, influencing political movements and debates about citizenship, sovereignty, equality, and government throughout Europe and beyond."
+                            "Sun Tzu is traditionally presented as a military strategist who lived during the Spring and Autumn period of ancient China. Historical details about his life remain uncertain, and some aspects of his biography may have been shaped by later tradition. Nevertheless, his name became inseparably associated with one of the most influential works on military strategy ever written."
                     },
                     {
-                        title: "Napoleon and the Transformation of Europe",
+                        title: "The Art of War",
                         content:
-                            "Napoleon Bonaparte rose to power during the instability that followed the French Revolution. As emperor, he reorganized French institutions and findOneAndUpdated a powerful military state. His armies conquered or dominated large parts of continental Europe, spreading administrative and legal reforms while also provoking resistance and nationalist movements. Napoleon's defeat at Waterloo in 1815 ended his attempt to dominate Europe, but many of the political and legal transformations associated with the Napoleonic period survived."
+                            "The Art of War is a concise treatise examining strategy, leadership, intelligence, logistics, deception, and the management of conflict. Rather than celebrating warfare for its own sake, the text repeatedly emphasizes the importance of understanding circumstances and achieving objectives efficiently. Sun Tzu considers preparation and strategic calculation more important than simply relying on superior physical force."
                     },
                     {
-                        title: "Industrialization and Social Change",
+                        title: "Knowing the Enemy",
                         content:
-                            "The Industrial Revolution transformed the way goods were produced. Mechanized factories, steam power, railways, and new manufacturing methods dramatically increased productivity. Cities expanded rapidly as people moved from rural areas toward industrial centers. Industrialization findOneAndUpdated new social classes, including a growing industrial working class and a powerful business and manufacturing elite. It also produced difficult working conditions, child labor, overcrowded cities, and intense debates about labor rights and social reform."
+                            "One of the most famous ideas associated with Sun Tzu is the importance of understanding both oneself and one's opponent. Intelligence allows commanders to anticipate movements, identify weaknesses, and choose favorable conditions for confrontation. Information therefore becomes a weapon in its own right, capable of preventing unnecessary battles and reducing the cost of military campaigns."
                     },
                     {
-                        title: "Nationalism and Imperialism",
+                        title: "Deception and Adaptability",
                         content:
-                            "The nineteenth century witnessed the rise of modern nationalism and the consolidation of several European states. At the same time, European powers expanded their control over large parts of Africa and Asia. Economic interests, strategic competition, political ambitions, and ideological beliefs were used to justify imperial expansion. The colonization of Algeria by France beginning in 1830 became part of this broader history of European imperialism and had profound consequences for Algerian society, economy, politics, and identity."
+                            "Sun Tzu places great importance on deception and flexibility. Armies should avoid becoming predictable and should adapt their behavior according to changing circumstances. A successful commander does not simply follow a fixed plan but constantly evaluates terrain, morale, timing, resources, and the opponent's intentions. Strategy therefore becomes an intellectual discipline rather than merely an exercise in physical strength."
                     },
                     {
-                        title: "The Road Toward the First World War",
+                        title: "Victory Without Destruction",
                         content:
-                            "By the beginning of the twentieth century, industrialized states possessed increasingly powerful armies, navies, and economies. Rival alliances, imperial competition, nationalism, and political tensions findOneAndUpdated an unstable international environment. Germany's rise as a major power challenged existing European balances, while conflicts in the Balkans repeatedly threatened regional stability. The assassination of Archduke Franz Ferdinand in 1914 triggered a crisis that quickly developed into a general European war, marking the end of the Modern Era and the beginning of a new period of global conflict."
+                            "Sun Tzu repeatedly suggests that the highest form of strategic success is to achieve one's objectives without unnecessary destruction. Breaking an opponent's plans, alliances, or willingness to fight can be more effective than destroying the enemy army directly. This emphasis makes his work unusual among military texts and helps explain its continued relevance to strategic thinking."
+                    },
+                    {
+                        title: "A Global Influence",
+                        content:
+                            "The Art of War eventually spread far beyond China and became influential in East Asian military traditions and, later, in Western strategic thought. Modern readers have applied Sun Tzu's principles not only to warfare but also to leadership, negotiation, business, and competitive strategy. His enduring influence comes from his emphasis on preparation, intelligence, adaptability, and understanding the environment before acting."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/sunTzu.jpg",
+                    publicId: "seed/sun-tzu"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        await HistoricalEra.findOneAndUpdate(
-            { name: "Contemporary Era" },
+        /* ======================================================
+           CONSTANTINE THE GREAT
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Constantine the Great" },
             {
-                name: "Contemporary Era",
-                startYear: 1914,
-                endYear: 2026,
-                description:
-                    "The Contemporary Era is characterized by unprecedented global conflict, technological development, political transformation, and increasing international interdependence. The two World Wars devastated societies and transformed the balance of global power. The twentieth century also witnessed the rise of mass democracy, communism, fascism, decolonization, international organizations, nuclear weapons, and the Cold War. After 1991, globalization and digital technologies accelerated the integration of economies and societies. The contemporary world continues to be shaped by technological innovation, geopolitical competition, demographic change, and global challenges.",
-                image: {
-                    url: "https://example.com/images/contemporary-era.jpg",
-                    publicId: "seed/contemporary-era"
-                },
-                sections: [
+                name: "Constantine the Great",
+
+                birthDate: "c. 272 AD",
+                deathDate: "May 22, 337 AD",
+
+                birthPlace: "Naissus, Roman Empire",
+                deathPlace: "Nicomedia, Roman Empire",
+
+                eras: ancientRome,
+
+                tags: [
+                    "Constantine",
+                    "Roman Empire",
+                    "Rome",
+                    "Christianity",
+                    "emperor",
+                    "Byzantium"
+                ],
+
+                biography: [
                     {
-                        title: "The First World War",
+                        title: "A Soldier's Son",
                         content:
-                            "The First World War began in 1914 following a complex crisis involving European alliances, nationalism, imperial competition, and the assassination of Archduke Franz Ferdinand. The conflict rapidly expanded into a global war involving major powers from Europe and other regions. Industrial technology transformed warfare, introducing large-scale artillery, machine guns, chemical weapons, tanks, aircraft, and submarines. Millions of soldiers and civilians died. The war also contributed to the collapse of several empires, including the Ottoman, Austro-Hungarian, Russian, and German empires."
+                            "Constantine was born during a period of political instability in the Roman Empire. His father, Constantius Chlorus, became one of the rulers of the Tetrarchy, a political system designed to manage the enormous Roman state. Constantine grew up within the imperial military environment and developed the skills necessary for command and political leadership."
                     },
                     {
-                        title: "The Interwar Period",
+                        title: "The Struggle for Power",
                         content:
-                            "The period between the two World Wars was marked by political instability, economic crisis, and ideological conflict. The Treaty of Versailles attempted to establish a new European order, while the League of Nations was findOneAndUpdated to encourage international cooperation. The Great Depression beginning in 1929 caused severe unemployment and economic hardship across many countries. Political extremism grew during this period, contributing to the rise of authoritarian regimes and ultimately creating conditions for another global conflict."
+                            "After the death of his father in 306, Constantine was proclaimed emperor by his troops. The Roman Empire was divided among several competing rulers, leading to a series of civil wars. Constantine gradually defeated his rivals and eventually became the dominant ruler of the western Roman Empire before defeating Licinius and becoming sole emperor in 324."
                     },
                     {
-                        title: "The Second World War",
+                        title: "Constantine and Christianity",
                         content:
-                            "The Second World War began in 1939 after years of international tension and expansion by Nazi Germany and other Axis powers. The conflict quickly became a global war involving Europe, North Africa, Asia, and the Pacific. It was characterized by industrialized warfare, strategic bombing, occupation, genocide, and enormous civilian suffering. The Holocaust resulted in the systematic murder of approximately six million Jews by Nazi Germany and its collaborators, alongside the persecution and murder of millions of other victims. The war ended in 1945 with the defeat of the Axis powers and the use of atomic bombs against Hiroshima and Nagasaki."
+                            "Constantine's reign transformed the relationship between the Roman state and Christianity. Before his reign, Christians had experienced periods of persecution. Constantine adopted a policy of toleration and became personally associated with Christianity. The Edict of Milan in 313 helped establish religious tolerance, although the exact legal and political circumstances surrounding it were complex."
                     },
                     {
-                        title: "The Cold War and Decolonization",
+                        title: "The Council of Nicaea",
                         content:
-                            "After 1945, global politics became dominated by rivalry between the United States and the Soviet Union. The Cold War involved ideological competition, military alliances, nuclear deterrence, proxy conflicts, intelligence operations, and technological competition. At the same time, European colonial empires rapidly declined. Countries across Asia, Africa, and the Middle East gained independence through different combinations of negotiation, political movements, and armed struggle. The independence of Algeria in 1962 became an important event in the history of twentieth-century decolonization."
+                            "Constantine played an important role in the Council of Nicaea in 325, which brought bishops together to address theological disputes concerning the nature of Christ. Although Constantine was not a theologian responsible for the council's doctrines, his involvement demonstrated how closely imperial politics and Christianity were becoming connected."
                     },
                     {
-                        title: "Globalization and the Digital Age",
+                        title: "Constantinople",
                         content:
-                            "The end of the Cold War in 1991 marked a major transformation in international relations. Global trade, multinational institutions, air travel, telecommunications, and digital technologies increasingly connected societies. The Internet fundamentally changed communication, commerce, education, entertainment, and access to information. Smartphones, cloud computing, artificial intelligence, biotechnology, and renewable energy technologies have continued to transform everyday life in the twenty-first century. At the same time, humanity faces global challenges including climate change, geopolitical tensions, pandemics, resource pressures, and debates over the social and political consequences of rapidly developing technologies."
+                            "Constantine established Constantinople on the site of the ancient Greek city of Byzantium and inaugurated it as an imperial capital in 330. Its strategic location between Europe and Asia made it exceptionally valuable. Constantinople would eventually become the capital of the Eastern Roman Empire and one of the most important cities of the medieval world."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Constantine's reign marked a decisive transformation in Roman history. He reunified the empire after civil war, strengthened imperial institutions, promoted Christianity, and established a new imperial center at Constantinople. His decisions profoundly influenced the development of both Christianity and the later Roman world, making him one of the most consequential Roman emperors."
                     }
-                ]
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/canstantine.jpg",
+                    publicId: "seed/constantine"
+                }
             },
             { new: true, upsert: true }
         );
 
 
-        console.log("New historical eras seeded successfully");
+        /* ======================================================
+           HANNIBAL BARCA
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Hannibal Barca" },
+            {
+                name: "Hannibal Barca",
+
+                birthDate: "247 BC",
+                deathDate: "c. 183 BC",
+
+                birthPlace: "Carthage, North Africa",
+                deathPlace: "Bithynia",
+
+                eras: [
+                    ...ancientNumidia,
+                    ...ancientRome
+                ],
+
+                tags: [
+                    "Hannibal",
+                    "Carthage",
+                    "Carthaginian",
+                    "Rome",
+                    "Second Punic War",
+                    "military",
+                    "Alps"
+                ],
+
+                biography: [
+                    {
+                        title: "A Carthaginian Commander",
+                        content:
+                            "Hannibal Barca was born in Carthage around 247 BC into the powerful Barcid family. His father, Hamilcar Barca, was an important Carthaginian commander during the First Punic War. Hannibal grew up within a military environment and developed a deep hostility toward Rome, which had emerged as Carthage's principal rival in the western Mediterranean."
+                    },
+                    {
+                        title: "The Road to Italy",
+                        content:
+                            "Hannibal became commander of Carthaginian forces in Iberia and expanded Carthaginian influence there. In 218 BC, conflict with Rome triggered the Second Punic War. Hannibal chose an extraordinarily ambitious strategy: instead of waiting for Rome to attack Carthage, he marched his army across the Pyrenees and the Alps to invade Italy from the north."
+                    },
+                    {
+                        title: "The Battle of Cannae",
+                        content:
+                            "Hannibal won several spectacular victories in Italy, including at Trebia and Lake Trasimene. His greatest victory came at Cannae in 216 BC, where he surrounded and destroyed a much larger Roman army. The battle became a classic example of double envelopment and has been studied by military commanders for centuries."
+                    },
+                    {
+                        title: "Why Rome Survived",
+                        content:
+                            "Despite Hannibal's victories, Rome refused to surrender. Roman leaders adopted strategies designed to avoid decisive battles and gradually weaken Carthaginian forces. Hannibal lacked the resources necessary to capture Rome itself, while Carthage struggled to provide sufficient reinforcements. The war eventually shifted in Rome's favor as Roman armies attacked Carthaginian territories elsewhere."
+                    },
+                    {
+                        title: "Defeat at Zama",
+                        content:
+                            "Roman general Scipio Africanus eventually invaded North Africa, forcing Hannibal to return from Italy. The two commanders met at the Battle of Zama in 202 BC. Scipio defeated Hannibal, effectively ending Carthage's ability to challenge Rome militarily. Hannibal later served as a political leader in Carthage before being forced into exile."
+                    },
+                    {
+                        title: "Military Legacy",
+                        content:
+                            "Hannibal became one of history's most admired military commanders. His ability to operate across difficult terrain, deceive opponents, and defeat larger armies made him a legendary figure in military history. His Alpine crossing and victory at Cannae remain subjects of study. His career also demonstrates the limitations of battlefield genius when it is not supported by sufficient political and logistical resources."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/hannibal.jpg",
+                    publicId: "seed/hannibal"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           GENGHIS KHAN
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Genghis Khan" },
+            {
+                name: "Genghis Khan",
+
+                birthDate: "c. 1162 AD",
+                deathDate: "August 18, 1227 AD",
+
+                birthPlace: "Mongolian Steppe",
+                deathPlace: "Xingqing, Western Xia",
+
+                eras: mongolEmpire,
+
+                tags: [
+                    "Genghis Khan",
+                    "Mongol Empire",
+                    "Mongols",
+                    "conqueror",
+                    "military",
+                    "Central Asia"
+                ],
+
+                biography: [
+                    {
+                        title: "Temüjin and the Mongolian Steppe",
+                        content:
+                            "Genghis Khan was born as Temüjin into the politically fragmented world of the Mongolian steppe. After his father was killed, his family experienced poverty and insecurity. Temüjin gradually built alliances, defeated rival groups, and attracted followers through a combination of military ability, political intelligence, and personal loyalty."
+                    },
+                    {
+                        title: "The Unification of the Mongols",
+                        content:
+                            "In 1206, after defeating many of his major rivals, Temüjin was proclaimed Genghis Khan. He reorganized Mongol society around military units that weakened traditional tribal divisions and strengthened loyalty to the new imperial leadership. This organization allowed him to mobilize enormous numbers of highly disciplined cavalry."
+                    },
+                    {
+                        title: "Military Innovation",
+                        content:
+                            "Mongol armies were exceptionally mobile and relied on mounted archery, reconnaissance, communication, intelligence, and deception. Their commanders used feigned retreats, coordinated attacks, and rapid maneuvering to confuse opponents. They also incorporated engineers and specialists from conquered civilizations, allowing Mongol armies to conduct sophisticated siege operations."
+                    },
+                    {
+                        title: "Expansion Across Asia",
+                        content:
+                            "Genghis Khan's armies conquered large territories in northern China, Central Asia, and the Islamic world. His campaigns destroyed several powerful states and created a political system connecting enormous distances. The scale of these conquests was accompanied by significant destruction and mass casualties, particularly in cities that resisted Mongol authority."
+                    },
+                    {
+                        title: "Administration and Trade",
+                        content:
+                            "The Mongol Empire was not based solely on destruction. Genghis Khan established systems of communication, taxation, military organization, and imperial administration. Religious tolerance was often encouraged, and merchants received important privileges. These policies later contributed to greater movement of goods, people, and ideas across Eurasia."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Genghis Khan created the foundation of the largest contiguous land empire in recorded history. His descendants expanded Mongol power even further, eventually controlling territories from China to Eastern Europe. His legacy remains deeply controversial because of the immense violence associated with his conquests, but his political and military innovations fundamentally transformed Eurasian history."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/khan.jpg",
+                    publicId: "seed/genghis-khan"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           ARISTOTLE
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Aristotle" },
+            {
+                name: "Aristotle",
+
+                birthDate: "384 BC",
+                deathDate: "322 BC",
+
+                birthPlace: "Stagira, Greece",
+                deathPlace: "Chalcis, Euboea",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Aristotle",
+                    "philosophy",
+                    "science",
+                    "logic",
+                    "Athens",
+                    "Alexander"
+                ],
+
+                biography: [
+                    {
+                        title: "Early Life",
+                        content:
+                            "Aristotle was born in 384 BC in Stagira, a Greek city in northern Greece. His father served as a physician connected to the Macedonian court, giving Aristotle early exposure to natural observation and medicine. As a young man he traveled to Athens and joined Plato's Academy, where he studied philosophy for approximately twenty years."
+                    },
+                    {
+                        title: "Student of Plato",
+                        content:
+                            "At Plato's Academy, Aristotle developed his own philosophical approach while engaging deeply with his teacher's ideas. Although influenced by Plato, Aristotle became increasingly critical of the Theory of Forms and emphasized the study of the physical world. His intellectual interests expanded across logic, biology, ethics, politics, metaphysics, rhetoric, and natural philosophy."
+                    },
+                    {
+                        title: "Tutor to Alexander",
+                        content:
+                            "Aristotle was later invited to educate the young Alexander, the future king of Macedon. His influence on Alexander's intellectual development has been debated, but their relationship connected one of history's greatest philosophers with one of its most famous conquerors. Aristotle exposed the young prince to Greek literature, philosophy, science, and political thought."
+                    },
+                    {
+                        title: "The Lyceum",
+                        content:
+                            "After returning to Athens, Aristotle established the Lyceum, a school that became a major center of philosophical and scientific investigation. His students collected information from many fields and developed methods of classification and observation. The Lyceum helped establish an intellectual tradition that combined philosophical reasoning with systematic investigation of the natural world."
+                    },
+                    {
+                        title: "Philosophy and Science",
+                        content:
+                            "Aristotle's writings covered an extraordinary range of subjects. His work on logic helped establish formal systems of reasoning, while his studies of animals attempted to classify living organisms according to observable characteristics. His ethical philosophy emphasized virtue, habit, moderation, and the pursuit of human flourishing. His political writings examined different forms of government and the organization of communities."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Aristotle's influence extended through the ancient, medieval, and early modern worlds. His works were preserved and developed by Byzantine, Islamic, Jewish, and Christian scholars before becoming central to European intellectual traditions. Although many of his scientific conclusions were eventually replaced, his methods of classification, logical reasoning, and systematic inquiry had an enormous historical influence."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/aristotle.jpg",
+                    publicId: "seed/aristotle"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           ODYSSEUS
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Odysseus" },
+            {
+                name: "Odysseus",
+
+                birthDate: "Mythological",
+                deathDate: "Mythological",
+
+                birthPlace: "Ithaca",
+                deathPlace: "Ithaca",
+
+                eras: classicalGreece,
+
+                tags: [
+                    "Odysseus",
+                    "Ulysses",
+                    "Greek mythology",
+                    "Ithaca",
+                    "Trojan War",
+                    "Homer"
+                ],
+
+                biography: [
+                    {
+                        title: "King of Ithaca",
+                        content:
+                            "Odysseus, also known by the Roman name Ulysses, is one of the most famous heroes of Greek mythology. He was traditionally described as the king of Ithaca and the husband of Penelope. Unlike Achilles, whose defining quality was physical strength, Odysseus was celebrated primarily for intelligence, eloquence, adaptability, and strategic thinking."
+                    },
+                    {
+                        title: "The Trojan War",
+                        content:
+                            "Odysseus participated in the Greek expedition against Troy and became associated with several important episodes of the conflict. Ancient traditions frequently portray him as a master strategist. The most famous story attributes the idea of the Trojan Horse to him, although this episode is mentioned only briefly in surviving ancient sources and was expanded considerably by later tradition."
+                    },
+                    {
+                        title: "The Odyssey",
+                        content:
+                            "Homer's Odyssey follows Odysseus during his long journey home after the Trojan War. His voyage takes him through encounters with the Cyclops Polyphemus, the sorceress Circe, the Sirens, Scylla and Charybdis, and other supernatural dangers. These adventures emphasize his intelligence and ability to survive through strategy rather than brute force."
+                    },
+                    {
+                        title: "Penelope and Ithaca",
+                        content:
+                            "While Odysseus is away, his wife Penelope is pressured by numerous suitors who believe he will never return. She delays remarriage through a series of clever strategies. Odysseus eventually reaches Ithaca disguised as a beggar, allowing him to assess the situation before revealing his identity."
+                    },
+                    {
+                        title: "The Return",
+                        content:
+                            "Odysseus ultimately reveals himself and defeats the suitors who have occupied his household. His return restores his authority as king and reunites him with Penelope and his son Telemachus. The story emphasizes themes of identity, loyalty, perseverance, intelligence, and the longing to return home."
+                    },
+                    {
+                        title: "A Symbol of Intelligence",
+                        content:
+                            "Odysseus became one of the most enduring figures of Greek mythology because he represents a different form of heroism from warriors such as Achilles. His greatest weapon is his mind. His ability to deceive, negotiate, improvise, and survive dangerous situations has made him a lasting symbol of strategic intelligence and adaptability."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/statues/ulysse.jpg",
+                    publicId: "seed/odysseus"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           CLEOPATRA
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Cleopatra" },
+            {
+                name: "Cleopatra",
+
+                birthDate: "69 BC",
+                deathDate: "August 12, 30 BC",
+
+                birthPlace: "Alexandria, Egypt",
+                deathPlace: "Alexandria, Egypt",
+
+                eras: ancientRome,
+
+                tags: [
+                    "Cleopatra",
+                    "Egypt",
+                    "Ptolemaic",
+                    "Rome",
+                    "Julius Caesar",
+                    "Mark Antony",
+                    "Alexandria"
+                ],
+
+                biography: [
+                    {
+                        title: "Queen of Ptolemaic Egypt",
+                        content:
+                            "Cleopatra VII was born in 69 BC into the Ptolemaic dynasty, a Greek-speaking royal family that had ruled Egypt since the death of Alexander the Great. Unlike many of her predecessors, Cleopatra was known for her political intelligence and reportedly learned the Egyptian language in addition to several other languages. She inherited a kingdom facing serious internal and external pressures."
+                    },
+                    {
+                        title: "Political Struggle",
+                        content:
+                            "Cleopatra initially ruled alongside her younger brother Ptolemy XIII, but their relationship quickly deteriorated into a struggle for power. Cleopatra was temporarily forced from Alexandria before returning with military and political support. Her ability to navigate the conflict demonstrated the importance of diplomacy and personal alliances in the unstable politics of the eastern Mediterranean."
+                    },
+                    {
+                        title: "Julius Caesar",
+                        content:
+                            "Cleopatra's political fortunes became closely connected with Julius Caesar when he arrived in Alexandria during the Roman civil wars. Cleopatra secured Caesar's support in her conflict with Ptolemy XIII. Their relationship had both personal and political dimensions, and Caesar helped restore Cleopatra to power. Cleopatra later visited Rome and strengthened the political connection between Egypt and Rome."
+                    },
+                    {
+                        title: "Mark Antony",
+                        content:
+                            "After Caesar's assassination, Cleopatra formed a political and personal alliance with Mark Antony, one of the most powerful Roman leaders. Their relationship developed within the wider struggle for control of the Roman world. Antony relied on Egyptian resources while Cleopatra sought to preserve Egypt's independence and strengthen her dynasty."
+                    },
+                    {
+                        title: "The Final Conflict",
+                        content:
+                            "Cleopatra and Antony eventually faced Octavian, Caesar's adopted heir and future emperor Augustus. Their forces were defeated at the naval Battle of Actium in 31 BC. The following year, Octavian invaded Egypt. Antony died by suicide, and Cleopatra soon followed. Egypt was incorporated into the Roman world, ending the independence of the Ptolemaic kingdom."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Cleopatra became one of history's most famous queens, although her reputation was often shaped by Roman political propaganda and later artistic traditions. She was not simply a romantic figure but an experienced monarch who attempted to preserve Egypt's political independence during a period dominated by Rome. Her life represents the final chapter of the Hellenistic kingdoms and the transition toward Roman imperial power."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/cleopatra.jpg",
+                    publicId: "seed/cleopatra"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           JUBA II
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Juba II" },
+            {
+                name: "Juba II",
+
+                birthDate: "c. 48 BC",
+                deathDate: "c. 23 AD",
+
+                birthPlace: "Numidia, North Africa",
+                deathPlace: "Mauretania",
+
+                eras: [
+                    ...ancientNumidia,
+                    ...ancientRome
+                ],
+
+                tags: [
+                    "Juba II",
+                    "Numidia",
+                    "Mauretania",
+                    "North Africa",
+                    "Rome",
+                    "king"
+                ],
+
+                biography: [
+                    {
+                        title: "A Numidian Prince",
+                        content:
+                            "Juba II was born into the royal family of Numidia during a period of profound political transformation in North Africa. His father, Juba I, opposed Julius Caesar during the Roman civil wars. After the defeat of the Numidian kingdom, the young Juba was taken to Rome and raised within the imperial environment."
+                    },
+                    {
+                        title: "Education in Rome",
+                        content:
+                            "Juba received an extensive education in Rome and became deeply familiar with Greek and Roman intellectual traditions. He developed interests in geography, history, natural science, and literature. His education allowed him to move between North African, Greek, and Roman cultural worlds and later contributed to his reputation as an unusually learned ruler."
+                    },
+                    {
+                        title: "King of Mauretania",
+                        content:
+                            "Augustus eventually established Juba as king of Mauretania, a North African kingdom extending across parts of present-day Morocco and Algeria. Juba ruled in cooperation with Rome while retaining a degree of royal authority. His reign illustrates the complex relationship between Rome and allied kingdoms on the edges of the empire."
+                    },
+                    {
+                        title: "Cleopatra Selene",
+                        content:
+                            "Juba married Cleopatra Selene, the daughter of Cleopatra VII and Mark Antony. Their marriage connected two important Hellenistic royal traditions. Together they established a court that encouraged Greek and Roman cultural influences while maintaining strong connections with North African traditions."
+                    },
+                    {
+                        title: "Scholar and Author",
+                        content:
+                            "Juba was more than a political ruler. He wrote works on geography, history, theater, language, and natural phenomena. Although most of his writings have been lost, later authors cited his research. His intellectual interests demonstrate the cultural sophistication of North African courts during the Roman period."
+                    },
+                    {
+                        title: "Legacy in North Africa",
+                        content:
+                            "Juba II became an important intermediary between Rome and the kingdoms of North Africa. His reign contributed to the development of cities, trade, scholarship, and Mediterranean cultural connections. His son Ptolemy succeeded him, but the kingdom was eventually annexed by Rome. Juba's life remains an important example of the interaction between indigenous North African traditions and the wider Roman world."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/juba2.jpg",
+                    publicId: "seed/juba-ii"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           MASSINISSA
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Massinissa" },
+            {
+                name: "Massinissa",
+
+                birthDate: "c. 238 BC",
+                deathDate: "c. 148 BC",
+
+                birthPlace: "Numidia, North Africa",
+                deathPlace: "Cirta, Numidia",
+
+                eras: [
+                    ...ancientNumidia,
+                    ...ancientRome
+                ],
+
+                tags: [
+                    "Massinissa",
+                    "Numidia",
+                    "Berber",
+                    "Amazigh",
+                    "Carthage",
+                    "Rome",
+                    "king"
+                ],
+
+                biography: [
+                    {
+                        title: "King of the Massylii",
+                        content:
+                            "Massinissa was born around 238 BC and became one of the most important rulers in ancient North Africa. He belonged to the Massylian royal family and grew up during a period when Numidian kingdoms were increasingly drawn into the rivalry between Rome and Carthage. His political career would eventually transform Numidia into one of the most important kingdoms of the western Mediterranean."
+                    },
+                    {
+                        title: "The Second Punic War",
+                        content:
+                            "During the Second Punic War, Massinissa initially maintained connections with Carthage before shifting his alliance toward Rome. His military knowledge of North Africa and the effectiveness of Numidian cavalry made him an important ally. His forces played a significant role in the campaign against Hannibal and Carthage."
+                    },
+                    {
+                        title: "The Unification of Numidia",
+                        content:
+                            "After the defeat of Carthage, Massinissa expanded his territory and consolidated several Numidian regions under his authority. He transformed Numidia into a stronger and more centralized kingdom. His reign demonstrated that indigenous North African states possessed significant political and military power rather than existing merely as peripheral territories controlled by Mediterranean empires."
+                    },
+                    {
+                        title: "Agriculture and Economic Development",
+                        content:
+                            "Massinissa promoted agriculture and permanent settlement within Numidia. Ancient sources associate his reign with the development of agricultural production and the transformation of parts of Numidia from predominantly pastoral economies toward more settled agricultural systems. His policies strengthened the economic foundations of the kingdom."
+                    },
+                    {
+                        title: "Relations with Rome and Carthage",
+                        content:
+                            "Massinissa maintained a close alliance with Rome while continuing to expand Numidian territory at Carthage's expense. His territorial ambitions contributed to growing tensions between Numidia and the weakened Carthaginian state. These tensions eventually helped create the political circumstances that led to the Third Punic War."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Massinissa is remembered as one of the foundational rulers of ancient Numidia. His long reign strengthened Numidian political identity and demonstrated the importance of North African kingdoms in Mediterranean affairs. He remains an important historical figure in the history of the Maghreb and in the long political traditions of the region's indigenous peoples."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/masinissa.jpg",
+                    publicId: "seed/massinissa"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        /* ======================================================
+           SCIPIO AFRICANUS
+        ====================================================== */
+
+        await HistoricalFigure.findOneAndUpdate(
+            { name: "Scipio Africanus" },
+            {
+                name: "Scipio Africanus",
+
+                birthDate: "236 BC",
+                deathDate: "183 BC",
+
+                birthPlace: "Rome, Roman Republic",
+                deathPlace: "Liternum, Roman Republic",
+
+                eras: ancientRome,
+
+                tags: [
+                    "Scipio Africanus",
+                    "Rome",
+                    "Roman Republic",
+                    "Hannibal",
+                    "Second Punic War",
+                    "military"
+                ],
+
+                biography: [
+                    {
+                        title: "A Roman Commander",
+                        content:
+                            "Publius Cornelius Scipio was born into one of Rome's most prominent aristocratic families. He entered military life during the Second Punic War, a period in which Rome faced the greatest military threat of its early history. Scipio witnessed the catastrophic Roman defeats caused by Hannibal and gradually developed a strategy designed to change the course of the war."
+                    },
+                    {
+                        title: "The Spanish Campaign",
+                        content:
+                            "Scipio took command of Roman forces in Iberia and launched a series of aggressive campaigns against Carthaginian armies. His capture of New Carthage was particularly important because the city contained military supplies, hostages, and strategic resources. His victories eventually expelled Carthaginian forces from most of Iberia."
+                    },
+                    {
+                        title: "Alliance with Massinissa",
+                        content:
+                            "Scipio understood the importance of Numidian cavalry and developed an alliance with Massinissa. The Numidian king provided highly mobile cavalry forces that became extremely valuable in the final stages of the war. The partnership demonstrated Scipio's ability to combine Roman military strength with the specialized capabilities of allied forces."
+                    },
+                    {
+                        title: "The Battle of Zama",
+                        content:
+                            "In 202 BC, Scipio confronted Hannibal at the Battle of Zama in North Africa. Roman infantry, supported by Numidian cavalry, defeated the Carthaginian army. Scipio's victory effectively ended the Second Punic War and established him as Rome's most celebrated military commander of the generation."
+                    },
+                    {
+                        title: "Africanus",
+                        content:
+                            "After his victory, Scipio received the honorific title Africanus. His military reputation became enormous, and he enjoyed considerable political influence in Rome. However, his popularity and power also generated suspicion among political rivals who feared the concentration of authority within individual commanders."
+                    },
+                    {
+                        title: "Legacy",
+                        content:
+                            "Scipio Africanus became one of Rome's greatest military figures. His victory over Hannibal transformed the balance of power in the Mediterranean and established Rome as the dominant western Mediterranean power. His campaigns remain important in the study of military strategy, particularly for the way he adapted Roman forces to counter Hannibal's methods."
+                    }
+                ],
+
+                image: {
+                    url: "https://ancient-wisdom-ivory.vercel.app/images/scipio.jpg",
+                    publicId: "seed/scipio-africanus"
+                }
+            },
+            { new: true, upsert: true }
+        );
+
+
+        console.log(
+            "Historical figures seeded successfully."
+        );
 
     } catch (error) {
-        console.error("Seed failed:", error);
 
-        await mongoose.disconnect();
+        console.error(
+            "Historical figure seed failed:",
+            error
+        );
 
-        process.exit(1);
+        throw error;
     }
 };
 
-export default seedDatabase;
 
+export default seedFigures;
