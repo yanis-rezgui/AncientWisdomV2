@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const FigureCard = ({figure} : {figure : HistoricalFigure}) => {
 
     return(
-        <div className="w-[300px] bg-gray-50 flex flex-col rounded-lg p-3 shadow-2xl gap-3">
+        <div className="w-[300px] bg-gray-100 flex flex-col rounded-lg p-3 shadow-2xl gap-3">
             
             <img src={figure.image.url} alt="" className="w-[150px] h-[150px] object-cover rounded-full"/>
 
