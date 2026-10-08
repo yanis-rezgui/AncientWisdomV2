@@ -3,12 +3,13 @@ import FiguresFilters from "../Components/FiguresComponents/FiguresFilters";
 import { useFiguresContext } from "../Contexts/FiguresContext";
 import FigureCard from "../Components/FiguresComponents/FigureCard";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../Components/Pagination/Pagination";
 
 
 
 const Figures = () => {
 
-    const {figures} = useFiguresContext();
+    const {figures, page, setPage, limit, setLimit, totalFigures, totalPages} = useFiguresContext();
 
     const navigate = useNavigate();
 
@@ -25,13 +26,22 @@ const Figures = () => {
 
              <FiguresFilters/>
 
-            <div className="flex flex-wrap items-baseline gap-5 mt-10 px-5">
+            <div className="flex flex-wrap items-baseline justify-center gap-5 mt-10 px-5">
              {figures.map((f)=>{
                 return(
                     <FigureCard figure={f}/>
                 )
              })}
             </div>
+
+                          <Pagination
+                                                  page={page}
+                                                  totalPages={totalPages} 
+                                                  totalItems={totalFigures} 
+                                                  limit={limit} 
+                                                  setPage={setPage} 
+                                                  setLimit={setLimit} 
+                                                  />
 
               <button
             onClick={()=>navigate("/explore")}

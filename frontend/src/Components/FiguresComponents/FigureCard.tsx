@@ -10,24 +10,21 @@ const FigureCard = ({figure} : {figure : HistoricalFigure}) => {
             
             <img src={figure.image.url} alt="" className="w-[150px] h-[150px] object-cover rounded-full"/>
 
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-1">
                 <p className="text-[1.2em] font-[600]">
                     {figure.name}
                 </p>
 
-                <div className="flex flex-row items-center gap-1">
-                    <p className="font-[600]">
-                        {figure.eras.length === 1 ? "Era" : "Eras"} : 
-                    </p>
-
-                    <div>
+             
+                   
+                    <div className="flex flex-col font-[500] text-red-900 text-[15px]">
                         {figure.eras.map((e)=>{
-                            return <p>
-                                {e.name}
+                            return <p className="leading-4.5">
+                                - {e.name}
                             </p>
                         })}
                     </div>
-                </div>
+            
 
                 <Link
                 to={`/figure/${figure._id}`}

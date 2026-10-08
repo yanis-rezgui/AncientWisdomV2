@@ -22,7 +22,7 @@ const AdminEraCard = ({era} : {era: HistoricalEra}) => {
         max-[620px]:w-[320px] 
         max-[620px]:flex-col
         ">
-           <img src={era.image.url || ""} alt="" 
+           <img src={era?.image?.url || ""} alt="" 
            className="w-[200px]  rounded-lg h-full"
            />
             <div className="flex flex-col gap-1">

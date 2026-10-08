@@ -3,12 +3,13 @@ import EventsFilter from "../Components/EventsComponents/EventsFilter";
 import { useEventContext } from "../Contexts/EventContext";
 import EventComponent from "../Components/EventsComponents/EventComponent";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../Components/Pagination/Pagination";
 
 
 const Events = () => {
 
 
-    const {events} = useEventContext();
+    const {events, page, setPage, limit, setLimit, totalEvents, totalPages} = useEventContext();
     const navigate = useNavigate();
 
     return(
@@ -25,13 +26,22 @@ const Events = () => {
 
              <EventsFilter/>
 
-            <div className="flex flex-wrap justify-center items-center gap-5 mt-10">
+            <div className="flex flex-wrap justify-center items-start gap-5 mt-10 px-10">
              {events.map((e)=>{
                 return(
                     <EventComponent event={e} key={e._id}/>
                 )
              })}
              </div>
+
+              <Pagination
+                                      page={page}
+                                      totalPages={totalPages} 
+                                      totalItems={totalEvents} 
+                                      limit={limit} 
+                                      setPage={setPage} 
+                                      setLimit={setLimit} 
+                                      />
 
              <button
             onClick={()=>navigate(-1)}

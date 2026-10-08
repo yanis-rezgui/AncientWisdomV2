@@ -32,6 +32,10 @@ import AdminFigures from './AdminPages/AdminFigures'
 import { FiguresAdminProvider } from './AdminContexts/FigureAdminContext'
 import AdminFigureUpdate from './AdminPages/AdminFigureUpdate'
 import AdminFigureAjout from './AdminPages/AdminFigureAjout'
+import AdminEvents from './AdminPages/AdminEvents'
+import { EventsAdminProvider } from './AdminContexts/EventsAdminContext'
+import AdminEventAjout from './AdminPages/AdminEventAjout'
+import AdminEventUpdate from './AdminPages/AdminEventUpdate'
 
 function App() {
 
@@ -47,6 +51,7 @@ function App() {
                   <QuotesAdminProvider>
                     <ErasAdminProvider>
                       <FiguresAdminProvider>
+                        <EventsAdminProvider>
        <Routes>
 
         <Route element={
@@ -154,11 +159,15 @@ function App() {
                <Route path='figures' element={<AdminFigures/>}/>
                <Route path='figure/:id' element={<AdminFigureUpdate/>}/>
                <Route path='addFigure' element={<AdminFigureAjout/>}/>
+               <Route path='events' element={<AdminEvents/>}/>
+               <Route path='addEvent' element={<AdminEventAjout/>}/>
+               <Route path='event/:id' element={<AdminEventUpdate/>}/>
             </Route>
        </Routes>
 
        
 
+                 </EventsAdminProvider>
                 </FiguresAdminProvider>
            </ErasAdminProvider>
          </QuotesAdminProvider>
