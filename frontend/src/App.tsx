@@ -43,6 +43,12 @@ import QuizResult from './Pages/QuizResult'
 import QuizHistory from './Pages/QuizHistory'
 import { QuizProvider } from './Contexts/QuizContext'
 import { TipsProvider } from './Contexts/TipsContext'
+import { QuizAdminProvider } from './AdminContexts/QuizAdminContext'
+import { QuizQuestionsAdminProvider } from './AdminContexts/QuizQuestionsAdminContext'
+import AdminQuizzes from './AdminPages/AdminQuizzes'
+import AdminQuizAjout from './AdminPages/AdminQuizAjout'
+import AdminQuizUpdate from './AdminPages/AdminQuizUpdate'
+import AdminQuizQuestions from './AdminPages/AdminQuizQuestions'
 
 function App() {
 
@@ -61,6 +67,8 @@ function App() {
                         <EventsAdminProvider>
                           <QuizProvider>
                             <TipsProvider>
+                              <QuizAdminProvider>
+                                <QuizQuestionsAdminProvider>
        <Routes>
 
         <Route element={
@@ -177,12 +185,18 @@ function App() {
                <Route path='events' element={<AdminEvents/>}/>
                <Route path='addEvent' element={<AdminEventAjout/>}/>
                <Route path='event/:id' element={<AdminEventUpdate/>}/>
+               <Route path='quizzes' element={<AdminQuizzes/>}/>
+<Route path='addQuiz' element={<AdminQuizAjout/>}/>
+<Route path='quiz/:id' element={<AdminQuizUpdate/>}/>
+<Route path='quiz-questions' element={<AdminQuizQuestions/>}/>
 
             </Route>
        </Routes>
 
        
 
+                             </QuizQuestionsAdminProvider>
+                          </QuizAdminProvider>
                         </TipsProvider>
                      </QuizProvider>
                  </EventsAdminProvider>

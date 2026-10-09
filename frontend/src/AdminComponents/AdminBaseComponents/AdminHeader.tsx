@@ -48,6 +48,16 @@ const MAIN_LINKS: NavItem[] = [
         path: "/admin/events",
         icon: "ScrollText",
     },
+     {
+        label: "Quizzes",
+        path: "/admin/quizzes",
+        icon: "Brain",
+    },
+    {
+        label: "Quiz Questions",
+        path: "/admin/quiz-questions",
+        icon: "ClipboardList",
+    },
     {
         label: "Users",
         path: "/admin/users",

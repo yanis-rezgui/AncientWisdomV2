@@ -383,3 +383,60 @@ export const deleteQuizQuestion = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// Dans quizQuestion.admin.controller.js
+
+// GET /api/v1/admin/quiz-questions
+export const getAdminQuizQuestions = async (req, res, next) => {
+    try {
+        const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+        const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit, 10) || 20));
+
+        const filter = {};
+
+        if (req.query.status !== undefined) {
+            if (!["draft", "published", "archived"].includes(req.query.status)) {
+                return res.status(400).json({ success: false, message: "Invalid question status" });
+            }
+            filter.status = req.query.status;
+        }
+
+        if (req.query.difficulty !== undefined) {
+            if (!["Easy", "Medium", "Hard"].includes(req.query.difficulty)) {
+                return res.status(400).json({ success: false, message: "Invalid question difficulty" });
+            }
+            filter.difficulty = req.query.difficulty;
+        }
+
+        if (req.query.era !== undefined) {
+            if (!mongoose.isValidObjectId(req.query.era)) {
+                return res.status(400).json({ success: false, message: "Invalid era ID" });
+            }
+            filter.era = req.query.era;
+        }
+
+        if (typeof req.query.search === "string" && req.query.search.trim()) {
+            const escaped = req.query.search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            filter.questionText = { $regex: escaped, $options: "i" };
+        }
+
+        const [questions, total] = await Promise.all([
+            QuizQuestion.find(filter)
+                .populate("era", "name startYear endYear")
+                .sort({ updatedAt: -1 })
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .lean(),
+            QuizQuestion.countDocuments(filter),
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            data: questions,
+            pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+        });
+    } catch (error) {
+        next(error);
+    }
+};
