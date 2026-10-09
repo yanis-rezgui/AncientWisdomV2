@@ -1,80 +1,104 @@
+
 import mongoose from "mongoose";
-import HistoricalEra from "../models/historicalEra.model.js";
+import Tips from "../models/Learn/tips.model.js";
 
-const seedEras = async () => {
+
+const tipsData = {
+    introduction:
+        "Learning history is not just about memorizing dates, it’s about understanding connections, causes, and consequences. Ancient Wisdom gives you the tools to explore history through inspiring quotes, detailed biographies, interactive maps, and key historical events.",
+
+    tips: [
+        {
+            title: "Start with Quotes to Spark Curiosity",
+            why:
+                "Quotes are a quick gateway into an era, a mindset, or a historical figure. They can ignite your curiosity and make you want to learn more.",
+            how:
+                "Start by browsing the Quotes section, then visit the Explore page to read detailed biographies of the authors. This helps you understand the life, context, and historical background behind their words.",
+        },
+        {
+            title: "Connect People to Events",
+            why:
+                "Understanding a historical event becomes easier when you know the people who shaped it.",
+            how:
+                "From any entry in Historical Events, note the key figures mentioned, then visit the Explore section to read their biographies and understand their role.",
+        },
+        {
+            title: "Learn Through Maps",
+            why:
+                "Maps help visualize the reach of an empire, trade routes, or population movements.",
+            how:
+                'Visit the "History in Frames" section to place events and figures in their geographical context.',
+        },
+        {
+            title: "Compare Civilizations",
+            why:
+                "Comparing two eras or regions makes it easier to remember their differences and similarities.",
+            how:
+                "Use maps, biographies and historical events to compare civilizations, such as Rome and Persia.",
+        },
+        {
+            title: "Use Stories, Not Just Facts",
+            why:
+                "Stories make history memorable and relatable.",
+            how:
+                "Read the Historical Events section as narratives, not just bullet points, to immerse yourself in the past.",
+        },
+        {
+            title: "Revisit and Review Regularly",
+            why:
+                "Memory strengthens with repetition and exposure.",
+            how:
+                "Return each week to explore new quotes, events, and maps.",
+        },
+        {
+            title: "Explore Across Eras",
+            why:
+                "Understanding history means seeing how ideas, cultures, and empires evolve over time.",
+            how:
+                "Move between different time periods in the Historical Events and Maps sections to see the bigger picture of humanity’s journey.",
+        },
+        {
+            title: "Make Connections Beyond the Site",
+            why:
+                "The best learning happens when you connect what you see here with books, documentaries, and real-life discussions.",
+            how:
+                "Use what you discover on the site as a starting point. Note down a quote, a map, or an event, then explore it further in books or films recommended in the History Guide section.",
+        },
+    ],
+
+    conclusion:
+        "History is a journey, not a race. With Ancient Wisdom, every quote, biography, and map is a step toward seeing the world through the eyes of the past.",
+};
+
+const seedTips = async () => {
     try {
-
-        const eras = [
-
-           {
-    name: "Anglo-Saxon England",
-    startYear: 410,
-    endYear: 1066,
-
-    description:
-        "Anglo-Saxon England was the period of English history that followed the end of Roman rule in Britain and lasted until the Norman Conquest in 1066. During this period, Germanic peoples including the Angles, Saxons, and Jutes settled in Britain and established several competing kingdoms. Over time, these kingdoms developed political institutions, Christian traditions, distinctive art and literature, and eventually a more unified English kingdom.",
-
-    sections: [
-        {
-            title: "The End of Roman Britain",
-            content:
-                "Roman rule in Britain gradually came to an end during the early fifth century. As Roman military and administrative structures disappeared, local kingdoms emerged across Britain. Groups from continental Europe, particularly the Angles, Saxons, and Jutes, settled in different parts of the island. The political landscape became increasingly fragmented, with numerous British and Anglo-Saxon kingdoms competing for territory and influence."
-        },
-
-        {
-            title: "The Anglo-Saxon Kingdoms",
-            content:
-                "Anglo-Saxon England was initially divided among several kingdoms. Among the most important were Wessex, Mercia, Northumbria, East Anglia, Kent, Sussex, and Essex. These kingdoms frequently competed through warfare, alliances, marriages, and political rivalries. Over the centuries, some kingdoms became more powerful than others, with Mercia and later Wessex playing particularly important roles in the political development of England."
-        },
-
-        {
-            title: "Christianization of England",
-            content:
-                "Christianity gradually spread throughout Anglo-Saxon England beginning in the late sixth century. The mission associated with Augustine of Canterbury, sent by Pope Gregory the Great in 597, played an important role in the conversion of Kent and the development of organized Christianity in southern England. Monasteries became important centers of education, manuscript production, religion, and intellectual life. Christian traditions gradually became deeply integrated into Anglo-Saxon society."
-        },
-
-        {
-            title: "Viking Invasions and the Danelaw",
-            content:
-                "From the late eighth century onward, Viking raids increasingly affected England. Scandinavian armies eventually conquered large areas of northern and eastern England. Much of this territory became known as the Danelaw, where Scandinavian political and cultural influence became particularly strong. Alfred the Great of Wessex resisted Viking expansion and established a stronger political base from which later English kings could expand their authority."
-        },
-
-        {
-            title: "The Rise of a Unified England",
-            content:
-                "During the tenth century, rulers from Wessex gradually expanded their control over the various Anglo-Saxon kingdoms. Kings such as Edward the Elder, Æthelstan, and Edgar contributed to the political unification of England. Æthelstan is often regarded as the first king to exercise authority over a kingdom resembling a unified England. However, Scandinavian invasions and political struggles continued to shape the country during the eleventh century."
-        },
-
-        {
-            title: "The Norman Conquest",
-            content:
-                "The Anglo-Saxon period ended dramatically in 1066. Following the death of Edward the Confessor, competing claims to the English throne led to a succession crisis. Harold Godwinson became king but faced invasions from Harald Hardrada of Norway and William, Duke of Normandy. Harold defeated the Norwegian invasion at the Battle of Stamford Bridge but was then defeated and killed by William at the Battle of Hastings. William's victory began the Norman Conquest and transformed England's political, social, and cultural structure."
-        }
-    ]
-}
-
-        ];
-
-        for (const era of eras) {
-
-            const result = await HistoricalEra.findOneAndUpdate(
-                { name: era.name },
-                era,
-                {
-                    new: true,
-                    upsert: true,
-                    runValidators: true
-                }
+        // Connect to MongoDB if your application hasn't connected already.
+        if (mongoose.connection.readyState === 0) {
+            throw new Error(
+                "MongoDB is not connected. Connect to the database before running this seed."
             );
-
-            console.log(`Era seeded: ${result.name}`);
         }
 
-        console.log("✅ Eras seeded successfully");
+        const existingTips = await Tips.findOne();
 
+        let result;
+
+        if (existingTips) {
+            existingTips.set(tipsData);
+            result = await existingTips.save();
+
+            console.log("Learning Tips updated successfully.");
+        } else {
+            result = await Tips.create(tipsData);
+
+            console.log("Learning Tips created successfully.");
+        }
+
+        console.log(`Number of tips: ${result.tips.length}`);
     } catch (error) {
-        console.error("❌ Error while seeding eras:", error);
+        console.error("Error seeding Learning Tips:", error);
+        throw error;
     }
 };
 
-export default seedEras;
+export default seedTips;

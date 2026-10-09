@@ -11,6 +11,12 @@ import figuresRouter from "./routes/figures.routes.js";
 import eventRouter from "./routes/event.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import savedItemsRouter from "./routes/savedItems.routes.js";
+import quizRouter from "./routes/quiz.routes.js";
+import quizAttemptRouter from "./routes/quizAttempt.routes.js";
+import quizAdminRouter from "./routes/quiz.admin.routes.js";
+import quizQuestionAdminRouter from "./routes/quizQuestion.admin.routes.js";
+import tipsRouter from "./routes/tips.routes.js";
+import bookRouter from "./routes/book.routes.js";
 
 
 const app = express();
@@ -42,6 +48,12 @@ app.use('/api/v1/figure', figuresRouter);
 app.use('/api/v1/event', eventRouter);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/saved-items', savedItemsRouter);
+app.use("/api/v1/quizzes", quizRouter);
+app.use("/api/v1/quiz-attempts", quizAttemptRouter);
+app.use("/api/v1/admin/quizzes", quizAdminRouter);
+app.use("/api/v1/admin/quiz-questions", quizQuestionAdminRouter);
+app.use("/api/v1/tips", tipsRouter);
+app.use("/api/v1/books", bookRouter);
 
 app.use(errorMiddleware);
 

@@ -149,3 +149,125 @@ export interface User{
 }
 
 export type ItemType = "Quote" | "Figure" | "Event";
+
+/* =========================
+   QUIZ
+========================= */
+
+export type QuizDifficulty = "Easy" | "Medium" | "Hard";
+
+export type QuizStatus = "draft" | "published" | "archived";
+
+export interface QuizQuestionReference {
+    // ObjectId string before populate, QuizQuestion after populate
+    question: string | IQuizQuestion;
+    order: number;
+    points: number;
+}
+
+export interface Quiz {
+    _id: string;
+    title: string;
+    slug: string;
+    description: string;
+
+    // Populated by the API, or IDs if not populated
+    eras: (HistoricalEra | string)[];
+
+    difficulty: QuizDifficulty;
+    questions: QuizQuestionReference[];
+
+    // Duration in minutes; null means unlimited
+    timeLimit: number | null;
+
+    status: QuizStatus;
+
+    createdAt: string;
+    updatedAt: string;
+}
+
+
+/* =========================
+   QUIZ QUESTION
+========================= */
+
+export type QuizQuestionDifficulty = "Easy" | "Medium" | "Hard"; 
+export type QuizQuestionStatus = "draft" | "published" | "archived";
+ export interface IQuizQuestion 
+ { _id: string;
+     questionText: string; 
+     options: string[]; 
+     correctAnswerIndex: number; 
+     explanation: string; 
+     era?: HistoricalEra; 
+     difficulty: QuizQuestionDifficulty; 
+     source: string; 
+     tags: string[]; 
+     status: QuizQuestionStatus; 
+     createdAt: Date; 
+     updatedAt: Date; }
+
+/* =========================
+   QUIZ ATTEMPT
+========================= */
+
+export type QuizAttemptStatus =
+    | "in_progress"
+    | "completed"
+    | "abandoned";
+
+export interface QuizAttemptAnswer {
+    question: string | IQuizQuestion;
+
+    // Snapshot of the question at the time of the attempt
+    questionText: string;
+    options: string[];
+    correctAnswerIndex: number;
+
+    selectedAnswerIndex: number | null;
+    isCorrect: boolean | null;
+
+    points: number;
+    earnedPoints: number;
+}
+
+export interface QuizAttempt {
+    _id: string;
+
+    user: string | User;
+    quiz: string | Quiz;
+
+    quizTitle: string;
+    answers: QuizAttemptAnswer[];
+
+    score: number;
+    maxScore: number;
+    percentage: number;
+
+    status: QuizAttemptStatus;
+
+    startedAt: string;
+    completedAt: string | null;
+    durationSeconds: number;
+
+    createdAt: string;
+    updatedAt: string;
+}
+
+
+/* =========================
+   QUIZ FILTERS
+========================= */
+
+export interface QuizFilterType {
+    search: string;
+    difficulty: QuizDifficulty | "";
+    era: string;
+}
+
+
+
+/* =========================
+   QUIZ PLAY
+========================= */
+

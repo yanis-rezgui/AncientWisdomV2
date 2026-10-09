@@ -36,6 +36,13 @@ import AdminEvents from './AdminPages/AdminEvents'
 import { EventsAdminProvider } from './AdminContexts/EventsAdminContext'
 import AdminEventAjout from './AdminPages/AdminEventAjout'
 import AdminEventUpdate from './AdminPages/AdminEventUpdate'
+import Quizzes from './Pages/Quizzes'
+import QuizDetails from './Pages/QuizDetails'
+import QuizPlay from './Pages/QuizPlay'
+import QuizResult from './Pages/QuizResult'
+import QuizHistory from './Pages/QuizHistory'
+import { QuizProvider } from './Contexts/QuizContext'
+import { TipsProvider } from './Contexts/TipsContext'
 
 function App() {
 
@@ -52,6 +59,8 @@ function App() {
                     <ErasAdminProvider>
                       <FiguresAdminProvider>
                         <EventsAdminProvider>
+                          <QuizProvider>
+                            <TipsProvider>
        <Routes>
 
         <Route element={
@@ -142,6 +151,12 @@ function App() {
             </>
           }/>
 
+                         <Route path='/quizzes' element={<Quizzes/>}/>
+<Route path='/quiz/:id' element={<QuizDetails/>}/>
+<Route path='/quiz-play/:attemptId' element={<QuizPlay/>}/>
+<Route path='/quiz-result/:attemptId' element={<QuizResult/>}/>
+<Route path='/quiz-history' element={<QuizHistory/>}/>
+
             </Route>
 
 
@@ -162,11 +177,14 @@ function App() {
                <Route path='events' element={<AdminEvents/>}/>
                <Route path='addEvent' element={<AdminEventAjout/>}/>
                <Route path='event/:id' element={<AdminEventUpdate/>}/>
+
             </Route>
        </Routes>
 
        
 
+                        </TipsProvider>
+                     </QuizProvider>
                  </EventsAdminProvider>
                 </FiguresAdminProvider>
            </ErasAdminProvider>
