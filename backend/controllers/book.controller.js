@@ -22,7 +22,7 @@ const validateBookText = (value, field, maxLength) => {
         value.trim().length < 1 ||
         value.trim().length > maxLength
     ) {
-        return `${field} must contain between 1 and ${maxLength} characters`;
+        return `${field} must contain between 1 and ${maxLength} character`;
     }
 
     return null;
