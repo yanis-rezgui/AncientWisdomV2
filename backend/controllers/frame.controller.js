@@ -1,8 +1,8 @@
 
 import mongoose from "mongoose";
 import Frame from "../models/Learn/frame.model.js";
-import HistoricalEra from "../models/Learn/era.model.js";
-import { uploadImage, deleteImage } from "../utils/cloudinary.js";
+import HistoricalEra from "../models/historicalEra.model.js";
+import { uploadImage, deleteImage } from "../services/cloudinary.service.js";
 
 const escapeRegex = (value) =>
     value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

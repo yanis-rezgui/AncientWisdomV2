@@ -17,6 +17,9 @@ import quizAdminRouter from "./routes/quiz.admin.routes.js";
 import quizQuestionAdminRouter from "./routes/quizQuestion.admin.routes.js";
 import tipsRouter from "./routes/tips.routes.js";
 import bookRouter from "./routes/book.routes.js";
+import frameRouter from "./routes/frame.routes.js";
+import movieRouter from "./routes/movie.routes.js";
+import articleRouter from "./routes/article.routes.js";
 
 
 const app = express();
@@ -54,6 +57,9 @@ app.use("/api/v1/admin/quizzes", quizAdminRouter);
 app.use("/api/v1/admin/quiz-questions", quizQuestionAdminRouter);
 app.use("/api/v1/tips", tipsRouter);
 app.use("/api/v1/books", bookRouter);
+app.use('/api/v1/frames', frameRouter);
+app.use("/api/v1/movies", movieRouter);
+app.use('/api/v1/articles', articleRouter);
 
 app.use(errorMiddleware);
 

@@ -1,5 +1,5 @@
 import Tips from "../models/Learn/tips.model.js"
-
+import mongoose from "mongoose";
 
 
 export const getTips = async(req , res , next) => {

@@ -49,6 +49,28 @@ import AdminQuizzes from './AdminPages/AdminQuizzes'
 import AdminQuizAjout from './AdminPages/AdminQuizAjout'
 import AdminQuizUpdate from './AdminPages/AdminQuizUpdate'
 import AdminQuizQuestions from './AdminPages/AdminQuizQuestions'
+import { BookProvider } from './Contexts/BookContext'
+import { BooksAdminProvider } from './AdminContexts/BookAdminContext'
+import { MovieProvider } from './Contexts/MovieContext'
+import { MoviesAdminProvider } from './AdminContexts/MovieAdminContext'
+import { ArticleProvider } from './Contexts/ArticleContext'
+import { ArticleAdminProvider } from './AdminContexts/ArticleAdminContext'
+import { FrameProvider } from './Contexts/FrameContext'
+import { FramesAdminProvider } from './AdminContexts/FramesAdminContext'
+import AdminLearn from './AdminPages/AdminLearnPages/AdminLearn'
+import AdminArticles from './AdminPages/AdminLearnPages/AdminArticles'
+import AdminArticleAjout from './AdminPages/AdminLearnPages/AdminArticleAjout'
+import AdminArticleUpdate from './AdminPages/AdminLearnPages/AdminArticleUpdate'
+import AdminBooks from './AdminPages/AdminLearnPages/AdminBooks'
+import AdminBookAjout from './AdminPages/AdminLearnPages/AdminBookAjout'
+import AdminBookUpdate from './AdminPages/AdminLearnPages/AdminBookUpdate'
+import AdminMovies from './AdminPages/AdminLearnPages/AdminMovies'
+import AdminMovieAjout from './AdminPages/AdminLearnPages/AdminMovieAjout'
+import AdminMovieUpdate from './AdminPages/AdminLearnPages/AdminMovieUpdate'
+import AdminFrames from './AdminPages/AdminLearnPages/AdminFrames'
+import AdminFrameAjout from './AdminPages/AdminLearnPages/AdminFrameAjout'
+import AdminFrameUpdate from './AdminPages/AdminLearnPages/AdminFrameUpdate'
+import AdminTips from './AdminPages/AdminLearnPages/AdminTips'
 
 function App() {
 
@@ -69,6 +91,14 @@ function App() {
                             <TipsProvider>
                               <QuizAdminProvider>
                                 <QuizQuestionsAdminProvider>
+                                  <BookProvider>
+                                    <BooksAdminProvider>
+                                      <MovieProvider>
+                                        <MoviesAdminProvider>
+                                          <ArticleProvider>
+                                            <ArticleAdminProvider>
+                                              <FrameProvider>
+                                                <FramesAdminProvider>
        <Routes>
 
         <Route element={
@@ -189,12 +219,33 @@ function App() {
 <Route path='addQuiz' element={<AdminQuizAjout/>}/>
 <Route path='quiz/:id' element={<AdminQuizUpdate/>}/>
 <Route path='quiz-questions' element={<AdminQuizQuestions/>}/>
+<Route path='learn' element={<AdminLearn/>}/>
+<Route path='learn/articles' element={<AdminArticles/>}/>
+<Route path='learn/addArticle' element={<AdminArticleAjout/>}/>
+<Route path='learn/article/:id' element={<AdminArticleUpdate/>}/>
+<Route path='learn/books' element={<AdminBooks/>}/>
+<Route path='learn/addBook' element={<AdminBookAjout/>}/>
+<Route path='learn/book/:id' element={<AdminBookUpdate/>}/>
+<Route path='learn/movies' element={<AdminMovies/>}/>
+<Route path='learn/addMovie' element={<AdminMovieAjout/>}/>
+<Route path='learn/movie/:id' element={<AdminMovieUpdate/>}/>
+<Route path='learn/frames' element={<AdminFrames/>}/>
+<Route path='learn/addFrame' element={<AdminFrameAjout/>}/>
+<Route path='learn/frame/:id' element={<AdminFrameUpdate/>}/>
+<Route path='learn/tips' element={<AdminTips/>}/>
 
             </Route>
        </Routes>
 
        
-
+                                                          </FramesAdminProvider>
+                                                        </FrameProvider>
+                                                  </ArticleAdminProvider>
+                                            </ArticleProvider>
+                                         </MoviesAdminProvider>
+                                       </MovieProvider>
+                                     </BooksAdminProvider>
+                                  </BookProvider>
                              </QuizQuestionsAdminProvider>
                           </QuizAdminProvider>
                         </TipsProvider>
