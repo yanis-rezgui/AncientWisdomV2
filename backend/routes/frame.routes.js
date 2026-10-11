@@ -7,6 +7,7 @@ import {
     addFrame,
     updateFrame,
     deleteFrame,
+    getPublicFrames,
 } from "../controllers/frame.controller.js";
 
 import authorize from "../middlewares/auth.middleware.js";
@@ -45,6 +46,7 @@ const upload = multer({
 
 // Public routes
 frameRouter.get("/", getFrames);
+frameRouter.get("/public", getPublicFrames);
 frameRouter.get("/:id", getFrame);
 
 // Admin routes

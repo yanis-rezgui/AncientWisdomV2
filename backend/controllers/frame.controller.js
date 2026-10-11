@@ -472,3 +472,29 @@ export const deleteFrame = async (req, res, next) => {
         next(error);
     }
 };
+
+
+export const getPublicFrames = async(req, res, next) => {
+
+    try{
+
+          const [monuments, statues, maps] = await Promise.all([
+            Frame.find({ type: "Monument" }),
+            Frame.find({ type: "Statue" }),
+            Frame.find({ type: "Map" }),
+        ]);
+
+
+
+        return res.status(200).json({
+            success : true,
+            data : {
+                monuments,
+                statues,
+                maps
+            }
+        });
+    }catch(err){
+        next(err);
+    }
+}

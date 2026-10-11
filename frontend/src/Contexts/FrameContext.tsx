@@ -34,6 +34,13 @@ interface FrameContextType {
     currentFrame: Frame | null;
     setCurrentFrame: (frame: Frame | null) => void;
 
+    loadingPublicFrames : boolean;
+    getPublicFrames : ()=>Promise<void>;
+
+    monuments : Frame[];
+    statues : Frame[];
+    maps : Frame[];
+
     errorMsg: string;
 }
 
@@ -63,6 +70,11 @@ export const FrameProvider = ({
 
     const [currentFrame, setCurrentFrame] = useState<Frame | null>(null);
     const [errorMsg, setErrorMsg] = useState<string>("");
+
+    const [monuments, setMonuments] = useState<Frame[]>([]);
+    const [statues, setStatues] = useState<Frame[]>([]);
+    const [maps, setMaps] = useState<Frame[]>([]);
+    const [loadingPublicFrames, setLoadingPublicFrames] = useState<boolean>(false);
 
     // GET /api/v1/frames?page=1&limit=10&search=...
     const getAllFrames = useCallback(async (): Promise<void> => {
@@ -139,6 +151,42 @@ export const FrameProvider = ({
         }
     }, []);
 
+
+    const getPublicFrames = async() => {
+
+        try{
+
+            setLoadingPublicFrames(true);
+
+            const res = await fetch(`${API_URL}/public`, {
+                method : "GET",
+
+            });
+
+            const data = await res.json();
+
+            if(!res.ok){
+                throw new Error(data.error || data.message || "Error in getting frames");
+            }
+
+            setMonuments(data.data.monuments);
+            setStatues(data.data.statues);
+            setMaps(data.data.maps);
+
+            console.log("Monuments : ", data.data.monuments);
+            console.log("Statues, : ", data.data.statues);
+            console.log("Maps : ", data.data.maps);
+        }catch(err){
+            console.error(err);
+        }finally{
+            setLoadingPublicFrames(false);
+        }
+    }
+
+
+    useEffect(()=>{
+        getPublicFrames();
+    }, []);
     useEffect(() => {
         void getAllFrames();
     }, [getAllFrames]);
@@ -163,6 +211,12 @@ export const FrameProvider = ({
                 currentFrame,
                 setCurrentFrame,
                 errorMsg,
+                maps,
+                monuments,
+                statues,
+                loadingPublicFrames,
+                getPublicFrames
+
             }}
         >
             {children}
