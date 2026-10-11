@@ -61,7 +61,7 @@ const frameSchema = new mongoose.Schema(
         source: {
             type: String,
             trim: true,
-            maxlength: 500,
+            maxLength: 500,
             default: "",
         },
     },

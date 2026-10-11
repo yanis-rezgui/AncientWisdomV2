@@ -150,7 +150,6 @@ export const validateFrameForm = (f: FrameFormState, image: File | null, require
             ["Title", f.title],
             ["Era", f.era],
             ["Location", f.location],
-            ["Source", f.source],
             ["Description", f.description],
         ],
         image,

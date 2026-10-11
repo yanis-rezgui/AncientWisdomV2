@@ -40,7 +40,7 @@ const bookSchema = new mongoose.Schema({
         required : [true, "Historical Era"]
     },
 
-});
+}, {timestamps: true});
 
 
 const Book = mongoose.model("Book", bookSchema);

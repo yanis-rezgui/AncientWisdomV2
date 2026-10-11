@@ -179,7 +179,7 @@ export const addFrame = async (req, res, next) => {
 
         // Upload image to Cloudinary
         uploadedImage = await uploadImage(
-            req.file.buffer,
+            req.file,
             "Ancient-Wisdom/frames"
         );
 
@@ -359,7 +359,7 @@ export const updateFrame = async (req, res, next) => {
         // Upload a new image only when provided
         if (req.file) {
             uploadedImage = await uploadImage(
-                req.file.buffer,
+                req.file,
                 "Ancient-Wisdom/frames"
             );
 

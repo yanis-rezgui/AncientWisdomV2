@@ -6,6 +6,7 @@ import {
     type ReactNode,
 } from "react";
 import type { Article } from "../Types/LearnTypes";
+import { useAuthContext } from "../Contexts/AuthContext";
 
 
 
@@ -103,6 +104,8 @@ export const ArticleAdminProvider = ({
         setSuccessMsg("");
     }, []);
 
+    const {token} = useAuthContext();
+
     const handleError = (error: unknown, fallback: string) => {
         console.error(error);
         setErrorMsg(
@@ -179,7 +182,9 @@ export const ArticleAdminProvider = ({
         try {
             const res = await fetch(API_URL, {
                 method: "POST",
-                credentials: "include",
+                headers : {
+                    Authorization : `Bearer ${token}`,
+                },
                 body: buildFormData(form),
             });
 
@@ -228,7 +233,9 @@ export const ArticleAdminProvider = ({
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "PUT",
-                credentials: "include",
+                  headers : {
+                    Authorization : `Bearer ${token}`,
+                },
                 body: buildFormData(form),
             });
 
@@ -281,7 +288,9 @@ export const ArticleAdminProvider = ({
         try {
             const res = await fetch(`${API_URL}/${id}`, {
                 method: "DELETE",
-                credentials: "include",
+                  headers : {
+                    Authorization : `Bearer ${token}`,
+                },
             });
 
             const data = await res.json();
