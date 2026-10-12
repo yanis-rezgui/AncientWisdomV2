@@ -21,6 +21,8 @@ interface SavedItemsContextType{
     loadingToggleFavorite : boolean;
 
     isFavorite: (itemType: ItemType, itemId: string) => boolean;
+    typeToShow : string;
+    setTypeToShow : (s : string)=>void;
 }
 
 
@@ -40,6 +42,8 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     const [loadingToggleFavorite, setLoadingToggleFavorite] = useState<boolean>(false);
 
     const {token, user} = useAuthContext();
+
+    const [typeToShow, setTypeToShow] = useState<string>("Quotes")
 
 
     const getSavedQuotes = async() => {
@@ -120,6 +124,8 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
                 throw new Error(data.error || data.message || "Error in getting saved figures");
             }
 
+            console.log('Saved Figures : ', data.data);
+
             setSavedFigures(data.data);
         }catch(err){
             console.error(err);
@@ -180,7 +186,7 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     useEffect(()=>{
         if(!token || !user) return;
         getSavedEvents();
-        getSavedFigures();
+       getSavedFigures();
         getSavedQuotes();
     }, [user, token])
 
@@ -200,7 +206,9 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     toggleFavorite ,
     loadingToggleFavorite,
 
-    isFavorite
+    isFavorite,
+    typeToShow,
+    setTypeToShow
     }}>
         {children}
     </SavedItemsContext.Provider>

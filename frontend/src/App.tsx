@@ -78,6 +78,7 @@ import Movies from './Pages/LearnPages/Movies'
 import Guides from './Pages/LearnPages/Guides'
 import Articles from './Pages/LearnPages/Articles'
 import ArticleDetails from './Pages/LearnPages/ArticleDetails'
+import Favorites from './Pages/Favorites'
 
 function App() {
 
@@ -209,6 +210,8 @@ function App() {
           <Route path='/learn/guides' element={<Guides/>}/>
           <Route path='/learn/articles' element={<Articles/>}/>
           <Route path='/article/:id' element={<ArticleDetails/>}/>
+
+          <Route path='/favorites' element={<Favorites/>}/>
     
 
             </Route>
