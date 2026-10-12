@@ -17,7 +17,7 @@ const EventComponent = ({ event }: { event: HistoricalEvent }) => {
                 duration-300
                 flex
                 flex-col
-                gap-3
+                gap-2
                 p-4
             "
         >
@@ -35,6 +35,7 @@ const EventComponent = ({ event }: { event: HistoricalEvent }) => {
             </h4>
 
             {/* Dates */}
+
             <div
                 className="
                     flex
@@ -57,6 +58,7 @@ const EventComponent = ({ event }: { event: HistoricalEvent }) => {
             <div
                 className="
                     flex
+                    min-h-0 flex-1 overflow-hidden
                     items-center
                     justify-center
                     gap-2
@@ -69,34 +71,6 @@ const EventComponent = ({ event }: { event: HistoricalEvent }) => {
                 <span className="font-semibold">
                     {event.location}
                 </span>
-            </div>
-
-            {/* Tags */}
-            <div
-                className="
-                    flex
-                    flex-wrap
-                    justify-center
-                    gap-2
-                    mt-1
-                "
-            >
-                {event.tags.map((tag) => (
-                    <span
-                        key={tag}
-                        className="
-                            px-2.5
-                            py-1
-                            rounded-full
-                            bg-[#F0E6D8]
-                            text-[#3E3025]
-                            text-[12px]
-                            font-medium
-                        "
-                    >
-                        {tag}
-                    </span>
-                ))}
             </div>
 
             {/* Details */}

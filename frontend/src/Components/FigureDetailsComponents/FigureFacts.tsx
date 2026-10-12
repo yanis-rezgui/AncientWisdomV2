@@ -24,7 +24,11 @@ const FigureFacts = ({figure} : {figure : HistoricalFigure}) => {
                 "
             >
                 {/* BORN */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-md shadow-lg
+                hover:shadow-2xl
+                hover:-translate-y-1
+                transition-all
+                duration-300">
                     <p className="text-sm font-bold tracking-widest text-gray-500">
                         BORN
                     </p>
@@ -41,7 +45,13 @@ const FigureFacts = ({figure} : {figure : HistoricalFigure}) => {
                 </div>
 
                 {/* DIED */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-md
+                shadow-lg
+                hover:shadow-2xl
+                hover:-translate-y-1
+                transition-all
+                duration-300
+                ">
                     <p className="text-sm font-bold tracking-widest text-gray-500">
                         DIED
                     </p>
@@ -58,7 +68,13 @@ const FigureFacts = ({figure} : {figure : HistoricalFigure}) => {
                 </div>
 
                 {/* ERAS */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+                <div className="bg-gray-50 p-6 rounded-lg shadow-md
+                shadow-lg
+                hover:shadow-2xl
+                hover:-translate-y-1
+                transition-all
+                duration-300
+                ">
                     <p className="text-sm font-bold tracking-widest text-gray-500">
                         ERAS
                     </p>
@@ -67,7 +83,9 @@ const FigureFacts = ({figure} : {figure : HistoricalFigure}) => {
                         {figure.eras.map((era) => (
                             <p
                                 key={era._id}
-                                className="text-[18px] font-medium"
+                                className="text-[17px] font-medium
+                                leading-6
+                                "
                             >
                                 {era.name}
                             </p>

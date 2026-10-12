@@ -23,8 +23,10 @@ const EventContent = ({event} : {event : HistoricalEvent}) => {
                {event.sections.map((b)=>{
                   return(
                     <a href={`#${b.title}`}
-                    className="text-[14px] cursor-pointer text-[#3E3025] font-[500]
-                     hover:text-[#A67C52] transition-colors duration-300 font-[600]"
+                    className="text-[13px] cursor-pointer text-[#3E3025] font-[500]
+                     hover:text-[#A67C52] transition-colors duration-300 font-[600]
+                     underline
+                     "
                     >
                         {b.title}
                     </a>

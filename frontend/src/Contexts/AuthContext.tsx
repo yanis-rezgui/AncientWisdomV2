@@ -22,6 +22,12 @@ interface AuthContextType{
     msg : string | null;
     loadingGetUser : boolean;
     getUser : ()=>Promise<void>;
+
+    updateUserInfo : (firstName : string, lastName : string)=>Promise<void>;
+    loadingUpdateUserInfo : boolean;
+
+    updateUserPassword : (oldPassword : string, newPassword1 : string, newPassword2 : string)=>Promise<void>;
+    loadingUpdatePassword : boolean;
 }
 
 
@@ -46,6 +52,9 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
     const [showSignIn, setShowSignIn] = useState<boolean>(true);
 
     const [loadingGetUser, setLoadingGetUser] = useState<boolean>(false);
+
+    const [loadingUpdateUserInfo, setLoadingUpdateUserInfo] = useState<boolean>(false);
+    const [loadingUpdatePassword, setLoadingUpdatePassword] = useState<boolean>(false);
 
 
     useEffect(()=>{
@@ -181,6 +190,64 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
         }
     }
 
+    const updateUserInfo = async(firstName :string, lastName : string) => {
+
+        try{
+
+            setLoadingUpdateUserInfo(true);
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/update/info`,{
+                method : "PUT",
+                headers : {
+                    "Content-Type" : "application/json",
+                    Authorization : `Bearer ${token}`
+                },
+                body : JSON.stringify({firstName, lastName})
+            });
+
+            const data = await res.json();
+
+            if(!res.ok){
+                throw new Error(data.error || data.message || "User updated successfully");
+            }
+
+            await getUser();
+        }catch(err){
+            console.error(err);
+        }finally{
+            setLoadingUpdateUserInfo(false);
+        }
+
+    }
+
+    const updateUserPassword = async(oldPassword : string, newPassword1 : string, newPassword2 : string) => {
+
+        try{
+
+            setLoadingUpdatePassword(true);
+
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/update/password`, {
+                method : "PUT",
+                headers : {
+                    "Content-Type" : "application/json",
+                    Authorization : `Bearer ${token}`
+                },
+                body : JSON.stringify({oldPassword, newPassword1, newPassword2})
+            });
+
+            const data = await res.json();
+
+            if(!res.ok){
+                throw new Error(data.error || data.message || "Error in updating password");
+            }
+
+            await getUser();
+        }catch(err){
+            console.error(err);
+        }finally{
+            setLoadingUpdatePassword(false);
+        }
+    }
     useEffect(()=>{
         if(!token) return;
         getUser();
@@ -201,7 +268,12 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
     setShowSignIn,
     msg,
     loadingGetUser,
-    getUser
+    getUser,
+
+    updateUserInfo,
+    loadingUpdateUserInfo,
+    updateUserPassword,
+    loadingUpdatePassword
     }}>
         {children}
     </AuthContext.Provider>

@@ -228,3 +228,153 @@ export const getUser = async(req, res, next) => {
         next(err);
     }
 }
+
+
+
+export const updateMyInfo = async (req, res, next) => {
+    try {
+        const { firstName, lastName } = req.body;
+        const updates = {};
+
+        if (firstName !== undefined) {
+            if (typeof firstName !== "string" || !firstName.trim()) {
+                return res.status(400).json({
+                    success: false,
+                    message: "First name is required",
+                });
+            }
+
+            updates.firstName = firstName.trim();
+        }
+
+        if (lastName !== undefined) {
+            if (typeof lastName !== "string" || !lastName.trim()) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Last name is required",
+                });
+            }
+
+            updates.lastName = lastName.trim();
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "No fields provided for update",
+            });
+        }
+
+        const newUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updates },
+            {
+                new: true,
+                runValidators: true,
+                select: "firstName lastName email role",
+            }
+        );
+
+        if (!newUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User updated successfully",
+            data: {
+                _id: newUser._id,
+                firstName: newUser.firstName,
+                lastName: newUser.lastName,
+                email: newUser.email,
+                role: newUser.role,
+            },
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+
+
+export const updateMyPassword = async (req, res, next) => {
+    try {
+        const { oldPassword, newPassword1, newPassword2 } = req.body;
+
+        if (
+            typeof oldPassword !== "string" ||
+            !oldPassword ||
+            typeof newPassword1 !== "string" ||
+            !newPassword1 ||
+            typeof newPassword2 !== "string" ||
+            !newPassword2
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "All password fields are required",
+            });
+        }
+
+        if (newPassword1 !== newPassword2) {
+            return res.status(400).json({
+                success: false,
+                message: "New passwords do not match",
+            });
+        }
+
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRegex.test(newPassword1)) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).",
+            });
+        }
+
+        const existingUser = await User.findById(req.user._id)
+            .select("+password");
+
+        if (!existingUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        const isMatch = await bcrypt.compare(
+            oldPassword,
+            existingUser.password
+        );
+
+        if (!isMatch) {
+            return res.status(400).json({
+                success: false,
+                message: "Current password is incorrect",
+            });
+        }
+
+        if (oldPassword === newPassword1) {
+            return res.status(400).json({
+                success: false,
+                message: "New password must be different from the current password",
+            });
+        }
+
+        existingUser.password = await bcrypt.hash(newPassword1, 10);
+
+        await existingUser.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Password updated successfully",
+        });
+    } catch (err) {
+        next(err);
+    }
+};

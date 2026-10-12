@@ -38,7 +38,7 @@ const Eras = () => {
                          />
 
              <button
-            onClick={()=>navigate(-1)}
+            onClick={()=>navigate("/explore")}
             className="bg-[#3E3025] text-white absolute left-2 top-2
             flex flex-row justify-center items-center gap-2 px-4 py-1 rounded-[10px]
             cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60

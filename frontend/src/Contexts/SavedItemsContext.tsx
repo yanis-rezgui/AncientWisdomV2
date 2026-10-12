@@ -156,9 +156,19 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
                 throw new Error(data.error || data.message || "Error in toggling");
             }
 
-            await getSavedEvents();
-            await getSavedFigures();
-            await getSavedQuotes();
+            switch (itemType) {
+    case "Quote":
+        await getSavedQuotes();
+        break;
+
+    case "Event":
+        await getSavedEvents();
+        break;
+
+    case "Figure":
+        await getSavedFigures();
+        break;
+}
         }catch(err){
             console.error(err);
         }finally{

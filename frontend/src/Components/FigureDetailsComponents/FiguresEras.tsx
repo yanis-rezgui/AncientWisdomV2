@@ -17,18 +17,23 @@ const FiguresEras = ({figure} : {figure : HistoricalFigure}) => {
          
 
             
-              <div className="flex flex-wrap justify-center items-center gap-5 w-full">
+              <div className="flex flex-wrap justify-center items-start gap-5 w-full">
                 {figure.eras.map((e)=>{
                 return(
                     <div className="bg-gray-50 w-[300px] rounded-lg shadow-2xl
-                    flex flex-col justify-center items-center p-3
+                    flex flex-col  items-center p-3  gap-1 
+                    shadow-lg
+                hover:shadow-2xl
+                hover:-translate-y-1
+                transition-all
+                duration-300
                     ">
-                        <p className="text-[1.4em] font-bold">
+                        <p className="text-[1.1em] font-semibold text-center leading-6">
                             {e.name}
                         </p>
 
-                    <div className="flex flex-col items-center font-[500]
-                         max-[620px]:items-baseline mt-2
+                    <div className="flex flex-row items-center font-[500]
+                         max-[620px]:items-baseline mt-2 gap-2
                         ">
                             <p>{figure.birthDate}</p> - <p>{figure.deathDate}</p>
                     </div>
@@ -37,7 +42,7 @@ const FiguresEras = ({figure} : {figure : HistoricalFigure}) => {
                         cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
                         mt-4 w-full
                         ">
-                            Explore quote →
+                            Explore Era →
                         </button>
                     </div>
                 )
