@@ -12,13 +12,11 @@ import type { Article } from "../Types/LearnTypes";
 
 
 
-export type ArticleWithId = Omit<Article, "_id"> & {
-    _id: string;
-};
+
 
 interface ArticleContextType {
-    articles: ArticleWithId[];
-    setArticles: React.Dispatch<React.SetStateAction<ArticleWithId[]>>;
+    articles: Article[]
+    setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
 
     getAllArticles: () => Promise<void>;
     loadingAllArticles: boolean;
@@ -38,8 +36,8 @@ interface ArticleContextType {
     search: string;
     setSearch: (search: string) => void;
 
-    currentArticle: ArticleWithId | null;
-    setCurrentArticle: (article: ArticleWithId | null) => void;
+    currentArticle: Article | null;
+    setCurrentArticle: (article: Article | null) => void;
 
     errorMsg: string;
 }
@@ -53,7 +51,7 @@ export const ArticleProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [articles, setArticles] = useState<ArticleWithId[]>([]);
+    const [articles, setArticles] = useState<Article[]>([]);
 
     const [loadingAllArticles, setLoadingAllArticles] =
         useState<boolean>(false);
@@ -70,7 +68,7 @@ export const ArticleProvider = ({
     const [search, setSearch] = useState<string>("");
 
     const [currentArticle, setCurrentArticle] =
-        useState<ArticleWithId | null>(null);
+        useState<Article | null>(null);
 
     const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -106,7 +104,8 @@ export const ArticleProvider = ({
                 );
             }
 
-            setArticles(data.data ?? []);
+            setArticles(data.data);
+            console.log("Articles : ", data.data);
             setTotalArticles(data.pagination?.total ?? 0);
             setTotalPages(data.pagination?.totalPages ?? 0);
         } catch (err) {

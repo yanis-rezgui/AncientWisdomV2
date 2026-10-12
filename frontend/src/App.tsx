@@ -71,6 +71,13 @@ import AdminFrames from './AdminPages/AdminLearnPages/AdminFrames'
 import AdminFrameAjout from './AdminPages/AdminLearnPages/AdminFrameAjout'
 import AdminFrameUpdate from './AdminPages/AdminLearnPages/AdminFrameUpdate'
 import AdminTips from './AdminPages/AdminLearnPages/AdminTips'
+import Learn from './Pages/LearnPages/Learn'
+import Frames from './Pages/LearnPages/Frames'
+import Books from './Pages/LearnPages/Books'
+import Movies from './Pages/LearnPages/Movies'
+import Guides from './Pages/LearnPages/Guides'
+import Articles from './Pages/LearnPages/Articles'
+import ArticleDetails from './Pages/LearnPages/ArticleDetails'
 
 function App() {
 
@@ -189,11 +196,20 @@ function App() {
             </>
           }/>
 
-                         <Route path='/quizzes' element={<Quizzes/>}/>
-<Route path='/quiz/:id' element={<QuizDetails/>}/>
-<Route path='/quiz-play/:attemptId' element={<QuizPlay/>}/>
-<Route path='/quiz-result/:attemptId' element={<QuizResult/>}/>
-<Route path='/quiz-history' element={<QuizHistory/>}/>
+          <Route path='/quizzes' element={<Quizzes/>}/>
+          <Route path='/quiz/:id' element={<QuizDetails/>}/>
+          <Route path='/quiz-play/:attemptId' element={<QuizPlay/>}/>
+          <Route path='/quiz-result/:attemptId' element={<QuizResult/>}/>
+          <Route path='/quiz-history' element={<QuizHistory/>}/>
+
+          <Route path='/learn' element={<Learn/>}/>
+          <Route path='/learn/frames' element={<Frames/>}/>
+          <Route path='/learn/books' element={<Books/>}/>
+          <Route path='/learn/movies' element={<Movies/>}/>
+          <Route path='/learn/guides' element={<Guides/>}/>
+          <Route path='/learn/articles' element={<Articles/>}/>
+          <Route path='/article/:id' element={<ArticleDetails/>}/>
+    
 
             </Route>
 
