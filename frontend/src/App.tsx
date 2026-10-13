@@ -79,6 +79,8 @@ import Guides from './Pages/LearnPages/Guides'
 import Articles from './Pages/LearnPages/Articles'
 import ArticleDetails from './Pages/LearnPages/ArticleDetails'
 import Favorites from './Pages/Favorites'
+import { UsersAdminProvider } from './AdminContexts/UsersAdminContext'
+import AdminUsers from './AdminPages/AdminUsers'
 
 function App() {
 
@@ -107,6 +109,7 @@ function App() {
                                             <ArticleAdminProvider>
                                               <FrameProvider>
                                                 <FramesAdminProvider>
+                                                  <UsersAdminProvider>
        <Routes>
 
         <Route element={
@@ -252,11 +255,14 @@ function App() {
 <Route path='learn/addFrame' element={<AdminFrameAjout/>}/>
 <Route path='learn/frame/:id' element={<AdminFrameUpdate/>}/>
 <Route path='learn/tips' element={<AdminTips/>}/>
+<Route path='users' element={<AdminUsers/>}/>
+
 
             </Route>
        </Routes>
 
        
+                                                              </UsersAdminProvider>
                                                           </FramesAdminProvider>
                                                         </FrameProvider>
                                                   </ArticleAdminProvider>

@@ -244,7 +244,7 @@ const QuoteHero = ({ quote }: QuoteHeroProps) => {
 
                         {copied
                             ? "Link copied"
-                            : "Share Figure"}
+                            : "Share Quote"}
                     </button>
                 {user && (
                    

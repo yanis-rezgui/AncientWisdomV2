@@ -20,6 +20,7 @@ import bookRouter from "./routes/book.routes.js";
 import frameRouter from "./routes/frame.routes.js";
 import movieRouter from "./routes/movie.routes.js";
 import articleRouter from "./routes/article.routes.js";
+import usersRouter from "./routes/users.routes.js";
 
 
 const app = express();
@@ -60,6 +61,7 @@ app.use("/api/v1/books", bookRouter);
 app.use('/api/v1/frames', frameRouter);
 app.use("/api/v1/movies", movieRouter);
 app.use('/api/v1/articles', articleRouter);
+app.use('/api/v1/users', usersRouter);
 
 app.use(errorMiddleware);
 

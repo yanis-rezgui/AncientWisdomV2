@@ -33,7 +33,7 @@ const ExploreQuoteEra = ({quote} : {quote : Quote}) => {
                     });
                     navigate("/events");
                 }}>
-                    Related events
+                   <i className="fa-solid fa-arrow-up-right-from-square"></i> Related events
                 </button>
 
                 <button 
@@ -49,7 +49,7 @@ const ExploreQuoteEra = ({quote} : {quote : Quote}) => {
 
                     navigate("/quotes");
                 }}>
-                    Related Quotes
+                   <i className="fa-solid fa-arrow-up-right-from-square"></i> Related Quotes
                 </button>
             </div>
 
@@ -57,7 +57,7 @@ const ExploreQuoteEra = ({quote} : {quote : Quote}) => {
             <button
              className="flex flex-row justify-center items-center gap-2 bg-[#3E3025] text-white p-2
                 font-[600] rounded-[5px] transition-opacity duration-200 hover:opacity-80 active:opacity-60
-                mt-3 w-[250px] mb-10
+                mt-3 w-[280px] mb-10
                 "
              onClick={()=>{
                     setQuotesFilter({
@@ -68,7 +68,7 @@ const ExploreQuoteEra = ({quote} : {quote : Quote}) => {
                     navigate("/quotes");
                 }}
             >
-                MORE FROM THIS AUTHOR
+              <i className="fa-solid fa-arrow-up-right-from-square"></i>  MORE FROM THIS AUTHOR
             </button>
         </section>
     )

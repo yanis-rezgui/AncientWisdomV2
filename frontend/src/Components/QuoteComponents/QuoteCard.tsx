@@ -97,7 +97,7 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
             <footer className="mt-3 flex h-[52px] shrink-0 items-center justify-between gap-3 border-t border-[#DED3C5] pt-3">
                 <div className="min-w-0">
                     <Link
-                        to={`/author/${quote.author._id}`}
+                        to={`/figure/${quote.author._id}`}
                         className="
                             block truncate text-[14px] font-bold text-[#3E3025]
                             transition-colors hover:text-[#8B2E2E]
