@@ -31,6 +31,10 @@ const Header = () => {
             path : "/quizzes"
         },
         {
+            name : "Games",
+            path : "/games"
+        },
+        {
             name : "Hermes AI",
             path : "/hermes-ai"
         },

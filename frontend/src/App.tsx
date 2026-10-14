@@ -81,6 +81,19 @@ import ArticleDetails from './Pages/LearnPages/ArticleDetails'
 import Favorites from './Pages/Favorites'
 import { UsersAdminProvider } from './AdminContexts/UsersAdminContext'
 import AdminUsers from './AdminPages/AdminUsers'
+import { GamesProvider } from './Contexts/GamesContexts/GamesContext'
+import { FigureChallengeProvider } from './Contexts/GamesContexts/FigureChallengeContext'
+import Games from './Pages/GamePages/Games'
+import GameDetails from './Pages/GamePages/GameDetails'
+import GamePlay from './Pages/GamePages/GamePlay'
+import { LandmarkChallengeProvider } from './Contexts/GamesContexts/LandmarkChallengeContext'
+import { WordChallengeProvider } from './Contexts/GamesContexts/WordChallengeContext'
+import { MemoryChallengeProvider } from './Contexts/GamesContexts/MemoryChallengeContext'
+import { LocationChallengeProvider } from './Contexts/GamesContexts/LocationChallengeContext'
+import { FigureChallengesAdminProvider } from './AdminContexts/GamesAdminContext/FigureChallengesAdminContext'
+import { LandmarkChallengesAdminProvider } from './AdminContexts/GamesAdminContext/LandmarkChallengesAdminContext'
+import { WordChallengesAdminProvider } from './AdminContexts/GamesAdminContext/WordChallengesAdminContext'
+import { MemoryChallengesAdminProvider } from './AdminContexts/GamesAdminContext/MemoryChallengesAdminContext'
 
 function App() {
 
@@ -110,6 +123,16 @@ function App() {
                                               <FrameProvider>
                                                 <FramesAdminProvider>
                                                   <UsersAdminProvider>
+                                                    <GamesProvider>
+                                                      <FigureChallengeProvider>
+                                                        <LandmarkChallengeProvider>
+                                                          <WordChallengeProvider>
+                                                            <MemoryChallengeProvider>
+                                                              <LocationChallengeProvider>
+                                                                <FigureChallengesAdminProvider>
+                                                                  <LandmarkChallengesAdminProvider>
+                                                                    <WordChallengesAdminProvider>
+                                                                      <MemoryChallengesAdminProvider>
        <Routes>
 
         <Route element={
@@ -215,6 +238,10 @@ function App() {
           <Route path='/article/:id' element={<ArticleDetails/>}/>
 
           <Route path='/favorites' element={<Favorites/>}/>
+          <Route path='/games' element={<Games/>}/>
+
+<Route path="/game/:id" element={<GameDetails />} />
+<Route path="/game/:id/play" element={<GamePlay />} />
     
 
             </Route>
@@ -260,8 +287,17 @@ function App() {
 
             </Route>
        </Routes>
-
-       
+                                                                                               
+                                                                                                 </MemoryChallengesAdminProvider>
+                                                                                               </WordChallengesAdminProvider>
+                                                                                          </LandmarkChallengesAdminProvider>
+                                                                                    </FigureChallengesAdminProvider>
+                                                                              </LocationChallengeProvider>
+                                                                             </MemoryChallengeProvider>
+                                                                         </WordChallengeProvider>
+                                                                       </LandmarkChallengeProvider>
+                                                                  </FigureChallengeProvider>
+                                                                </GamesProvider>
                                                               </UsersAdminProvider>
                                                           </FramesAdminProvider>
                                                         </FrameProvider>

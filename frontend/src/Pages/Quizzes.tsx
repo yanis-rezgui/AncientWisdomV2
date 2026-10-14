@@ -11,7 +11,7 @@ const Quizzes = () => {
     const { quizzes, loadingQuizzes, page, setPage, limit, setLimit, totalQuizzes, totalPages } = useQuizContext();
 
     return (
-        <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6] relative pb-10">
+        <section className="flex flex-col w-full items-center min-h-screen bg-[#E8E2D6] relative pb-10 ">
 
             <h2 className="mt-10 text-[2em] font-bold">Trials of Knowledge</h2>
 
@@ -31,7 +31,7 @@ const Quizzes = () => {
                     No trial matches your search. Clear the filters to see them all.
                 </p>
             ) : (
-                <div className="flex flex-wrap justify-center items-start gap-5 mt-10 px-10">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 px-10 mt-10 place-items-center justify-center">
                     {quizzes.map((quiz) => (
                         <QuizCard quiz={quiz} key={quiz._id} />
                     ))}

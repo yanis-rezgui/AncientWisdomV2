@@ -4,7 +4,6 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import connectToDatabase from "./database/mongodb.js";
 import { PORT } from "./config/env.js";
 import cors from "cors"
-import seedDatabase from "./database/insertData.js";
 import quotesRouter from "./routes/quotes.routes.js";
 import eraRouter from "./routes/era.routes.js";
 import figuresRouter from "./routes/figures.routes.js";
@@ -21,6 +20,20 @@ import frameRouter from "./routes/frame.routes.js";
 import movieRouter from "./routes/movie.routes.js";
 import articleRouter from "./routes/article.routes.js";
 import usersRouter from "./routes/users.routes.js";
+import figureChallengesRouter from "./routes/Games/figureChallenges.routes.js";
+import gamesRouter from "./routes/Games/games.routes.js";
+
+import landmarkChallengesRouter from "./routes/Games/landmarkChallenge.routes.js";
+import seedLocationChallenges from "./database/insertData.js";
+import wordChallengesRouter from "./routes/Games/wordChallenge.routes.js";
+import memoryChallengesRouter from "./routes/Games/memoryChallenge.routes.js";
+import locationChallengesRouter from "./routes/Games/locationChallenge.routes.js";
+import figureChallengeAdminRoutes from "./routes/AdminGames/figureChallenge.admin.routes.js"
+import landmarkChallengeAdminRoutes from "./routes/AdminGames/landmarkChallenge.admin.routes.js"
+import locationChallengeAdminRoutes from "./routes/AdminGames/locationChallenge.admin.routes.js"
+import memoryChallengeAdminRoutes from "./routes/AdminGames/memoryChallenge.admin.routes.js"
+import wordChallengeAdminRoutes from "./routes/AdminGames/wordChallenge.admin.routes.js"
+
 
 
 const app = express();
@@ -62,6 +75,22 @@ app.use('/api/v1/frames', frameRouter);
 app.use("/api/v1/movies", movieRouter);
 app.use('/api/v1/articles', articleRouter);
 app.use('/api/v1/users', usersRouter);
+app.use("/api/v1/figure-challenges", figureChallengesRouter);
+app.use('/api/v1/games', gamesRouter);
+app.use(
+    "/api/v1/landmark-challenges",
+    landmarkChallengesRouter
+);
+
+app.use('/api/v1/word-scramble', wordChallengesRouter);
+
+app.use("/api/v1/history-memory", memoryChallengesRouter)
+app.use("/api/v1/where-in-history", locationChallengesRouter)
+app.use("/api/v1/admin/figure-challenges", figureChallengeAdminRoutes);
+app.use("/api/v1/admin/landmark-challenges", landmarkChallengeAdminRoutes);
+app.use("/api/v1/admin/location-challenges", locationChallengeAdminRoutes);
+app.use("/api/v1/admin/memory-challenges", memoryChallengeAdminRoutes);
+app.use("/api/v1/admin/word-challenges", wordChallengeAdminRoutes);
 
 app.use(errorMiddleware);
 
@@ -71,7 +100,7 @@ const startServer = async() => {
 
         console.log("Trying connecting to database : ");
         await connectToDatabase();
-        //await seedDatabase();
+        //await seedLocationChallenges();
         app.listen(PORT, ()=>{
             console.log(`App running on : http://localhost:${PORT}`);
         });

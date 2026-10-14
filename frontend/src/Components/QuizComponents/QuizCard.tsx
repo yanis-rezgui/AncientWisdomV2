@@ -13,7 +13,8 @@ const QuizCard = ({ quiz }: { quiz: QuizListItem }) => {
     return (
         <article
             className="
-                w-[300px]
+                h-full
+                overflow-hidden
                 bg-gray-50
                 rounded-lg
                 shadow-lg
