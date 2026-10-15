@@ -531,19 +531,7 @@ export const NotificationsProvider = ({
   }, [token, user, currentPage, pageLimit, read]);
 
 
-  useEffect(() => {
-    if (!token || !user) {
-        socket.disconnect();
-        return;
-    }
 
-    socket.auth = { token };
-    socket.connect();
-
-    return () => {
-        socket.disconnect();
-    };
-}, [token, user?._id]);
 
   // =====================================================
   // RESET PAGE WHEN FILTER OR LIMIT CHANGES

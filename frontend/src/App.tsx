@@ -102,6 +102,7 @@ import { LocationChallengesAdminProvider } from './AdminContexts/GamesAdminConte
 import { SettingsProvider } from './Contexts/SettingsContext'
 import AdminSettings from './AdminPages/AdminSettings'
 import { NotificationsProvider } from './Contexts/NotificationsContext'
+import AdminNotifications from './AdminPages/AdminNotifications'
 
 function App() {
 
@@ -301,6 +302,8 @@ function App() {
 <Route path='games/:game/:id' element={<AdminGameChallengeUpdate/>}/>
 
 <Route path='general' element={<AdminSettings/>}/>
+
+<Route path='notifications' element={<AdminNotifications/>}/>
 
 
             </Route>
