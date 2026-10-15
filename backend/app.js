@@ -24,7 +24,6 @@ import figureChallengesRouter from "./routes/Games/figureChallenges.routes.js";
 import gamesRouter from "./routes/Games/games.routes.js";
 
 import landmarkChallengesRouter from "./routes/Games/landmarkChallenge.routes.js";
-import seedLocationChallenges from "./database/insertData.js";
 import wordChallengesRouter from "./routes/Games/wordChallenge.routes.js";
 import memoryChallengesRouter from "./routes/Games/memoryChallenge.routes.js";
 import locationChallengesRouter from "./routes/Games/locationChallenge.routes.js";
@@ -33,10 +32,18 @@ import landmarkChallengeAdminRoutes from "./routes/AdminGames/landmarkChallenge.
 import locationChallengeAdminRoutes from "./routes/AdminGames/locationChallenge.admin.routes.js"
 import memoryChallengeAdminRoutes from "./routes/AdminGames/memoryChallenge.admin.routes.js"
 import wordChallengeAdminRoutes from "./routes/AdminGames/wordChallenge.admin.routes.js"
-
+import settingsRouter from "./routes/settings.routes.js";
+import seedSettings from "./database/insertData.js";
+import {createServer} from "http"
+import { initializeSocket } from "./socket/socket.js";
+import notificationRouter from "./routes/notification.routes.js";
 
 
 const app = express();
+
+const server = createServer(app)
+
+initializeSocket(server);
 
 app.use(helmet());
 
@@ -82,6 +89,8 @@ app.use(
     landmarkChallengesRouter
 );
 
+app.use("/api/v1/settings", settingsRouter);
+
 app.use('/api/v1/word-scramble', wordChallengesRouter);
 
 app.use("/api/v1/history-memory", memoryChallengesRouter)
@@ -92,6 +101,8 @@ app.use("/api/v1/admin/location-challenges", locationChallengeAdminRoutes);
 app.use("/api/v1/admin/memory-challenges", memoryChallengeAdminRoutes);
 app.use("/api/v1/admin/word-challenges", wordChallengeAdminRoutes);
 
+app.use("/api/v1/notifications", notificationRouter);
+
 app.use(errorMiddleware);
 
 const startServer = async() => {
@@ -100,8 +111,8 @@ const startServer = async() => {
 
         console.log("Trying connecting to database : ");
         await connectToDatabase();
-        //await seedLocationChallenges();
-        app.listen(PORT, ()=>{
+        //await seedSettings();
+        server.listen(PORT, ()=>{
             console.log(`App running on : http://localhost:${PORT}`);
         });
     }catch(err){

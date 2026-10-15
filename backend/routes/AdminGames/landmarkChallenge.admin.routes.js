@@ -10,6 +10,7 @@ import {
 import multer from "multer";
 import authorize from "../../middlewares/auth.middleware.js";
 import isAdmin from "../../middlewares/admin.middleware.js";
+import { getLandmarkChallenge, getLandmarkChallenges } from "../../controllers/AdminGames/gameChallenges.admin.read.controller.js";
 
 const router = Router();
 
@@ -41,6 +42,8 @@ const upload = multer({
     },
 });
 
+router.get("/", getLandmarkChallenges);
+router.get("/:id", getLandmarkChallenge);
 router.post("/",authorize, isAdmin, upload.single("image"), addLandmarkChallenge);
 router.put("/:id", authorize, isAdmin, upload.single("image"), updateLandmarkChallenge);
 router.delete("/:id", authorize, isAdmin, deleteLandmarkChallenge);

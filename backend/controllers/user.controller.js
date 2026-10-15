@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt"
+import { notifyUser } from "../services/notifications.service.js";
 
 
 
@@ -231,6 +232,12 @@ export const updateUser = async(req, res, next) => {
             }
         );
 
+        await notifyUser({
+    userId: updatedUser._id,
+    title: "Account Updated",
+    message: "Your account information has been successfully updated.",
+    type: "ACCOUNT_UPDATED",
+});
         return res.status(200).json({
             success : true,
             message : "User updated successfully",

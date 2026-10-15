@@ -241,6 +241,12 @@ export const addEra = async (req, res, next) => {
         // RESPONSE
         // ====================================================
 
+        await notifyAdmins({
+    title: "New Historical Era",
+    message: `A new historical era, "${newEra.name}", has been added to Ancient Wisdom.`,
+    type: "NEW_ERA",
+});
+
         return res.status(201).json({
 
             success: true,

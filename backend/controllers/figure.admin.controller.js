@@ -7,6 +7,7 @@ import {
     uploadImage,
     deleteImage
 } from "../services/cloudinary.service.js";
+import { notifyAdmins } from "../services/notifications.service.js";
 
 
 // ============================================================
@@ -491,6 +492,12 @@ export const addFigure = async (req, res, next) => {
         // ====================================================
         // RESPONSE
         // ====================================================
+
+        await notifyAdmins({
+    title: "New Historical Figure",
+    message: `A new historical figure, "${newFigure.name}", has been added to Ancient Wisdom.`,
+    type: "NEW_FIGURE",
+});
 
         return res.status(201).json({
 

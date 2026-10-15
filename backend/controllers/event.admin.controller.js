@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import Event from "../models/event.model.js";
 import HistoricalEra from "../models/historicalEra.model.js";
+import { notifyAdmins } from "../services/notifications.service.js";
 
 
 // ============================================================
@@ -399,6 +400,12 @@ export const addEvent = async (req, res, next) => {
         // ====================================================
         // RESPONSE
         // ====================================================
+
+        await notifyAdmins({
+    title: "New Historical Event",
+    message: `A new historical event, "${newEvent.name}", has been added to Ancient Wisdom.`,
+    type: "NEW_EVENT",
+});
 
         return res.status(201).json({
 

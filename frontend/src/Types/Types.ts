@@ -274,3 +274,94 @@ export interface QuizFilterType {
    QUIZ PLAY
 ========================= */
 
+
+
+
+export type SocialPlatform =
+    | "facebook"
+    | "instagram"
+    | "youtube"
+    | "tiktok"
+    | "x"
+    | "linkedin"
+    | "github"
+    | "discord"
+    | "other";
+
+export interface SocialLink {
+    _id?: string;
+    platform: SocialPlatform;
+    url: string;
+    isActive: boolean;
+}
+
+export interface Settings {
+    _id: string;
+    name: string;
+    slogan: string;
+    email: string;
+    socialLinks: SocialLink[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Données envoyées lors d'une modification
+export type SettingsInput = Partial<
+    Pick<Settings, "name" | "slogan" | "email" | "socialLinks">
+>;
+
+
+// =========================================================
+// NOTIFICATION TYPES
+// =========================================================
+
+export type NotificationType =
+| "NEW_USER"
+| "NEW_FIGURE"
+| "NEW_EVENT"
+| "NEW_ERA"
+| "NEW_QUOTE"
+| "NEW_CHALLENGE"
+| "NEW_TESTIMONIAL"
+| "CONTENT_DELETED"
+| "STATUS_CHANGED"
+| "SETTINGS_UPDATED"
+| "ACHIEVEMENT_UNLOCKED"
+| "QUIZ_COMPLETED"
+| "ACCOUNT_UPDATED"
+| "SECURITY";
+
+// =========================================================
+// NOTIFICATION
+// =========================================================
+
+export interface Notification {
+_id: string;
+title: string;
+message: string;
+type: NotificationType;
+recipient: string;
+read: boolean;
+createdAt: string;
+}
+
+// =========================================================
+// PAGINATION
+// =========================================================
+
+export interface NotificationsPagination {
+page: number;
+limit: number;
+total: number;
+totalPages: number;
+}
+
+// =========================================================
+// STATISTICS
+// =========================================================
+
+export interface NotificationsStats {
+total: number;
+unread: number;
+read: number;
+}

@@ -9,6 +9,7 @@ import {
     MAX_CARDS,
 } from "../../controllers/AdminGames/memoryChallenge.admin.controller.js";
 import multer from "multer";
+import { getMemoryChallenge, getMemoryChallenges } from "../../controllers/AdminGames/gameChallenges.admin.read.controller.js";
 
 const router = Router();
 
@@ -40,6 +41,8 @@ const upload = multer({
     },
 });
 
+router.get("/", getMemoryChallenges);
+router.get("/:id", getMemoryChallenge);
 router.post("/", upload.array("cardImages", MAX_CARDS), addMemoryChallenge);
 router.put("/:id", upload.array("cardImages", MAX_CARDS), updateMemoryChallenge);
 router.delete("/:id", deleteMemoryChallenge);

@@ -11,6 +11,7 @@ import {
 import multer from "multer";
 import authorize from "../../middlewares/auth.middleware.js";
 import isAdmin from "../../middlewares/admin.middleware.js";
+import { getFigureChallenge, getFigureChallenges } from "../../controllers/AdminGames/gameChallenges.admin.read.controller.js";
 
 const router = Router();
 
@@ -43,7 +44,8 @@ const upload = multer({
 });
 
 
-
+router.get("/", getFigureChallenges);
+router.get("/:id", getFigureChallenge);
 router.post("/",authorize, isAdmin, upload.single("image"), addFigureChallenge);
 router.put("/:id", authorize, isAdmin, upload.single("image"), updateFigureChallenge);
 router.delete("/:id", authorize, isAdmin, deleteFigureChallenge);

@@ -1,4 +1,5 @@
 import WordChallenge from "../../models/Games/wordChallenge.model.js";
+import { notifyAdmins } from "../../services/notifications.service.js";
 import {
     DIFFICULTIES,
     STATUSES,
@@ -135,6 +136,12 @@ export const addWordChallenge = async (req, res, next) => {
             points,
             status,
         });
+
+        await notifyAdmins({
+    title: "New Challenge Created",
+    message: `A new challenge, "${challenge.title}", has been created on Ancient Wisdom.`,
+    type: "NEW_CHALLENGE",
+});
 
         return res.status(201).json({
             success: true,

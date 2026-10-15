@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Quiz from "../models/quiz.model.js";
 import QuizAttempt from "../models/quizAttempt.js";
 import QuizQuestion from "../models/quizQuestion.model.js";
+import { notifyUser } from "../services/notifications.service.js";
 
 
 
@@ -672,6 +673,21 @@ export const submitQuiz = async (req, res, next) => {
         }
 
         await finalizeAttempt(attempt);
+
+         // Notify the user after the quiz has been successfully completed.
+        try {
+            await notifyUser({
+                userId: attempt.user,
+                title: "Quiz Completed",
+                message: `You have completed the quiz "${attempt.quizTitle}" with a score of ${attempt.score}/${attempt.maxScore} (${attempt.percentage}%).`,
+                type: "QUIZ_COMPLETED",
+            });
+        } catch (notificationError) {
+            console.error(
+                "Failed to send quiz completion notification:",
+                notificationError.message
+            );
+        }
 
         return res.status(200).json({
             success: true,

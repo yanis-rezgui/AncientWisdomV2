@@ -19,6 +19,9 @@ interface AdminLearnListProps {
     page: number;
     totalPages: number;
     setPage: (page: number) => void;
+    // Lien de retour : par défaut la page Learn (comportement existant)
+    backPath?: string;
+    backLabel?: string;
     children: ReactNode;
 }
 
@@ -26,7 +29,8 @@ const widthClass = "w-[900px] max-[950px]:w-[600px] max-[620px]:w-[320px]";
 
 const AdminLearnList = ({
     title, subtitle, total, search, onSearch, addLabel, addPath,
-    loading, errorMsg, isEmpty, emptyLabel, page, totalPages, setPage, children
+    loading, errorMsg, isEmpty, emptyLabel, page, totalPages, setPage,
+    backPath = "/admin/learn", backLabel = "Back to Learn", children
 }: AdminLearnListProps) => {
 
     const navigate = useNavigate();
@@ -61,10 +65,10 @@ const AdminLearnList = ({
             {/* ================= HEADER ================= */}
             <div className={`flex flex-col gap-3 ${widthClass}`}>
                 <span
-                    onClick={() => navigate("/admin/learn")}
+                    onClick={() => navigate(backPath)}
                     className="text-[13px] text-gray-600 cursor-pointer hover:text-[#3E3025] w-fit"
                 >
-                    <i className="fa-solid fa-arrow-left"></i> Back to Learn
+                    <i className="fa-solid fa-arrow-left"></i> {backLabel}
                 </span>
 
                 <div className="flex flex-row justify-between items-center gap-3 max-[620px]:flex-col max-[620px]:items-stretch">

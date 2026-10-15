@@ -94,6 +94,14 @@ import { FigureChallengesAdminProvider } from './AdminContexts/GamesAdminContext
 import { LandmarkChallengesAdminProvider } from './AdminContexts/GamesAdminContext/LandmarkChallengesAdminContext'
 import { WordChallengesAdminProvider } from './AdminContexts/GamesAdminContext/WordChallengesAdminContext'
 import { MemoryChallengesAdminProvider } from './AdminContexts/GamesAdminContext/MemoryChallengesAdminContext'
+import AdminGames from './AdminPages/AdminGamesPages/AdminGames'
+import AdminGameChallenges from './AdminPages/AdminGamesPages/AdminGameChallenges'
+import AdminGameChallengeAjout from './AdminPages/AdminGamesPages/AdminGameChallengeAjout'
+import AdminGameChallengeUpdate from './AdminPages/AdminGamesPages/AdminGameChallengeUpdate'
+import { LocationChallengesAdminProvider } from './AdminContexts/GamesAdminContext/LocationChallengesAdminContext'
+import { SettingsProvider } from './Contexts/SettingsContext'
+import AdminSettings from './AdminPages/AdminSettings'
+import { NotificationsProvider } from './Contexts/NotificationsContext'
 
 function App() {
 
@@ -133,6 +141,9 @@ function App() {
                                                                   <LandmarkChallengesAdminProvider>
                                                                     <WordChallengesAdminProvider>
                                                                       <MemoryChallengesAdminProvider>
+                                                                        <LocationChallengesAdminProvider>
+                                                                          <SettingsProvider>
+                                                                            <NotificationsProvider>
        <Routes>
 
         <Route element={
@@ -284,10 +295,19 @@ function App() {
 <Route path='learn/tips' element={<AdminTips/>}/>
 <Route path='users' element={<AdminUsers/>}/>
 
+<Route path='games' element={<AdminGames/>}/>
+<Route path='games/:game' element={<AdminGameChallenges/>}/>
+<Route path='games/:game/add' element={<AdminGameChallengeAjout/>}/>
+<Route path='games/:game/:id' element={<AdminGameChallengeUpdate/>}/>
+
+<Route path='general' element={<AdminSettings/>}/>
+
 
             </Route>
        </Routes>
-                                                                                               
+                                                                                                              </NotificationsProvider>
+                                                                                                          </SettingsProvider>
+                                                                                                      </LocationChallengesAdminProvider>
                                                                                                  </MemoryChallengesAdminProvider>
                                                                                                </WordChallengesAdminProvider>
                                                                                           </LandmarkChallengesAdminProvider>

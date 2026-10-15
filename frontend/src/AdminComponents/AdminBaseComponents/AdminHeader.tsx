@@ -67,7 +67,8 @@ const MAIN_LINKS: NavItem[] = [
         label: "Learn",
         path: "/admin/learn",
         icon: "GraduationCap",
-    }
+    },
+    { label: "Games", path: "/admin/games", icon: "Gamepad2" }
 ];
 
 

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Figure from "../models/historicalFigure.model.js";
 import HistoricalEra from "../models/historicalEra.model.js";
 import Quote from "../models/quote.model.js";
+import { notifyAdmins } from "../services/notifications.service.js";
 
 
 
@@ -111,6 +112,11 @@ export const addQuote = async(req, res, next) => {
         });
 
 
+        await notifyAdmins({
+    title: "New Historical Quote",
+    message: "A new historical quote has been added to Ancient Wisdom.",
+    type: "NEW_QUOTE",
+});
         return res.status(201).json({
             success : true,
             message: "Quote created successfully",

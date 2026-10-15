@@ -1,5 +1,6 @@
 import FigureChallenge from "../../models/Games/figureChallenge.model.js";
 import { uploadImage } from "../../services/cloudinary.service.js";
+import { notifyAdmins } from "../../services/notifications.service.js";
 import {
     DIFFICULTIES,
     STATUSES,
@@ -107,6 +108,12 @@ export const addFigureChallenge = async (req, res, next) => {
             tags,
             status,
         });
+
+        await notifyAdmins({
+    title: "New Challenge Created",
+    message: `A new challenge, "${challenge.title}", has been created on Ancient Wisdom.`,
+    type: "NEW_CHALLENGE",
+});
 
         return res.status(201).json({
             success: true,

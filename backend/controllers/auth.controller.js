@@ -6,6 +6,7 @@ import {
     JWT_SECRET,
     JWT_EXPIRES_IN
 } from "../config/env.js";
+import { notifyAdmins } from "../services/notifications.service.js";
 
 
 
@@ -98,6 +99,12 @@ export const signUp = async(req, res, next) => {
             email : newUser.email,
             role : newUser.role
         };
+
+        await notifyAdmins({
+    title: "New User Registered",
+    message: "A new user has joined Ancient Wisdom.",
+    type: "NEW_USER",
+});
 
         return res.status(201).json({
             success : true,
@@ -282,6 +289,13 @@ export const updateMyInfo = async (req, res, next) => {
             });
         }
 
+        await notifyUser({
+    userId: newUser._id,
+    title: "Account Updated",
+    message: "Your account information has been successfully updated.",
+    type: "ACCOUNT_UPDATED",
+});
+
         return res.status(200).json({
             success: true,
             message: "User updated successfully",
@@ -369,6 +383,13 @@ export const updateMyPassword = async (req, res, next) => {
         existingUser.password = await bcrypt.hash(newPassword1, 10);
 
         await existingUser.save();
+
+        await notifyUser({
+    userId: existingUser._id,
+    title: "Security Alert",
+    message: "A security-related change has been made to your account. If you did not initiate this action, please contact support.",
+    type: "SECURITY",
+});
 
         return res.status(200).json({
             success: true,
