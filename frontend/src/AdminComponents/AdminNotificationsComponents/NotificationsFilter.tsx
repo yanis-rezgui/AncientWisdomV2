@@ -3,9 +3,9 @@ import { useNotificationsContext } from "../../Contexts/NotificationsContext";
 
 
 const FILTERS: { value: boolean | undefined; label: string }[] = [
-    { value: undefined, label: "Toutes" },
-    { value: false, label: "Non lues" },
-    { value: true, label: "Lues" },
+    { value: undefined, label: "All" },
+    { value: false, label: "Unread" },
+    { value: true, label: "Read" },
 ];
 
 const NotificationsFilter = () => {

@@ -26,10 +26,10 @@ const Figures = () => {
 
              <FiguresFilters/>
 
-            <div className="flex flex-wrap items-baseline justify-center gap-5 mt-10 px-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-10 mt-10 place-items-center justify-center">
              {figures.map((f)=>{
                 return(
-                    <FigureCard figure={f}/>
+                    <FigureCard figure={f} key={f._id}/>
                 )
              })}
             </div>

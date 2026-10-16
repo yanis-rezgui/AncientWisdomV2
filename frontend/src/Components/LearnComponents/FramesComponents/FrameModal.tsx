@@ -57,7 +57,7 @@ const FrameModal = ({ frame, onClose }: FrameModalProps) => {
                         src={frame.image.url}
                         alt={frame.title}
                         className={`w-full max-h-[50vh] ${
-                            frame.type === "Map" ? "object-contain" : "object-cover"
+                            frame.type === "Map" ? "object-contain" : "object-contain"
                         }`}
                     />
                 </div>

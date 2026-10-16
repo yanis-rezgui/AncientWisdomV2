@@ -33,10 +33,12 @@ import locationChallengeAdminRoutes from "./routes/AdminGames/locationChallenge.
 import memoryChallengeAdminRoutes from "./routes/AdminGames/memoryChallenge.admin.routes.js"
 import wordChallengeAdminRoutes from "./routes/AdminGames/wordChallenge.admin.routes.js"
 import settingsRouter from "./routes/settings.routes.js";
-import seedSettings from "./database/insertData.js";
+import homePageSeed from "./database/insertData.js";
 import {createServer} from "http"
 import { initializeSocket } from "./socket/socket.js";
 import notificationRouter from "./routes/notification.routes.js";
+import dashboardRouter from "./routes/dashboard.routes.js";
+import homePageRouter from "./routes/homePage.routes.js";
 
 
 const app = express();
@@ -102,6 +104,9 @@ app.use("/api/v1/admin/memory-challenges", memoryChallengeAdminRoutes);
 app.use("/api/v1/admin/word-challenges", wordChallengeAdminRoutes);
 
 app.use("/api/v1/notifications", notificationRouter);
+app.use("/api/v1/admin/dashboard", dashboardRouter);
+
+app.use("/api/v1/homepage", homePageRouter);
 
 app.use(errorMiddleware);
 
@@ -111,7 +116,7 @@ const startServer = async() => {
 
         console.log("Trying connecting to database : ");
         await connectToDatabase();
-        //await seedSettings();
+        //await homePageSeed()
         server.listen(PORT, ()=>{
             console.log(`App running on : http://localhost:${PORT}`);
         });

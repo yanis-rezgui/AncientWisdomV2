@@ -6,7 +6,7 @@ import {
     JWT_SECRET,
     JWT_EXPIRES_IN
 } from "../config/env.js";
-import { notifyAdmins } from "../services/notifications.service.js";
+import { notifyAdmins, notifyUser } from "../services/notifications.service.js";
 
 
 

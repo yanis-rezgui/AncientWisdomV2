@@ -51,7 +51,7 @@ const DisplayFavorites = () => {
                                 No Events Saved
                             </p>
                             : 
-                            <div className="flex flex-wrap w-full px-5 items-start justify-center">
+                            <div className="flex flex-wrap w-full px-5 items-start justify-center gap-3">
                              {savedEvents.map((e)=>{
                                 return(
                                      <EventComponent event={e} key={e._id}/>
@@ -68,7 +68,7 @@ const DisplayFavorites = () => {
                                 No Figures Saved
                             </p>
                             : 
-                            <div className="flex flex-wrap w-full px-5 items-start justify-center">
+                            <div className="flex flex-wrap w-full px-5 items-start justify-center gap-3">
                              {savedFigures.map((f)=>{
                                 return(
                                      <FigureCard figure={f} key={f._id}/>

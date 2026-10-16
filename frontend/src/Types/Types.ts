@@ -365,3 +365,78 @@ total: number;
 unread: number;
 read: number;
 }
+
+
+/* =========================================================
+   ADMIN DASHBOARD TYPES (alignés sur getAdminDashboard)
+========================================================= */
+
+export interface CountByKey { _id: string | null; count: number }
+export interface DashboardMonthlyStat { month: string; count: number }
+
+export interface DashboardRecentUser {
+    _id: string; firstName: string; lastName: string; email: string;
+    role: "USER" | "ADMIN"; createdAt: string;
+}
+
+export interface DashboardRecentContent {
+    id: string; type: string; title: string; status: string | null; createdAt: string;
+}
+
+export interface DashboardNotification {
+    _id: string; title: string; message: string; type: string; read: boolean; createdAt: string;
+    recipient?: { firstName: string; lastName: string; email: string } | null;
+}
+
+export interface AdminDashboardData {
+    overview: {
+        totalUsers: number; totalAdmins: number; totalHistoricalContent: number;
+        totalQuizzes: number; totalQuestions: number; totalGames: number; totalChallenges: number;
+        totalQuizAttempts: number; totalGameSessions: number; totalFavorites: number;
+        totalNotifications: number; unreadNotifications: number;
+    };
+    community: {
+        totalUsers: number; totalAdmins: number; regularUsers: number;
+        newUsersLast7Days: number; newUsersLast30Days: number; activeLearnersLast30Days: number;
+        monthlyRegistrations: DashboardMonthlyStat[];
+        recentUsers: DashboardRecentUser[];
+    };
+    content: {
+        total: number;
+        breakdown: Record<string, number>;
+        framesByType: CountByKey[];
+        createdLast30Days: { figures: number; events: number; articles: number };
+    };
+    quizzes: {
+        total: number;
+        byStatus: Record<string, number>;
+        byDifficulty: CountByKey[];
+        questions: { total: number; byStatus: Record<string, number>; byDifficulty: CountByKey[] };
+        attempts: {
+            total: number; last30Days: number; byStatus: Record<string, number>;
+            completionRate: number; abandonmentRate: number;
+            averagePercentage: number; averageScore: number; averageMaxScore: number;
+            averageDurationSeconds: number;
+        };
+    };
+    games: {
+        total: number;
+        byStatus: Record<string, number>;
+        byType: CountByKey[];
+        challenges: { total: number; byType: { type: string; total: number }[] };
+        sessions: {
+            total: number; last30Days: number; byStatus: Record<string, number>;
+            completionRate: number; abandonmentRate: number;
+            averageScore: number; averageDurationSeconds: number;
+            correctAnswers: number; incorrectAnswers: number; totalQuestions: number;
+            totalPointsEarned: number; answerAccuracy: number;
+        };
+    };
+    engagement: {
+        totalFavorites: number;
+        favoritesByType: CountByKey[];
+        notifications: { total: number; unread: number; recent: DashboardNotification[] };
+    };
+    recentContent: DashboardRecentContent[];
+    generatedAt: string;
+}

@@ -2,6 +2,7 @@ import SavedItem from "../models/savedItem.model.js";
 import Quote from "../models/quote.model.js";
 import Figure from "../models/historicalFigure.model.js";
 import Event from "../models/event.model.js";
+import { getIo } from "../socket/socket.js";
 
 
 export const getSavedQuotes = async (req, res, next) => {
@@ -125,34 +126,49 @@ export const toggleItem = async (req, res, next) => {
             item
         });
 
-        if (existingSavedItem) {
+       if (existingSavedItem) {
+    await SavedItem.deleteOne({
+        _id: existingSavedItem._id,
+    });
 
-            await SavedItem.deleteOne({
-                _id: existingSavedItem._id
-            });
+    getIo()
+        .to(`user:${userId.toString()}`)
+        .emit("favorite:updated", {
+            itemType,
+            itemId: item.toString(),
+            saved: false,
+        });
 
-            return res.status(200).json({
-                success: true,
-                message: `${itemType} removed from saved items`,
-                data: {
-                    saved: false
-                }
-            });
-        }
+    return res.status(200).json({
+        success: true,
+        message: `${itemType} removed from saved items`,
+        data: {
+            saved: false,
+        },
+    });
+}
 
         await SavedItem.create({
-            user: userId,
-            itemType,
-            item
-        });
+    user: userId,
+    itemType,
+    item,
+});
 
-        return res.status(201).json({
-            success: true,
-            message: `${itemType} added to saved items`,
-            data: {
-                saved: true
-            }
-        });
+getIo()
+    .to(`user:${userId.toString()}`)
+    .emit("favorite:updated", {
+        itemType,
+        itemId: item.toString(),
+        saved: true,
+    });
+
+return res.status(201).json({
+    success: true,
+    message: `${itemType} added to saved items`,
+    data: {
+        saved: true,
+    },
+});
 
     } catch (err) {
         next(err);

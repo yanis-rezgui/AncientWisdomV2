@@ -18,7 +18,7 @@ const QuoteCard = ({ quote }: QuoteCardProps) => {
 
     const handleFavorite = () => {
         if (!user) return;
-        toggleFavorite("Quote", quote._id);
+        toggleFavorite("Quote", quote._id, quote);
     };
 
     return (

@@ -251,7 +251,7 @@ const QuoteHero = ({ quote }: QuoteHeroProps) => {
 
                         <button
                             type="button"
-                            onClick={() => toggleFavorite("Quote", quote._id)}
+                            onClick={() => toggleFavorite("Quote", quote._id, quote)}
                             aria-label={
                                 favorite
                                     ? "Remove quote from favorites"

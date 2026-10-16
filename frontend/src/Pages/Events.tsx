@@ -26,7 +26,7 @@ const Events = () => {
 
              <EventsFilter/>
 
-            <div className="flex flex-wrap justify-center items-start gap-5 mt-10 px-10">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-10 mt-10 place-items-center justify-center">
              {events.map((e)=>{
                 return(
                     <EventComponent event={e} key={e._id}/>

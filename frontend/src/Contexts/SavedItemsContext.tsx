@@ -1,8 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState} from "react";
 import type { HistoricalEvent, HistoricalFigure, ItemType, Quote } from "../Types/Types";
 import { useAuthContext } from "./AuthContext";
 
+import { socket } from "../socket/socket.js";
 
+
+type FavoriteItem = Quote | HistoricalEvent | HistoricalFigure;
 
 interface SavedItemsContextType{
     savedQuotes : Quote[];
@@ -17,7 +20,11 @@ interface SavedItemsContextType{
     loadingSavedFigures : boolean;
     getSavedFigures : ()=>Promise<void>;
 
-    toggleFavorite : (itemType: ItemType, itemId : string)=>Promise<void>;
+      toggleFavorite: (
+        itemType: ItemType,
+        itemId: string,
+        itemData: FavoriteItem
+    ) => Promise<void>;
     loadingToggleFavorite : boolean;
 
     isFavorite: (itemType: ItemType, itemId: string) => boolean;
@@ -135,46 +142,77 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
     }
 
 
-    const toggleFavorite = async(itemType : ItemType, itemId : string) => {
+const toggleFavorite = async (
+    itemType: ItemType,
+    itemId: string,
+    itemData: Quote | HistoricalEvent | HistoricalFigure
+) => {
+    if (!token || !user) return;
 
-        try{
+    try {
+        setLoadingToggleFavorite(true);
 
-            setLoadingToggleFavorite(true);
-
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/saved-items/toggle`, {
-                method : "POST",
-                headers : {
+        const res = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/v1/saved-items/toggle`,
+            {
+                method: "POST",
+                headers: {
                     "Content-Type": "application/json",
-                    Authorization : `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body : JSON.stringify({itemType, item : itemId})
-            });
-
-            const data = await res.json();
-
-            if(!res.ok){
-                throw new Error(data.error || data.message || "Error in toggling");
+                body: JSON.stringify({
+                    itemType,
+                    item: itemId,
+                }),
             }
+        );
 
-            switch (itemType) {
-    case "Quote":
-        await getSavedQuotes();
-        break;
+        const data = await res.json();
 
-    case "Event":
-        await getSavedEvents();
-        break;
-
-    case "Figure":
-        await getSavedFigures();
-        break;
-}
-        }catch(err){
-            console.error(err);
-        }finally{
-            setLoadingToggleFavorite(false);
+        if (!res.ok) {
+            throw new Error(
+                data.message || "Error in toggling favorite"
+            );
         }
+
+        const saved: boolean = data.data.saved;
+
+        const updateCollection = <T extends { _id: string }>(
+            previous: T[],
+            setCollection: React.Dispatch<React.SetStateAction<T[]>>,
+        ) => {
+            setCollection((current) => {
+                if (saved) {
+                    if (current.some((item) => item._id === itemId)) {
+                        return current;
+                    }
+
+                    return [itemData as T, ...current];
+                }
+
+                return current.filter((item) => item._id !== itemId);
+            });
+        };
+
+        switch (itemType) {
+            case "Quote":
+                updateCollection(savedQuotes, setSavedQuotes);
+                break;
+
+            case "Figure":
+                updateCollection(savedFigures, setSavedFigures);
+                break;
+
+            case "Event":
+                updateCollection(savedEvents, setSavedEvents);
+                break;
+        }
+    } catch (error) {
+        console.error("Toggle favorite error:", error);
+    } finally {
+        setLoadingToggleFavorite(false);
     }
+};
 
 
     const isFavorite = (itemType: ItemType, itemId: string): boolean => {
@@ -198,7 +236,29 @@ export const SavedItemsProvider = ({children} : {children : React.ReactNode}) =>
         getSavedEvents();
        getSavedFigures();
         getSavedQuotes();
-    }, [user, token])
+    }, [user, token]);
+
+    
+    useEffect(() => {
+    if (!token || !user) return;
+
+    const handleFavoriteUpdated = (event: {
+        itemType: ItemType;
+        itemId: string;
+        saved: boolean;
+    }) => {
+        // Le state local a déjà été modifié après le POST.
+        // Pour les autres connexions, l'événement permet
+        // de synchroniser les changements de favoris.
+        console.log("Favorite updated:", event);
+    };
+
+    socket.on("favorite:updated", handleFavoriteUpdated);
+
+    return () => {
+        socket.off("favorite:updated", handleFavoriteUpdated);
+    };
+}, [token, user]);
 
     return <SavedItemsContext.Provider value={{
             savedQuotes,

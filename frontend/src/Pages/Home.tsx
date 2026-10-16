@@ -1,12 +1,13 @@
 import { memo } from "react";
+import Hero from "../Components/HomeComponents/Hero";
 
 
 
 const Home = () => {
 
     return(
-        <section>
-            
+        <section className="flex flex-col w-full">
+            <Hero/>
         </section>
     )
 }

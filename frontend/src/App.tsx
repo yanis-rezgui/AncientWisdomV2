@@ -21,7 +21,6 @@ import PublicRoute from './Layouts/PublicRoute'
 import PublicLayout from './Layouts/PublicLayout'
 import AdminRoute from './Layouts/AdminRoute'
 import AdminLayout from './Layouts/AdminLayout'
-import Dashboard from './AdminPages/Dashboard'
 import AdminQuotes from './AdminPages/AdminQuotes'
 import { QuotesAdminProvider } from './AdminContexts/QuotesAdminContext'
 import { ErasAdminProvider } from './AdminContexts/ErasAdminContext'
@@ -103,6 +102,13 @@ import { SettingsProvider } from './Contexts/SettingsContext'
 import AdminSettings from './AdminPages/AdminSettings'
 import { NotificationsProvider } from './Contexts/NotificationsContext'
 import AdminNotifications from './AdminPages/AdminNotifications'
+import Notifications from './Pages/Notifications'
+import AdminProfile from './AdminPages/AdminProfile'
+import AdminDashboard from './AdminPages/AdminDashboard'
+import { DashboardProvider } from './AdminContexts/DashboardContext'
+import { ProfileStatsProvider } from './Contexts/ProfileStatsContext'
+import HomePageCMSContent from './AdminPages/AdminHomePage'
+import { HomePageProvider } from './AdminContexts/HomePageContext'
 
 function App() {
 
@@ -145,6 +151,9 @@ function App() {
                                                                         <LocationChallengesAdminProvider>
                                                                           <SettingsProvider>
                                                                             <NotificationsProvider>
+                                                                              <DashboardProvider>
+                                                                                <ProfileStatsProvider>
+                                                                                  <HomePageProvider>
        <Routes>
 
         <Route element={
@@ -254,6 +263,8 @@ function App() {
 
 <Route path="/game/:id" element={<GameDetails />} />
 <Route path="/game/:id/play" element={<GamePlay />} />
+
+<Route path='/notifications' element={<Notifications/>}/>
     
 
             </Route>
@@ -265,7 +276,7 @@ function App() {
               </AdminRoute>
             }>
 
-               <Route path='dashboard' element={<Dashboard/>}/>
+               <Route path='dashboard' element={<AdminDashboard/>}/>
                <Route path='quotes' element={<AdminQuotes/>}/>
                <Route path='eras' element={<AdminEras/>}/>
                <Route path='addEra' element={<AdminEraAjout/>}/>
@@ -304,10 +315,15 @@ function App() {
 <Route path='general' element={<AdminSettings/>}/>
 
 <Route path='notifications' element={<AdminNotifications/>}/>
+<Route path='profile' element={<AdminProfile/>}/>
+<Route path='home-page' element={<HomePageCMSContent/>}/>
 
 
             </Route>
        </Routes>
+                                                                                                                               </HomePageProvider>
+                                                                                                                     </ProfileStatsProvider>
+                                                                                                                 </DashboardProvider>
                                                                                                               </NotificationsProvider>
                                                                                                           </SettingsProvider>
                                                                                                       </LocationChallengesAdminProvider>

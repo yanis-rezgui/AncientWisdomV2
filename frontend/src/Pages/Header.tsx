@@ -2,12 +2,14 @@ import { UserIcon } from "lucide-react";
 import { memo, useState } from "react";
 import { Link, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion";
+import { useAuthContext } from "../Contexts/AuthContext";
 
 
 const Header = () => {
 
     const location = useLocation();
     const [showNav, setShowNav] = useState(false);
+    const {user}= useAuthContext();
 
     const pages = [
         {
@@ -42,10 +44,19 @@ const Header = () => {
             name : "Favorites",
             path : "/favorites"
         },
+        ...(user
+    ? [
+        {
+            name: "Notifications",
+            path: "/notifications"
+        }
+    ]
+    : []),
         {
             name : "Profile",
             path : "/user"
         }
+        
     ]
     return(
         <>
@@ -70,6 +81,8 @@ const Header = () => {
                         </Link>
                     )
                 })}
+
+
             </nav>
 
             {/* Mobile hamburger */}

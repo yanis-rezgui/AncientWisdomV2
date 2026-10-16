@@ -13,11 +13,14 @@ const FigureCard = ({figure} : {figure : HistoricalFigure}) => {
                 transition-all
                 duration-300
                 p-3
+                overflow-hidden
+                h-full
                 gap-3">
             
             <img src={figure.image.url} alt="" className="w-[150px] h-[150px] object-cover rounded-full"/>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 justify-between h-full">
+                <div>
                 <p className="text-[1.2em] font-[600]">
                     {figure.name}
                 </p>
@@ -31,6 +34,7 @@ const FigureCard = ({figure} : {figure : HistoricalFigure}) => {
                             </p>
                         })}
                     </div>
+                </div>
             
 
                 <Link

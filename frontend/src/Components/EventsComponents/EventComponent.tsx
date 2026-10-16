@@ -8,6 +8,7 @@ const EventComponent = ({ event }: { event: HistoricalEvent }) => {
         <article
             className="
                 w-[300px]
+                h-full
                 bg-gray-50
                 rounded-lg
                 shadow-lg

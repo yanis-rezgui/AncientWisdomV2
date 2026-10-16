@@ -112,7 +112,7 @@ const FigureOverview = ({figure} : {figure : HistoricalFigure}) => {
                 
                 <div className="flex flex-row items-center gap-5 mt-2">
                 <button 
-                onClick={()=>toggleFavorite("Figure", figure._id)}
+                onClick={()=>toggleFavorite("Figure", figure._id, figure)}
                 className="flex flex-row justify-center items-center gap-1
                 bg-white border-2 border-[#3E3025] p-2 rounded-lg cursor-pointer transition-opacity duration-200
                 hover:opacity-80 active:opacity-60
