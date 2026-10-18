@@ -1,8 +1,10 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
     useHomePageContext,
     type HomePageData,
+    type HomePageFAQ,
     type HomePageItem,
 } from "../../AdminContexts/HomePageContext";
 
@@ -25,8 +27,6 @@ export const SECTION_KEYS: HomeSectionKey[] = [
     "featuredEvents",
 ];
 
-// Public list endpoints used to fill the pickers.
-// Several paths are tried in order until one answers (first match wins).
 const OPTIONS_ENDPOINTS: Record<HomeSectionKey, string[]> = {
     quotesOfTheDay: ["/quotes", "/quote"],
     featuredFigures: ["/figure"],
@@ -34,7 +34,9 @@ const OPTIONS_ENDPOINTS: Record<HomeSectionKey, string[]> = {
     featuredEvents: ["/event"],
 };
 
-// Accepts { data: [...] }, { quotes: [...] } or a bare array.
+const OPTIONS_LIMIT = 200;
+const API_URL = `${import.meta.env.VITE_API_URL}/api/v1`;
+
 const extractItems = (body: unknown): HomePageItem[] => {
     if (Array.isArray(body)) return body as HomePageItem[];
 
@@ -51,7 +53,9 @@ const extractItems = (body: unknown): HomePageItem[] => {
     return [];
 };
 
-const fetchOptions = async (key: HomeSectionKey): Promise<HomePageItem[]> => {
+const fetchOptions = async (
+    key: HomeSectionKey
+): Promise<HomePageItem[]> => {
     for (const path of OPTIONS_ENDPOINTS[key]) {
         try {
             const res = await fetch(
@@ -62,7 +66,9 @@ const fetchOptions = async (key: HomeSectionKey): Promise<HomePageItem[]> => {
 
             if (res.ok) return extractItems(body);
 
-            console.warn(`[HomePage CMS] ${path} -> HTTP ${res.status}`);
+            console.warn(
+                `[HomePage CMS] ${path} -> HTTP ${res.status}`
+            );
         } catch (error) {
             console.warn(`[HomePage CMS] ${path} failed:`, error);
         }
@@ -71,9 +77,6 @@ const fetchOptions = async (key: HomeSectionKey): Promise<HomePageItem[]> => {
     return [];
 };
 
-const OPTIONS_LIMIT = 200;
-const API_URL = `${import.meta.env.VITE_API_URL}/api/v1`;
-
 const emptySections = (): HomeSections => ({
     quotesOfTheDay: [],
     featuredFigures: [],
@@ -81,7 +84,8 @@ const emptySections = (): HomeSections => ({
     featuredEvents: [],
 });
 
-const idsOf = (items: HomePageItem[]) => items.map((item) => item._id);
+const idsOf = (items: HomePageItem[]) =>
+    items.map((item) => item._id);
 
 const fromHomePage = (data: HomePageData): HomeSections => ({
     quotesOfTheDay: (data.quotesOfTheDay ?? []).filter(Boolean),
@@ -90,14 +94,31 @@ const fromHomePage = (data: HomePageData): HomeSections => ({
     featuredEvents: (data.featuredEvents ?? []).filter(Boolean),
 });
 
+const normalizeFAQs = (
+    faqs: HomePageFAQ[] = []
+): HomePageFAQ[] =>
+    faqs.map((faq, index) => ({
+        ...(faq._id ? { _id: faq._id } : {}),
+        question: faq.question ?? "",
+        answer: faq.answer ?? "",
+        order: index,
+        isPublished: faq.isPublished ?? true,
+    }));
+
+const sameFAQs = (
+    first: HomePageFAQ[],
+    second: HomePageFAQ[]
+): boolean =>
+    JSON.stringify(normalizeFAQs(first)) ===
+    JSON.stringify(normalizeFAQs(second));
+
 // ============================================================
-// Hook: editable draft on top of HomePageContext
+// Hook
 // ============================================================
 
 export const useHomePageEditor = () => {
     const {
         homePage,
-        getHomePage,
         updateHomePage,
         loadingHomePage,
         loadingUpdateHomePage,
@@ -106,65 +127,80 @@ export const useHomePageEditor = () => {
         clearMessages,
     } = useHomePageContext();
 
-    const [sections, setSections] = useState<HomeSections>(emptySections());
+    const [sections, setSections] =
+        useState<HomeSections>(emptySections);
+
+    const [faqs, setFAQs] = useState<HomePageFAQ[]>([]);
+
     const [isPublished, setIsPublished] = useState(true);
 
-    const [options, setOptions] = useState<HomeSections>(emptySections());
+    const [options, setOptions] =
+        useState<HomeSections>(emptySections);
+
     const [loadingOptions, setLoadingOptions] = useState(false);
 
     // -----------------------------------------------------
-    // Initial load
+    // Server data -> editable draft
     // -----------------------------------------------------
 
-    useEffect(() => {
-        getHomePage();
-    }, [getHomePage]);
-
-    // Server data -> editable draft (after load and after save)
     useEffect(() => {
         if (!homePage) return;
 
         setSections(fromHomePage(homePage));
+        setFAQs(normalizeFAQs(homePage.faqs ?? []));
         setIsPublished(homePage.isPublished);
     }, [homePage]);
 
     // -----------------------------------------------------
-    // Items available in the pickers
+    // Load available items for the four existing sections
     // -----------------------------------------------------
 
     useEffect(() => {
+        let cancelled = false;
+
         const load = async () => {
             setLoadingOptions(true);
 
             try {
                 const results = await Promise.all(
                     SECTION_KEYS.map(
-                        async (key) => [key, await fetchOptions(key)] as const
+                        async (key) =>
+                            [key, await fetchOptions(key)] as const
                     )
                 );
 
+                if (cancelled) return;
+
                 const next = emptySections();
 
-                for (const [key, items] of results) next[key] = items;
+                for (const [key, items] of results) {
+                    next[key] = items;
+                }
 
                 setOptions(next);
             } finally {
-                setLoadingOptions(false);
+                if (!cancelled) {
+                    setLoadingOptions(false);
+                }
             }
         };
 
-        load();
+        void load();
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     // -----------------------------------------------------
-    // Local editing
+    // Existing section operations
     // -----------------------------------------------------
 
     const addItem = (key: HomeSectionKey, item: HomePageItem) => {
         clearMessages();
 
         setSections((prev) =>
-            prev[key].some((i) => i._id === item._id)
+            prev[key].some((existing) => existing._id === item._id)
                 ? prev
                 : { ...prev, [key]: [...prev[key], item] }
         );
@@ -175,7 +211,7 @@ export const useHomePageEditor = () => {
 
         setSections((prev) => ({
             ...prev,
-            [key]: prev[key].filter((i) => i._id !== id),
+            [key]: prev[key].filter((item) => item._id !== id),
         }));
     };
 
@@ -192,7 +228,10 @@ export const useHomePageEditor = () => {
 
             if (target < 0 || target >= list.length) return prev;
 
-            [list[index], list[target]] = [list[target], list[index]];
+            [list[index], list[target]] = [
+                list[target],
+                list[index],
+            ];
 
             return { ...prev, [key]: list };
         });
@@ -200,20 +239,91 @@ export const useHomePageEditor = () => {
 
     const clearSection = (key: HomeSectionKey) => {
         clearMessages();
+
         setSections((prev) => ({ ...prev, [key]: [] }));
     };
+
+    // -----------------------------------------------------
+    // FAQ operations
+    // -----------------------------------------------------
+
+    const addFAQ = () => {
+        clearMessages();
+
+        setFAQs((prev) => [
+            ...prev,
+            {
+                question: "",
+                answer: "",
+                order: prev.length,
+                isPublished: true,
+            },
+        ]);
+    };
+
+    const updateFAQ = (
+        index: number,
+        changes: Partial<HomePageFAQ>
+    ) => {
+        clearMessages();
+
+        setFAQs((prev) =>
+            prev.map((faq, currentIndex) =>
+                currentIndex === index
+                    ? { ...faq, ...changes }
+                    : faq
+            )
+        );
+    };
+
+    const removeFAQ = (index: number) => {
+        clearMessages();
+
+        setFAQs((prev) =>
+            prev
+                .filter((_, currentIndex) => currentIndex !== index)
+                .map((faq, order) => ({ ...faq, order }))
+        );
+    };
+
+    const moveFAQ = (index: number, direction: -1 | 1) => {
+        clearMessages();
+
+        setFAQs((prev) => {
+            const target = index + direction;
+
+            if (target < 0 || target >= prev.length) return prev;
+
+            const next = [...prev];
+
+            [next[index], next[target]] = [
+                next[target],
+                next[index],
+            ];
+
+            return next.map((faq, order) => ({
+                ...faq,
+                order,
+            }));
+        });
+    };
+
+    // -----------------------------------------------------
+    // Discard changes
+    // -----------------------------------------------------
 
     const discardChanges = useCallback(() => {
         clearMessages();
 
-        if (homePage) {
-            setSections(fromHomePage(homePage));
-            setIsPublished(homePage.isPublished);
-        }
+        if (!homePage) return;
+
+        setSections(fromHomePage(homePage));
+        setFAQs(normalizeFAQs(homePage.faqs ?? []));
+        setIsPublished(homePage.isPublished);
     }, [homePage, clearMessages]);
 
     // -----------------------------------------------------
-    // Dirty detection (order matters)
+    // Dirty detection
     // -----------------------------------------------------
 
     const isDirty = useMemo(() => {
@@ -221,26 +331,52 @@ export const useHomePageEditor = () => {
 
         if (homePage.isPublished !== isPublished) return true;
 
-        const saved = fromHomePage(homePage);
+        const savedSections = fromHomePage(homePage);
 
-        return SECTION_KEYS.some(
+        const sectionsChanged = SECTION_KEYS.some(
             (key) =>
-                idsOf(sections[key]).join(",") !== idsOf(saved[key]).join(",")
+                idsOf(sections[key]).join(",") !==
+                idsOf(savedSections[key]).join(",")
         );
-    }, [homePage, sections, isPublished]);
+
+        if (sectionsChanged) return true;
+
+        return !sameFAQs(faqs, homePage.faqs ?? []);
+    }, [homePage, sections, faqs, isPublished]);
 
     // -----------------------------------------------------
     // Save
     // -----------------------------------------------------
 
-    const saveHomePage = async () =>
-        updateHomePage({
-            quotesOfTheDay: idsOf(sections.quotesOfTheDay),
-            featuredFigures: idsOf(sections.featuredFigures),
-            featuredEras: idsOf(sections.featuredEras),
-            featuredEvents: idsOf(sections.featuredEvents),
-            isPublished,
-        });
+
+const saveHomePage = async (): Promise<boolean> => {
+    clearMessages();
+
+    const invalidFAQIndex = faqs.findIndex(
+        (faq) =>
+            !faq.question.trim() ||
+            !faq.answer.trim()
+    );
+
+    if (invalidFAQIndex !== -1) {
+        console.error(
+            `FAQ invalide à l'index ${invalidFAQIndex}:`,
+            faqs[invalidFAQIndex]
+        );
+
+        return false;
+    }
+
+    return updateHomePage({
+        quotesOfTheDay: idsOf(sections.quotesOfTheDay),
+        featuredFigures: idsOf(sections.featuredFigures),
+        featuredEras: idsOf(sections.featuredEras),
+        featuredEvents: idsOf(sections.featuredEvents),
+        faqs: normalizeFAQs(faqs),
+        isPublished,
+    });
+};
+
 
     return {
         homePage,
@@ -248,16 +384,26 @@ export const useHomePageEditor = () => {
         options,
         isPublished,
         setIsPublished,
+
         addItem,
         removeItem,
         moveItem,
         clearSection,
+
+        faqs,
+        addFAQ,
+        updateFAQ,
+        removeFAQ,
+        moveFAQ,
+
         isDirty,
         discardChanges,
         saveHomePage,
+
         loadingHomePage,
         loadingOptions,
         savingHomePage: loadingUpdateHomePage,
+
         errorMsg,
         successMsg,
         clearMessages,

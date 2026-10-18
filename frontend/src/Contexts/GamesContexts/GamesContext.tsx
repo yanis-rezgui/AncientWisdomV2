@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Game } from "../../Types/Games";
-import { data } from 'react-router-dom';
+
 
 interface GamesContextType{
     games: Game[];

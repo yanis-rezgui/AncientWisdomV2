@@ -1,6 +1,35 @@
 
 import mongoose from "mongoose";
 
+const faqSchema = new mongoose.Schema(
+    {
+        question: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        answer: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        order: {
+            type: Number,
+            default: 0,
+        },
+
+        isPublished: {
+            type: Boolean,
+            default: true,
+        },
+    },
+    {
+        _id: true,
+    }
+);
+
 const homePageSchema = new mongoose.Schema(
     {
         // Quotes displayed on the homepage
@@ -34,6 +63,12 @@ const homePageSchema = new mongoose.Schema(
                 ref: "Event",
             },
         ],
+
+        // FAQs managed directly inside the homepage document
+        faqs: {
+            type: [faqSchema],
+            default: [],
+        },
 
         // Optional publication status
         isPublished: {

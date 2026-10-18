@@ -15,6 +15,7 @@ const getOrCreateHomePage = async () => {
             featuredFigures: [],
             featuredEras: [],
             featuredEvents: [],
+            faqs: [],
             isPublished: true,
         });
     }
@@ -24,7 +25,13 @@ const getOrCreateHomePage = async () => {
 
 const populateHomePage = (query) => {
     return query
-        .populate("quotesOfTheDay")
+        .populate({
+            path: "quotesOfTheDay",
+            populate: [
+                { path: "author" },
+                { path: "era" },
+            ],
+        })
         .populate("featuredFigures")
         .populate("featuredEras")
         .populate("featuredEvents");
@@ -38,8 +45,106 @@ const isValidIdArray = (value) => {
 };
 
 const normalizeIds = (ids) => {
-    // Remove duplicate IDs while preserving their order.
     return [...new Set(ids.map((id) => id.toString()))];
+};
+
+// ============================================================
+// FAQ VALIDATION
+// ============================================================
+
+const validateFAQs = (faqs) => {
+    if (!Array.isArray(faqs)) {
+        return {
+            valid: false,
+            message: "faqs must be an array.",
+        };
+    }
+
+    const normalizedFAQs = [];
+
+    for (let index = 0; index < faqs.length; index++) {
+        const faq = faqs[index];
+
+        if (
+            !faq ||
+            typeof faq !== "object" ||
+            Array.isArray(faq)
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} must be an object.`,
+            };
+        }
+
+        if (
+            typeof faq.question !== "string" ||
+            !faq.question.trim()
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} must have a question.`,
+            };
+        }
+
+        if (
+            typeof faq.answer !== "string" ||
+            !faq.answer.trim()
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} must have an answer.`,
+            };
+        }
+
+        if (
+            faq.order !== undefined &&
+            (!Number.isInteger(faq.order) || faq.order < 0)
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} must have a non-negative integer order.`,
+            };
+        }
+
+        if (
+            faq.isPublished !== undefined &&
+            typeof faq.isPublished !== "boolean"
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} must have a boolean isPublished value.`,
+            };
+        }
+
+        if (
+            faq._id !== undefined &&
+            !mongoose.isValidObjectId(faq._id)
+        ) {
+            return {
+                valid: false,
+                message: `FAQ at index ${index} has an invalid _id.`,
+            };
+        }
+
+        const normalizedFAQ = {
+            question: faq.question.trim(),
+            answer: faq.answer.trim(),
+            order: faq.order ?? index,
+            isPublished: faq.isPublished ?? true,
+        };
+
+        // Preserve existing FAQ IDs when updating.
+        if (faq._id) {
+            normalizedFAQ._id = faq._id;
+        }
+
+        normalizedFAQs.push(normalizedFAQ);
+    }
+
+    return {
+        valid: true,
+        data: normalizedFAQs.sort((a, b) => a.order - b.order),
+    };
 };
 
 // ============================================================
@@ -61,6 +166,10 @@ export const getHomePage = async (req, res) => {
                 message: "Homepage configuration not found.",
             });
         }
+
+        // Return FAQs in display order.
+        populatedHomePage.faqs = (populatedHomePage.faqs ?? [])
+            .sort((a, b) => a.order - b.order);
 
         return res.status(200).json({
             success: true,
@@ -88,10 +197,11 @@ export const updateHomePage = async (req, res) => {
             featuredFigures,
             featuredEras,
             featuredEvents,
+            faqs,
             isPublished,
         } = req.body;
 
-        // Validate the arrays sent by the admin.
+        // Validate the reference arrays.
         const arraysToValidate = {
             quotesOfTheDay,
             featuredFigures,
@@ -106,6 +216,16 @@ export const updateHomePage = async (req, res) => {
                     message: `${field} must be an array of valid MongoDB IDs.`,
                 });
             }
+        }
+
+        // Validate FAQs.
+        const faqValidation = validateFAQs(faqs);
+
+        if (!faqValidation.valid) {
+            return res.status(400).json({
+                success: false,
+                message: faqValidation.message,
+            });
         }
 
         if (
@@ -123,6 +243,7 @@ export const updateHomePage = async (req, res) => {
             featuredFigures: normalizeIds(featuredFigures),
             featuredEras: normalizeIds(featuredEras),
             featuredEvents: normalizeIds(featuredEvents),
+            faqs: faqValidation.data,
         };
 
         if (isPublished !== undefined) {
@@ -139,6 +260,16 @@ export const updateHomePage = async (req, res) => {
         const populatedHomePage = await populateHomePage(
             HomePage.findById(homePage._id)
         ).lean();
+
+        if (!populatedHomePage) {
+            return res.status(404).json({
+                success: false,
+                message: "Homepage configuration not found after update.",
+            });
+        }
+
+        populatedHomePage.faqs = (populatedHomePage.faqs ?? [])
+            .sort((a, b) => a.order - b.order);
 
         return res.status(200).json({
             success: true,

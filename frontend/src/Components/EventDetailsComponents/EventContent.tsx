@@ -1,59 +1,68 @@
-import  { memo } from "react"
+import { memo, useMemo } from "react";
 import type { HistoricalEvent } from "../../Types/Types";
+import SectionHeading from "../FigureDetailsComponents/SectionHeading";
+import ArticleContents from "../LearnComponents/ArticleComponents/ArticleContents";
 
+const EventContent = ({ event }: { event: HistoricalEvent }) => {
+    const sections = event.sections ?? [];
 
+    const toc = useMemo(
+        () => sections.map((section) => ({ title: section.title })),
+        [sections]
+    );
 
-const EventContent = ({event} : {event : HistoricalEvent}) => {
+    if (sections.length === 0) return null;
 
-    return(
+    return (
         <section
-        className="flex flex-col w-[900px] 
-        p-3  gap-2 max-[920px]:w-[600px]
-        max-[620px]:w-[320px] justify-center 
-        mt-10 mb-10 
-        "
+            aria-labelledby="event-content-title"
+            className="mx-auto mb-10 mt-10 w-full max-w-[900px] px-4"
         >
+            <SectionHeading id="event-content-title" title="Main Historical Content" />
 
-           <h3 className="text-gray-700 font-[600] text-[1.4em]">
-            Main Historical Content
-           </h3>
-
-             <div className="flex flex-wrap  items-center gap-3">
-            
-               {event.sections.map((b)=>{
-                  return(
-                    <a href={`#${b.title}`}
-                    className="text-[13px] cursor-pointer text-[#3E3025] font-[500]
-                     hover:text-[#A67C52] transition-colors duration-300 font-[600]
-                     underline
-                     "
-                    >
-                        {b.title}
-                    </a>
-                  )
-               })}
+            {/* Sommaire en haut sur mobile / tablette */}
+            <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 min-lg:hidden">
+                <ArticleContents sections={toc} title="In this event" />
             </div>
 
-            <div className="flex flex-col gap-5 mt-4">
-                {event.sections.map((f)=>{
-                    return(
-                        <div id={`${f.title}`}
-                        className="flex flex-col p-3 bg-gray-50 rounded-lg gap-3"
+            <div className="mt-8 flex gap-10">
+                {/* Sommaire sticky sur desktop, avec suivi de la section lue */}
+                <aside className="hidden w-[200px] shrink-0 min-lg:block">
+                    <div className="sticky top-24">
+                        <ArticleContents sections={toc} trackActive title="In this event" />
+                    </div>
+                </aside>
+
+                <div className="min-w-0 flex-1 divide-y divide-gray-200">
+                    {sections.map((section, i) => (
+                        <article
+                            key={`${section.title}-${i}`}
+                            id={`section-${i}`}
+                            className="scroll-mt-24 py-8 first:pt-0 last:pb-0"
                         >
-                            <h4 className="text-[1.5em] font-[600]">
-                                 {f.title}
-                            </h4>
-                            <p className="text-[17px]">
-                                {f.content}
-                            </p>
-                        </div>
-                    )
-                })}
-            </div>
+                            <h3 className="text-[1.3em] font-semibold text-[#3E3025]">
+                                {section.title}
+                            </h3>
 
-            
+                            <div className="mt-3 flex flex-col gap-4">
+                                {section.content
+                                    .trim()
+                                    .split(/\n{2,}/)
+                                    .map((paragraph, j) => (
+                                        <p
+                                            key={j}
+                                            className="text-[17px] leading-8 text-gray-800"
+                                        >
+                                            {paragraph}
+                                        </p>
+                                    ))}
+                            </div>
+                        </article>
+                    ))}
+                </div>
+            </div>
         </section>
-    )
-}
+    );
+};
 
 export default memo(EventContent);

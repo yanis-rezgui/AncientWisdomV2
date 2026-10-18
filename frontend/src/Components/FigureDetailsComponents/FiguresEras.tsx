@@ -1,57 +1,50 @@
-import { memo } from "react"
+import { memo } from "react";
+import { Link } from "react-router-dom";
 import type { HistoricalFigure } from "../../Types/Types";
+import SectionHeading from "./SectionHeading";
 
+const FiguresEras = ({ figure }: { figure: HistoricalFigure }) => {
+    if (figure.eras.length === 0) return null;
 
-const FiguresEras = ({figure} : {figure : HistoricalFigure}) => {
+    return (
+        <section
+            aria-labelledby="figure-eras-title"
+            className="mx-auto mt-10 w-full max-w-[900px] px-4"
+        >
+            <SectionHeading id="figure-eras-title" title={`Eras of ${figure.name}`} />
 
-    return(
-         <div className="flex flex-col  gap-10 p-4 w-[900px]  mt-10 rounded-lg
-        max-[920px]:w-[600px] max-[620px]:w-[350px]
-        max-[620px]:w-full 
-        ">
-             
-             <h4 className="text-[1.5em] font-bold text-center">
-                FIGURE ERAS
-             </h4>
+            <ul className="mt-6 grid grid-cols-1 gap-4 min-[620px]:grid-cols-2 min-[920px]:grid-cols-3">
+                {figure.eras.map((era) => (
+                    <li
+                        key={era._id}
+                        className="group relative flex flex-col justify-between gap-4 rounded-lg
+                        border border-gray-200 bg-white p-5
+                        transition-colors duration-300 hover:border-[#8C6A43]"
+                    >
+                        <h3 className="text-[1.1em] font-semibold leading-6 text-[#3E3025]">
+                            {/* Stretched link : toute la carte est cliquable avec un seul vrai lien */}
+                            <Link
+                                to={`/era/${era._id}`}
+                                className="after:absolute after:inset-0 after:content-['']"
+                            >
+                                {era.name}
+                            </Link>
+                        </h3>
 
-         
-
-            
-              <div className="flex flex-wrap justify-center items-start gap-5 w-full">
-                {figure.eras.map((e)=>{
-                return(
-                    <div className="bg-gray-50 w-[300px] rounded-lg shadow-2xl
-                    flex flex-col  items-center p-3  gap-1 
-                    shadow-lg
-                hover:shadow-2xl
-                hover:-translate-y-1
-                transition-all
-                duration-300
-                    ">
-                        <p className="text-[1.1em] font-semibold text-center leading-6">
-                            {e.name}
-                        </p>
-
-                    <div className="flex flex-row items-center font-[500]
-                         max-[620px]:items-baseline mt-2 gap-2
-                        ">
-                            <p>{figure.birthDate}</p> - <p>{figure.deathDate}</p>
-                    </div>
-
-                      <button className="bg-[#3E3025] text-white text-[14px] font-[500] p-2 rounded-[5px]
-                        cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
-                        mt-4 w-full
-                        ">
-                            Explore Era →
-                        </button>
-                    </div>
-                )
-            })}
-              </div>
-            </div>
-        
-    )
-}
-
+                        <span className="flex items-center gap-2 text-[14px] font-semibold text-[#3E3025]">
+                            Explore Era
+                            <span
+                                aria-hidden="true"
+                                className="transition-transform duration-300 group-hover:translate-x-1"
+                            >
+                                →
+                            </span>
+                        </span>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    );
+};
 
 export default memo(FiguresEras);

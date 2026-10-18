@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SECTION_KEYS, useHomePageEditor, type HomeSectionKey } from "../AdminComponents/HomePageComponents/useHomePageEditor";
 import HomeSectionEditor from "../AdminComponents/HomePageComponents/HomeSectionEditor";
-
+import FaqSectionEditor from "../AdminComponents/HomePageComponents/FaqSectionEditor";
 
 
 
@@ -47,25 +47,34 @@ const SECTIONS: Record<
 
 const HomePageCMSContent = () => {
     const {
-        homePage,
-        sections,
-        options,
-        isPublished,
-        setIsPublished,
-        addItem,
-        removeItem,
-        moveItem,
-        clearSection,
-        isDirty,
-        discardChanges,
-        saveHomePage,
-        loadingHomePage,
-        loadingOptions,
-        savingHomePage,
-        errorMsg,
-        successMsg,
-        clearMessages,
-    } = useHomePageEditor();
+    homePage,
+    sections,
+    options,
+    isPublished,
+    setIsPublished,
+
+    addItem,
+    removeItem,
+    moveItem,
+    clearSection,
+
+    // FAQ
+    faqs,
+    addFAQ,
+    updateFAQ,
+    removeFAQ,
+    moveFAQ,
+
+    isDirty,
+    discardChanges,
+    saveHomePage,
+    loadingHomePage,
+    loadingOptions,
+    savingHomePage,
+    errorMsg,
+    successMsg,
+    clearMessages,
+} = useHomePageEditor();
 
     // Auto-hide the success message.
     useEffect(() => {
@@ -104,8 +113,8 @@ const HomePageCMSContent = () => {
                     </h1>
 
                     <p className="text-[14px] text-[#7A726A] leading-6">
-                        Choose the quotes, figures, eras and events that present
-                        Ancient Wisdom on the homepage.
+                         Manage the quotes, figures, eras, events and FAQs displayed
+    on the Ancient Wisdom homepage.
                     </p>
                 </div>
 
@@ -338,6 +347,14 @@ const HomePageCMSContent = () => {
                                 onClear={() => clearSection(key)}
                             />
                         ))}
+
+                        <FaqSectionEditor
+                            faqs={faqs}
+                            onAdd={addFAQ}
+                            onUpdate={updateFAQ}
+                            onRemove={removeFAQ}
+                            onMove={moveFAQ}
+                        />
                     </div>
                 )}
 

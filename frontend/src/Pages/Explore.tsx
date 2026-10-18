@@ -1,9 +1,11 @@
 import { memo } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 
 const Explore = () => {
+
+    const navigate = useNavigate();
 
     const data = [
         {
@@ -70,8 +72,9 @@ const Explore = () => {
                 return(
                     <div key={i} 
                     className="flex flex-col gap-3 justify-center items-center  w-[350px] bg-[#F5F5F5] p-3 rounded-lg shadow-2xl
-                    transition-transform duration-200 hover:scale-105
+                    transition-transform duration-200 hover:scale-105 cursor-pointer 
                     "
+                    onClick={()=>navigate(p.href)}
                     >
 
                        <img src={p.icon} alt="" 

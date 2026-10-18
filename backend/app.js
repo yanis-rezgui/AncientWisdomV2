@@ -33,12 +33,14 @@ import locationChallengeAdminRoutes from "./routes/AdminGames/locationChallenge.
 import memoryChallengeAdminRoutes from "./routes/AdminGames/memoryChallenge.admin.routes.js"
 import wordChallengeAdminRoutes from "./routes/AdminGames/wordChallenge.admin.routes.js"
 import settingsRouter from "./routes/settings.routes.js";
-import homePageSeed from "./database/insertData.js";
 import {createServer} from "http"
 import { initializeSocket } from "./socket/socket.js";
 import notificationRouter from "./routes/notification.routes.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
 import homePageRouter from "./routes/homePage.routes.js";
+import helpCategory from "./routes/Help/helpCategory.routes.js";
+import helpArticleSeed from "./database/insertData.js";
+import helpArticleRouter from "./routes/Help/helpArticle.routes.js";
 
 
 const app = express();
@@ -108,6 +110,9 @@ app.use("/api/v1/admin/dashboard", dashboardRouter);
 
 app.use("/api/v1/homepage", homePageRouter);
 
+app.use("/api/v1/help/articles", helpArticleRouter);
+app.use("/api/v1/help/categories", helpCategory);
+
 app.use(errorMiddleware);
 
 const startServer = async() => {
@@ -116,7 +121,7 @@ const startServer = async() => {
 
         console.log("Trying connecting to database : ");
         await connectToDatabase();
-        //await homePageSeed()
+        //await helpArticleSeed();
         server.listen(PORT, ()=>{
             console.log(`App running on : http://localhost:${PORT}`);
         });

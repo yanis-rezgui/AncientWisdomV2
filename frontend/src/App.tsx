@@ -109,6 +109,12 @@ import { DashboardProvider } from './AdminContexts/DashboardContext'
 import { ProfileStatsProvider } from './Contexts/ProfileStatsContext'
 import HomePageCMSContent from './AdminPages/AdminHomePage'
 import { HomePageProvider } from './AdminContexts/HomePageContext'
+import { HelpArticleAdminProvider } from './AdminContexts/HelpArticleAdminContext'
+import { HelpCategoryAdminProvider } from './AdminContexts/HelpCategoryAdminContext'
+import { HelpCenterProvider } from './Contexts/HelpCenterContext'
+import ArticleHelp from './AdminPages/ArticleHelp'
+import HelpCenter from './Pages/HelpCenter'
+import HelpArticleDetails from './Pages/HelpArticleDetails'
 
 function App() {
 
@@ -154,6 +160,9 @@ function App() {
                                                                               <DashboardProvider>
                                                                                 <ProfileStatsProvider>
                                                                                   <HomePageProvider>
+                                                                                    <HelpArticleAdminProvider>
+                                                                                      <HelpCategoryAdminProvider>
+                                                                                        <HelpCenterProvider>
        <Routes>
 
         <Route element={
@@ -265,6 +274,9 @@ function App() {
 <Route path="/game/:id/play" element={<GamePlay />} />
 
 <Route path='/notifications' element={<Notifications/>}/>
+
+   <Route path="/help" element={<HelpCenter />} />
+   <Route path="/help/:slug" element={<HelpArticleDetails />} />
     
 
             </Route>
@@ -317,10 +329,14 @@ function App() {
 <Route path='notifications' element={<AdminNotifications/>}/>
 <Route path='profile' element={<AdminProfile/>}/>
 <Route path='home-page' element={<HomePageCMSContent/>}/>
+<Route path='help' element={<ArticleHelp/>}/>
 
 
             </Route>
        </Routes>
+                                                                                                                                                  </HelpCenterProvider>
+                                                                                                                                          </HelpCategoryAdminProvider>
+                                                                                                                                    </HelpArticleAdminProvider>
                                                                                                                                </HomePageProvider>
                                                                                                                      </ProfileStatsProvider>
                                                                                                                  </DashboardProvider>

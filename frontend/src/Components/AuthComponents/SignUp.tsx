@@ -1,170 +1,94 @@
-import { memo, useState } from "react"
+import { memo } from "react";
 import { useAuthContext } from "../../Contexts/AuthContext";
-
-
+import {
+    AuthCard,
+    FormMessage,
+    PasswordField,
+    TextField,
+    linkButtonClass,
+    submitClass,
+} from "./AuthUI";
 
 const SignUp = () => {
+    const { signUp, loadingSignUp, setShowSignIn, msg } = useAuthContext();
 
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const {signUp, loadingSignUp, setShowSignIn, msg} = useAuthContext();
-
-
-    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
-
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const form = e.currentTarget;
-        const formData = new FormData(form);
+        const formData = new FormData(e.currentTarget);
 
-        const firstName = formData.get("firstName") as string;
-        const lastName = formData.get("lastName") as string;
-        const email = formData.get("email") as string;
-        const password1 = formData.get("password1") as string;
-        const password2 = formData.get("password2") as string;
+        await signUp(
+            (formData.get("firstName") as string)?.trim(),
+            (formData.get("lastName") as string)?.trim(),
+            (formData.get("email") as string)?.trim(),
+            formData.get("password1") as string,
+            formData.get("password2") as string
+        );
+    };
 
-
-        await signUp(firstName, lastName, email, password1, password2);
-
-    }
-
-
-    return(
-        <div className="flex flex-col w-[800px] bg-[#F5F5F5] p-4 shadow-2xl rounded-[10px] mt-5 max-[850px]:w-[500px] 
-        max-[550px]:w-[320px]">
-            <h3 className="text-center text-[1.5em] font-bold">
-                Create an Account
-            </h3>
-
-            <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-1 w-full">
-                    <label htmlFor="firstName" className="text-[#3E3025] text-[16px] font-[600]">
-                        First Name
-                    </label>
-                    <input type="text"
-                    name="firstName"
-                    placeholder="Ex. Julius"
-                    className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px]"
+    return (
+        <AuthCard title="Create an account">
+            <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+                <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2">
+                    <TextField
+                        id="signup-firstName"
+                        name="firstName"
+                        label="First name"
+                        placeholder="Julius"
+                        autoComplete="given-name"
+                    />
+                    <TextField
+                        id="signup-lastName"
+                        name="lastName"
+                        label="Last name"
+                        placeholder="Caesar"
+                        autoComplete="family-name"
                     />
                 </div>
 
-                <div className="flex flex-col gap-1 w-full">
-                    <label htmlFor="firstName" className="text-[#3E3025] text-[16px] font-[600]">
-                        Last Name 
-                    </label>
-                    <input type="text"
-                    name="lastName"
-                    placeholder="Ex. Ceasar"
-                    className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px]"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-1 w-full">
-                    <label htmlFor="email" className="text-[#3E3025] text-[16px] font-[600]">
-                        Email
-                    </label>
-                    <input type="email"
+                <TextField
+                    id="signup-email"
                     name="email"
-                    placeholder="juliusceasar@gmail.com"
-                    className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px]"
-                    />
-                </div>
+                    type="email"
+                    label="Email"
+                    placeholder="juliuscaesar@gmail.com"
+                    autoComplete="email"
+                />
 
-               <div className="flex flex-col gap-1 w-full">
-                         
-                        <label htmlFor="password1" className="text-[#3E3025] text-[16px] font-[600]">
-                            Enter Password
-                        </label>
-                        <div className="relative w-full">
-                            <input 
-                            name="password1"
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="8+ characters, uppercase, number & special character"
-                            className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px] w-full"
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowPassword((prev) => !prev)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
-                            >
-                                {!showPassword ? (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                                        <line x1="1" y1="1" x2="23" y2="23" />
-                                    </svg>
-                                ) : (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                )}
-                            </button>
-                            </div>
-                  </div>
+                <PasswordField
+                    id="signup-password1"
+                    name="password1"
+                    label="Password"
+                    placeholder="8+ characters, uppercase, number & special"
+                    autoComplete="new-password"
+                />
 
+                <PasswordField
+                    id="signup-password2"
+                    name="password2"
+                    label="Confirm password"
+                    placeholder="Repeat your password"
+                    autoComplete="new-password"
+                />
 
-               <div className="flex flex-col gap-1 w-full">
-                         
-                        <label htmlFor="password2" className="text-[#3E3025] text-[16px] font-[600]">
-                            Confirm Password
-                        </label>
-                        <div className="relative w-full">
-                            <input 
-                            name="password2"
-                            type={showPassword ? "text" : "password"} 
-                            placeholder="8+ characters, uppercase, number & special character"
-                            className="text-[14px] p-2 border-2 border-gray-300 rounded-[5px] w-full"
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowPassword((prev) => !prev)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
-                            >
-                                {!showPassword ? (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                                        <line x1="1" y1="1" x2="23" y2="23" />
-                                    </svg>
-                                ) : (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                )}
-                            </button>
-                            </div>
-                  </div>
+                <FormMessage msg={msg} />
 
-                  <div className="h-[15px]  flex justify-center items-center">
-                    {msg &&
-                     <p className="text-[15px] text-red-800 font-[600] text-center">
-                        {msg}
-                     </p>
-                    }
-                </div>
-
-                <button type="submit"
-                className="w-full py-2 rounded-[5px] bg-[#3E3025] text-white font-[600] mt-5
-                cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
-                "
-                >
-                    {loadingSignUp ? "Signing up..." : "Sign Up"}
+                <button type="submit" disabled={loadingSignUp} className={submitClass}>
+                    {loadingSignUp ? "Signing up..." : "Sign up"}
                 </button>
 
-                 <div className="flex flex-col justify-center items-center ">
-                    <p className="text-gray-900">
-                        Already have an account?
-                    </p>
-                    <p onClick={()=>setShowSignIn(true)} className="text-gray-800 underline
-                    cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
-                    "> 
-                       Sign in
-                    </p>
-                </div>
-
+                <p className="text-center text-[15px] text-gray-700">
+                    Already have an account?{" "}
+                    <button
+                        type="button"
+                        onClick={() => setShowSignIn(true)}
+                        className={linkButtonClass}
+                    >
+                        Sign in
+                    </button>
+                </p>
             </form>
-        </div>
-    )
-}
+        </AuthCard>
+    );
+};
 
 export default memo(SignUp);

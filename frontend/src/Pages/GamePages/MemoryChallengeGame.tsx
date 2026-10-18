@@ -50,7 +50,7 @@ const MemoryChallengeGame = ({ game }: { game: Game }) => {
                     Your score and progress are saved to your account.
                 </p>
                 <Link
-                    to="/login"
+                    to="/user"
                     className="rounded-xl bg-[#292722] px-6 py-3 text-[#E8E2D6] hover:bg-[#B08D57]"
                 >
                     Log in

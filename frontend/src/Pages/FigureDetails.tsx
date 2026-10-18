@@ -6,6 +6,7 @@ import FigureFacts from "../Components/FigureDetailsComponents/FigureFacts";
 import Biography from "../Components/FigureDetailsComponents/Biography";
 import FiguresEras from "../Components/FigureDetailsComponents/FiguresEras";
 import FiguresQuotes from "../Components/FigureDetailsComponents/FiguresQuotes";
+import ReadingProgress from "../Components/LearnComponents/ArticleComponents/ReadingProgress";
 
 
 
@@ -43,6 +44,7 @@ const FigureDetails = () => {
               </div>
               :
               <>
+                <ReadingProgress/>
                 <FigureOverview figure={currentFigure}/>
                 <FigureFacts figure={currentFigure}/>
                 <Biography figure={currentFigure}/>

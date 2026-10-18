@@ -1,41 +1,43 @@
-import { Link } from "react-router-dom";
-import { useQuotesContext } from "../../Contexts/QuotesContext"
-import type { HistoricalFigure } from "../../Types/Types"
 import { memo } from "react";
+import { Link } from "react-router-dom";
+import { useQuotesContext } from "../../Contexts/QuotesContext";
+import type { HistoricalFigure } from "../../Types/Types";
+import SectionHeading from "./SectionHeading";
 
+const FiguresQuotes = ({ figure }: { figure: HistoricalFigure }) => {
+    const { quotesFilter, setQuotesFilter } = useQuotesContext();
 
+    return (
+        <section
+            aria-labelledby="figure-quotes-title"
+            className="mx-auto mb-10 mt-10 w-full max-w-[900px] px-4"
+        >
+            <SectionHeading id="figure-quotes-title" title={`Words of ${figure.name}`} />
 
+            <div
+                className="mt-6 flex flex-col items-start justify-between gap-4 rounded-lg
+                border border-gray-200 bg-white p-5 min-[620px]:flex-row min-[620px]:items-center"
+            >
+                <p className="text-gray-700">
+                    Read the words attributed to {figure.name} and the ideas they express.
+                </p>
 
-const FiguresQuotes = ({figure} : {figure : HistoricalFigure}) => {
-
-    const {quotesFilter, setQuotesFilter} = useQuotesContext();
-    
-    return(
-        <div className="flex flex-col  gap-5 p-4 w-[900px]  mt-10 rounded-lg
-        max-[920px]:w-[600px] max-[620px]:w-[350px]
-        max-[620px]:w-full mb-10
-        ">
-           
-           <h3 className="text-[1.5em] font-bold text-center">
-              WORDS OF {figure.name.toLocaleUpperCase()}
-           </h3>
-
-           <Link
-           to="/quotes"
-           onClick={()=>{
-            setQuotesFilter({
-                ...quotesFilter,
-                author : figure._id
-            })
-           }}
-           className="bg-[#3E3025] text-white text-[14px] font-[500] p-2 rounded-[5px]
-                        cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
-                         w-full flex justify-center items-center text-[16px] font-bold
-                        ">
-                            Browse the quotes →
-            </Link>
-        </div>
-    )
-}
+                <Link
+                    to="/quotes"
+                    onClick={() =>
+                        setQuotesFilter({
+                            ...quotesFilter,
+                            author: figure._id,
+                        })
+                    }
+                    className="shrink-0 rounded-md bg-[#3E3025] px-4 py-2 text-[15px] font-semibold
+                    text-white transition-opacity duration-200 hover:opacity-80 active:opacity-60"
+                >
+                    Browse the quotes →
+                </Link>
+            </div>
+        </section>
+    );
+};
 
 export default memo(FiguresQuotes);

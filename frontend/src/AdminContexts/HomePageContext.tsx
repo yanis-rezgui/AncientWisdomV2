@@ -3,6 +3,7 @@ import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useState,
     type ReactNode,
 } from "react";
@@ -26,12 +27,21 @@ export interface HomePageItem {
     [key: string]: unknown;
 }
 
+export interface HomePageFAQ {
+    _id?: string;
+    question: string;
+    answer: string;
+    order: number;
+    isPublished: boolean;
+}
+
 export interface HomePageData {
     _id: string;
     quotesOfTheDay: HomePageItem[];
     featuredFigures: HomePageItem[];
     featuredEras: HomePageItem[];
     featuredEvents: HomePageItem[];
+    faqs: HomePageFAQ[];
     isPublished: boolean;
     createdAt?: string;
     updatedAt?: string;
@@ -42,11 +52,13 @@ export interface HomePageFormData {
     featuredFigures: string[];
     featuredEras: string[];
     featuredEvents: string[];
+    faqs: HomePageFAQ[];
     isPublished: boolean;
 }
 
 interface HomePageContextType {
     homePage: HomePageData | null;
+
     setHomePage: React.Dispatch<
         React.SetStateAction<HomePageData | null>
     >;
@@ -57,6 +69,7 @@ interface HomePageContextType {
     updateHomePage: (
         formData: HomePageFormData
     ) => Promise<boolean>;
+
     loadingUpdateHomePage: boolean;
 
     errorMsg: string;
@@ -129,7 +142,6 @@ export const HomePageProvider = ({
 
         try {
             const res = await fetch(API_URL);
-
             const data = await res.json();
 
             if (!res.ok) {
@@ -206,6 +218,14 @@ export const HomePageProvider = ({
             setLoadingUpdateHomePage(false);
         }
     };
+
+    // ========================================================
+    // INITIAL FETCH
+    // ========================================================
+
+    useEffect(() => {
+        void getHomePage();
+    }, [getHomePage]);
 
     // ========================================================
     // PROVIDER VALUE

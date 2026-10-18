@@ -4,6 +4,7 @@ interface ArticleContentsProps {
     sections: { title: string }[];
     // Highlights the section currently being read (desktop sidebar only)
     trackActive?: boolean;
+    title? : string
 }
 
 const ArticleContents = ({ sections, trackActive = false }: ArticleContentsProps) => {

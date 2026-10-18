@@ -1,25 +1,28 @@
-import { memo } from "react"
+import { memo } from "react";
+import SectionHeading from "../FigureDetailsComponents/SectionHeading";
 
+const EventOverview = ({ description }: { description: string }) => {
+    if (!description) return null;
 
-const EventOverview = ({description} : {description : string}) => {
+    return (
+        <section
+            aria-labelledby="event-overview-title"
+            className="mx-auto mt-10 w-full max-w-[900px] px-4"
+        >
+            <SectionHeading id="event-overview-title" title="Overview" />
 
-    return(
-        <section className="flex flex-col w-[900px] bg-gray-50
-        p-3 rounded-lg shadow-2xl gap-4 max-[920px]:w-[600px]
-        max-[620px]:w-[320px] justify-center 
-        mt-10
-        ">
-
-            <h3
-            className="text-[1.4em] font-bold"
-            >Overview</h3>
-            <p className="text-[17px]">
-               {description}
-            </p>
-
+            <div className="mt-6 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-5">
+                {description
+                    .trim()
+                    .split(/\n{2,}/)
+                    .map((paragraph, i) => (
+                        <p key={i} className="text-[17px] leading-8 text-gray-800">
+                            {paragraph}
+                        </p>
+                    ))}
+            </div>
         </section>
-    )
-}
-
+    );
+};
 
 export default memo(EventOverview);

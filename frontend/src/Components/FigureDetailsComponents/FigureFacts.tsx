@@ -1,100 +1,58 @@
-import { memo } from "react"
+import { memo, type ReactNode } from "react";
 import type { HistoricalFigure } from "../../Types/Types";
+import SectionHeading from "./SectionHeading";
 
+const Fact = ({ label, children }: { label: string; children: ReactNode }) => (
+    <div
+        className="rounded-lg border border-gray-200 bg-white p-5
+        transition-colors duration-300 hover:border-[#8C6A43]/60"
+    >
+        <dt className="text-[12px] font-bold uppercase tracking-widest text-gray-500">
+            {label}
+        </dt>
+        <dd className="mt-3">{children}</dd>
+    </div>
+);
 
+const FigureFacts = ({ figure }: { figure: HistoricalFigure }) => {
+    return (
+        <section
+            aria-labelledby="figure-facts-title"
+            className="mx-auto mt-10 w-full max-w-[900px] px-4"
+        >
+            <SectionHeading id="figure-facts-title" title="Quick Facts" />
 
-const FigureFacts = ({figure} : {figure : HistoricalFigure}) => {
-
-
-    return(
-        <div className="flex flex-col gap-10 p-4 w-[900px]  mt-10 rounded-lg
-        max-[920px]:w-[600px] max-[620px]:w-[350px] max-[620px]:flex-col
-        max-[620px]:w-full max-[620px]:items-center
-        ">
-             
-             <h4 className="text-[1.5em] font-bold text-center">
-                FIGURE FACTS
-             </h4>
-
-             <div
-                className="
-                    grid grid-cols-3 gap-5
-                    max-[920px]:grid-cols-2
-                    max-[620px]:grid-cols-1
-                "
-            >
-                {/* BORN */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md shadow-lg
-                hover:shadow-2xl
-                hover:-translate-y-1
-                transition-all
-                duration-300">
-                    <p className="text-sm font-bold tracking-widest text-gray-500">
-                        BORN
+            <dl className="mt-6 grid grid-cols-1 gap-4 min-[620px]:grid-cols-2 min-[920px]:grid-cols-3">
+                <Fact label="Born">
+                    <p className="text-[18px] font-medium">
+                        {figure.birthDate || "Unknown"}
                     </p>
+                    {figure.birthPlace && (
+                        <p className="mt-1 text-gray-600">{figure.birthPlace}</p>
+                    )}
+                </Fact>
 
-                    <div className="mt-3">
-                        <p className="text-[18px] font-medium">
-                            {figure.birthDate}
-                        </p>
-
-                        <p className="text-gray-600 mt-1">
-                            {figure.birthPlace}
-                        </p>
-                    </div>
-                </div>
-
-                {/* DIED */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md
-                shadow-lg
-                hover:shadow-2xl
-                hover:-translate-y-1
-                transition-all
-                duration-300
-                ">
-                    <p className="text-sm font-bold tracking-widest text-gray-500">
-                        DIED
+                <Fact label="Died">
+                    <p className="text-[18px] font-medium">
+                        {figure.deathDate || "Unknown"}
                     </p>
+                    {figure.deathPlace && (
+                        <p className="mt-1 text-gray-600">{figure.deathPlace}</p>
+                    )}
+                </Fact>
 
-                    <div className="mt-3">
-                        <p className="text-[18px] font-medium">
-                            {figure.deathDate}
-                        </p>
-
-                        <p className="text-gray-600 mt-1">
-                            {figure.deathPlace}
-                        </p>
-                    </div>
-                </div>
-
-                {/* ERAS */}
-                <div className="bg-gray-50 p-6 rounded-lg shadow-md
-                shadow-lg
-                hover:shadow-2xl
-                hover:-translate-y-1
-                transition-all
-                duration-300
-                ">
-                    <p className="text-sm font-bold tracking-widest text-gray-500">
-                        ERAS
-                    </p>
-
-                    <div className="flex flex-col gap-2 mt-3">
+                <Fact label={figure.eras.length === 1 ? "Era" : "Eras"}>
+                    <ul className="flex flex-col gap-1">
                         {figure.eras.map((era) => (
-                            <p
-                                key={era._id}
-                                className="text-[17px] font-medium
-                                leading-6
-                                "
-                            >
+                            <li key={era._id} className="text-[17px] font-medium leading-6">
                                 {era.name}
-                            </p>
+                            </li>
                         ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
+                    </ul>
+                </Fact>
+            </dl>
+        </section>
+    );
+};
 
 export default memo(FigureFacts);

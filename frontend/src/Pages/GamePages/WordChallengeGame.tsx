@@ -49,9 +49,9 @@ const WordChallengeGame = ({ game }: { game: Game }) => {
                 </h1>
                 <p className="text-sm text-[#292722]/70">
                     Your score and progress are saved to your account.
-                </p>
+                </p> 
                 <Link
-                    to="/login"
+                    to="/user"
                     className="rounded-xl bg-[#292722] px-6 py-3 text-[#E8E2D6] hover:bg-[#B08D57]"
                 >
                     Log in

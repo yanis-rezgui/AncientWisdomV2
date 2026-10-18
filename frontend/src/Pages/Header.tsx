@@ -52,6 +52,10 @@ const Header = () => {
         }
     ]
     : []),
+     {
+        name : "Help",
+        path : "/help"
+    },
         {
             name : "Profile",
             path : "/user"

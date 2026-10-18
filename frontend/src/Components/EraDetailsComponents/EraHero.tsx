@@ -1,50 +1,54 @@
-import { memo } from "react"
-import type { HistoricalEra } from "../../Types/Types";
+import { memo } from "react";
 import { ArrowRight } from "lucide-react";
+import type { HistoricalEra } from "../../Types/Types";
 
+const formatYear = (year: number) =>
+    year < 0 ? `${-year} BC` : `${year} AD`;
 
+const EraHero = ({ era }: { era: HistoricalEra }) => {
+    return (
+        <section
+            aria-labelledby="era-title"
+            className="mx-auto mt-10 w-full max-w-[900px] px-4"
+        >
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                {era.image?.url && (
+                    <img
+                        src={era.image.url}
+                        alt={`Illustration of ${era.name}`}
+                        className="aspect-video w-full bg-gray-100 object-cover"
+                    />
+                )}
 
-const EraHero = ({era} : {era : HistoricalEra}) => {
+                <div className="flex flex-col items-center gap-4 p-6 text-center">
+                    <p className="text-[12px] font-bold uppercase tracking-widest text-gray-500">
+                        Historical Era
+                    </p>
 
-    return(
-         <section className="flex flex-col justify-center items-center w-full">
-                <h1 className="mt-10 text-[2em] font-bold text-gray-900">
-                    {era.name.toUpperCase()}
-                </h1>
+                    <h1
+                        id="era-title"
+                        className="text-[1.8em] font-bold leading-tight text-[#3E3025]"
+                    >
+                        {era.name}
+                    </h1>
 
-                 <div
-                className="
-                    flex
-                    mt-2
-                    items-center
-                    justify-center
-                    gap-2
-                    text-[25px]
-                    font-bold
-                    text-gray-600
+                    <span className="block h-[3px] w-12 rounded bg-[#8C6A43]" />
 
-                "
-            >
-                <span>{era.startYear < 0 ? `${-era.startYear} BC` : `${era.startYear} AC`}</span>
+                    <div className="flex items-center justify-center gap-2 text-[18px] font-semibold text-gray-700">
+                        <span>{formatYear(era.startYear)}</span>
+                        <ArrowRight size={18} aria-hidden="true" />
+                        <span>{formatYear(era.endYear)}</span>
+                    </div>
 
-                <ArrowRight size={18} />
-
-                <span>{era.endYear < 0 ? `${-era.endYear} BC` : `${era.endYear} AC`}</span>
+                    {era.description && (
+                        <p className="max-w-[720px] text-[17px] leading-8 text-gray-800">
+                            {era.description}
+                        </p>
+                    )}
+                </div>
             </div>
-
-            <p className="text-center text-[18px] w-[900px] text-gray-700 mt-3
-            max-[920px]:w-[600px] max-[620px]:w-[320px]
-            ">
-               {era.description}
-            </p>
-
-            
-
-            <img src={era.image.url} alt="" 
-            className="w-[600px] mt-5 max-[620px]:w-[320px]"
-            />
         </section>
-    )
-}
+    );
+};
 
 export default memo(EraHero);
