@@ -11,14 +11,14 @@ const HelpArticleDetails = () => {
     const navigate = useNavigate();
     const { currentArticle, getArticleBySlug } = useHelpCenterContext();
 
-    // Évite d'afficher "not found" ou l'ancien article avant la fin du chargement
+    // Évite d'afficher "not found" ou l'ancien article avant la fin du chargemen
     const [done, setDone] = useState(false);
 
     useEffect(() => {
         if (!slug) return;
 
         let cancelled = false;
-        setDone(false);
+        setDone(false)
 
         getArticleBySlug(slug).finally(() => {
             if (!cancelled) setDone(true);
