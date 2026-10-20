@@ -27,7 +27,7 @@ type FieldProps = {
 };
 
 export const AuthCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 sm:p-8">
+    <div>
         <h2 className="text-[1.5em] font-bold text-[#3E3025]">{title}</h2>
         <span className="mt-2 block h-[3px] w-12 rounded bg-[#8C6A43]" />
         {children}

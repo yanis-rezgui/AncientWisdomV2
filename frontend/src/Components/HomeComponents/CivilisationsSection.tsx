@@ -131,7 +131,9 @@ const CivilisationsSection = () => {
     if (!loadingHomePage && eras.length === 0) return null;
 
     return (
-        <section className="flex flex-col w-full items-center px-5 py-10 bg-[#F8F5EF]">
+        <section className="flex flex-col w-full items-center px-5 py-10 bg-[#F8F5EF]"
+        id="civilizations"
+        >
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

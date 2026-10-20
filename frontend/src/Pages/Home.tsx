@@ -8,6 +8,7 @@ import GamesQuizzesSection from "../Components/HomeComponents/GamesQuizzesSectio
 import FeaturedArticles from "../Components/HomeComponents/FeaturedArticles";
 import LearnPaths from "../Components/HomeComponents/LearnPaths";
 import FAQSection from "../Components/HomeComponents/FAQSection";
+import Footer from "../Components/HomeComponents/Footer";
 
 
 
@@ -24,6 +25,7 @@ const Home = () => {
             <FeaturedArticles/>
             <LearnPaths/>
             <FAQSection/>
+            <Footer/>
         </section>
     )
 }

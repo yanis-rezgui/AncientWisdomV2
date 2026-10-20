@@ -192,6 +192,7 @@ const QuotesOfTheDay = () => {
 
     return (
         <section
+        id="quotes"
             aria-labelledby="quotes-of-the-day-title"
             className="flex flex-col w-full items-center px-5 py-14 bg-[#3E3025]"
         >

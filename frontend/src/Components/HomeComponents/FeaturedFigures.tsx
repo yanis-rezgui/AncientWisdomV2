@@ -171,6 +171,7 @@ const FeaturedFigures = () => {
         <section
             aria-labelledby="featured-figures-title"
             className="flex flex-col w-full items-center px-5 py-10 bg-[#F3ECDD]"
+            id="figures"
         >
             <motion.p
                 initial={{ opacity: 0, y: 20 }}

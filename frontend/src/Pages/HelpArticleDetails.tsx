@@ -2,7 +2,6 @@ import { memo, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useHelpCenterContext } from "../Contexts/HelpCenterContext";
 import HelpArticleHero from "../Components/HelpComponents/HelpArticleHero";
-
 import ReadingProgress from "../Components/LearnComponents/ArticleComponents/ReadingProgress";
 import HelpArticleContent from "../Components/HelpComponents/HelpArticleContent";
 
@@ -11,7 +10,7 @@ const HelpArticleDetails = () => {
     const navigate = useNavigate();
     const { currentArticle, getArticleBySlug } = useHelpCenterContext();
 
-    // Évite d'afficher "not found" ou l'ancien article avant la fin du chargemen
+    // Évite d'afficher "not found" ou l'ancien article avant la fin du chargement
     const [done, setDone] = useState(false);
 
     useEffect(() => {
@@ -58,6 +57,7 @@ const HelpArticleDetails = () => {
                 flex flex-row justify-center items-center gap-2 px-4 py-1 rounded-[10px]
                 cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60"
             >
+
                 <i className="fa-solid fa-arrow-left-long"></i>
                 Back
             </button>

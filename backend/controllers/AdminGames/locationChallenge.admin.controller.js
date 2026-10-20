@@ -1,4 +1,5 @@
 import LocationChallenge from "../../models/Games/locationChallenge.model.js";
+import { notifyAdmins } from "../../services/notifications.service.js";
 import {
     DIFFICULTIES,
     STATUSES,
@@ -112,6 +113,13 @@ export const addLocationChallenge = async (req, res, next) => {
             points,
             status,
         });
+
+
+        await notifyAdmins({
+    title: "New Challenge Created",
+    message: `A new challenge, "${challenge.title}", has been created on Ancient Wisdom.`,
+    type: "NEW_CHALLENGE",
+});
 
         return res.status(201).json({
             success: true,

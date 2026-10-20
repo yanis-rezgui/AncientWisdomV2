@@ -186,6 +186,7 @@ const FAQSection = () => {
         <section
             aria-labelledby="faq-title"
             className="flex w-full flex-col items-center bg-[#F8F5EF] px-5 py-10"
+            id="faq"
         >
             {faqs.length > 0 && (
                 <script

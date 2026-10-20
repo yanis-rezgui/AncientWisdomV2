@@ -206,6 +206,7 @@ const GamesQuizzesSection = () => {
 
     return (
         <section
+        id="games"
             aria-labelledby="games-quizzes-title"
             className="flex flex-col w-full items-center px-5 py-10 bg-[#F8F5EF]"
         >

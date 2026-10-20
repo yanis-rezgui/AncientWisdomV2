@@ -106,4 +106,8 @@ helpArticleSchema.index({
   tags: "text",
 });
 
-export default mongoose.model("HelpArticle", helpArticleSchema);
+
+
+const HelpArticle = mongoose.model("HelpArticle", helpArticleSchema)
+
+export default HelpArticle;

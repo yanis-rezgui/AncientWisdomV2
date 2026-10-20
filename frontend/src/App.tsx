@@ -268,8 +268,7 @@ function App() {
           <Route path='/article/:id' element={<ArticleDetails/>}/>
 
           <Route path='/favorites' element={<Favorites/>}/>
-          <Route path='/games' element={<Games/>}/>
-
+      <Route path='/games' element={<Games/>}/>
 <Route path="/game/:id" element={<GameDetails />} />
 <Route path="/game/:id/play" element={<GamePlay />} />
 
@@ -332,6 +331,7 @@ function App() {
 <Route path='help' element={<ArticleHelp/>}/>
 
 
+
             </Route>
        </Routes>
                                                                                                                                                   </HelpCenterProvider>
@@ -380,4 +380,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

@@ -175,6 +175,7 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
                 }
             });
 
+            if(res.status === 401) signOut();
             const data = await res.json();
 
             if(!res.ok){
@@ -235,6 +236,7 @@ export const AuthProvider = ({children} : {children : React.ReactNode}) => {
                 body : JSON.stringify({oldPassword, newPassword1, newPassword2})
             });
 
+            
             const data = await res.json();
 
             if(!res.ok){

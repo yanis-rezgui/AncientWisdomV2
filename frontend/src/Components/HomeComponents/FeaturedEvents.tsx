@@ -218,6 +218,7 @@ const FeaturedEvents = () => {
         <section
             aria-labelledby="featured-events-title"
             className="flex flex-col w-full items-center px-5 py-10 bg-[#F8F5EF]"
+            id="events"
         >
             <motion.p
                 initial={{ opacity: 0, y: 20 }}
