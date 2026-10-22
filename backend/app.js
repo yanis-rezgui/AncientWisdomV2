@@ -41,6 +41,7 @@ import homePageRouter from "./routes/homePage.routes.js";
 import helpCategory from "./routes/Help/helpCategory.routes.js";
 import helpArticleSeed from "./database/insertData.js";
 import helpArticleRouter from "./routes/Help/helpArticle.routes.js";
+import testimonialRouter from "./routes/testimonial.routes.js";
 
 
 const app = express();
@@ -112,6 +113,8 @@ app.use("/api/v1/homepage", homePageRouter);
 
 app.use("/api/v1/help/articles", helpArticleRouter);
 app.use("/api/v1/help/categories", helpCategory);
+
+app.use('/api/v1/testimonials', testimonialRouter);
 
 app.use(errorMiddleware);
 
