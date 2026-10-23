@@ -70,6 +70,7 @@ const MAIN_LINKS: NavItem[] = [
     },
     { label: "Games", path: "/admin/games", icon: "Gamepad2" },
     { label: "Home Page CMS", path: "/admin/home-page", icon: "House" },
+    {label : "Testimonials", path : "/admin/testimonials", icon : "MessageSquareQuote"},
        { label: "Help Center", path: "/admin/help", icon: "LifeBuoy" },
 ];
 

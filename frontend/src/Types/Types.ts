@@ -440,3 +440,15 @@ export interface AdminDashboardData {
     recentContent: DashboardRecentContent[];
     generatedAt: string;
 }
+
+
+
+export type Testimonial = {
+  _id?: string;
+  fullName: string;
+  message: string;
+  rating: number;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};

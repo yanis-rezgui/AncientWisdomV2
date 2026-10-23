@@ -23,6 +23,7 @@ const getOrCreateHomePage = async () => {
     return homePage;
 };
 
+
 const populateHomePage = (query) => {
     return query
         .populate({
@@ -34,8 +35,15 @@ const populateHomePage = (query) => {
         })
         .populate("featuredFigures")
         .populate("featuredEras")
-        .populate("featuredEvents");
+        .populate({
+            path: "featuredEvents",
+            populate: {
+                path: "era",
+                select: "name",
+            },
+        });
 };
+
 
 const isValidIdArray = (value) => {
     return (

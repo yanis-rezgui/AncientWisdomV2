@@ -8,9 +8,7 @@ export const getActiveTestimonials = async(req , res , next) => {
     try{
         
         const activeTestimonials = await Testimonial.find({
-            where : {
-                active : true
-            }
+            active : true
         });
 
         return res.status(200).json({
@@ -31,7 +29,8 @@ export const getTestimonials = async(req , res , next) => {
 
         return res.status(200).json({
             success: true,
-            message : "Testimonials fetched successfully"
+            message : "Testimonials fetched successfully",
+            data : testimonials
         });
     }catch(err){
         next(err);
