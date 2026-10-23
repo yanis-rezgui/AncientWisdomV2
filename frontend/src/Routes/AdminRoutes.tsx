@@ -101,7 +101,7 @@ export default function AdminRoutes() {
         {/* Quotes */}
         <Route path="quotes" element={<AdminQuotes />} />
 
-        {/* Eras */}
+        {/* Era */}
         <Route path="eras" element={<AdminEras />} />
         <Route path="addEra" element={<AdminEraAjout />} />
         <Route path="era/:id" element={<AdminEraUpdate />} />
