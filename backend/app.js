@@ -66,7 +66,7 @@ app.use(cors({
     origin : [
         "http://localhost:5173",
         "http://localhost:5174",
-        "https://ancient-wisdom-v2-mocha.vercel.app/"
+        "https://ancient-wisdom-v2-mocha.vercel.app"
     ],
     credentials : true
 }));

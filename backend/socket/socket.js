@@ -9,7 +9,7 @@ export const initializeSocket = (server) => {
       origin: [
         "http://localhost:5173",
         "http://localhost:5174",
-        "https://ancient-wisdom-v2-mocha.vercel.app/"
+        "https://ancient-wisdom-v2-mocha.vercel.app"
         // Ajoute ici l'URL de production d'Ancient Wisdom.
       ],
       credentials: true,
