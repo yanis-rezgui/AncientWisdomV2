@@ -17,7 +17,7 @@ const GameSection = () => {
              Choose your challenge and test your historical knowledge.
            </p>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-5 mt-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-5 mt-5 mb-10">
                 {games.map((g)=>{
                     return <GameCard game={g} key={g._id}/>
                 })}
