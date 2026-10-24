@@ -58,7 +58,7 @@ const GamePageHero = () => {
 
             <img 
             className="w-[500px]
-            max-[550x]:w-[300]
+            max-[550px]:w-[300px]
             "
             src="https://res.cloudinary.com/dub4fhabm/image/upload/v1791972722/49304be3-6451-4186-b835-6dd2779e7830.png"/>
 
