@@ -1,5 +1,5 @@
 
-import { Routes, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 // Layout and protection
 import AdminRoute from "../Layouts/AdminRoute";
@@ -87,7 +87,7 @@ import AdminTestimonials from "../AdminPages/AdminTestimonials";
 
 export default function AdminRoutes() {
   return (
-    <Routes>
+    
       <Route
         path="/admin"
         element={
@@ -205,6 +205,6 @@ export default function AdminRoutes() {
         {/* Testimonials */}
         <Route path="testimonials" element={<AdminTestimonials />} />
       </Route>
-    </Routes>
+  
   );
 }

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import {  Route } from "react-router-dom";
 
 // Route protection and layout
 import PublicRoute from "../Layouts/PublicRoute";
@@ -60,10 +60,12 @@ import PrivacyPolicy from "../Pages/PrivacyPolicy";
 
 // Hermes AI
 import Hermes from "../Pages/Hermes";
+import ForgotPassword from "../Pages/ForgotPassword";
+import ResetPassword from "../Pages/ResetPassword";
 
 export default function PublicRoutes() {
   return (
-    <Routes>
+    
       <Route
         element={
           <PublicRoute>
@@ -116,7 +118,10 @@ export default function PublicRoutes() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         <Route path="/hermes-ai" element={<Hermes />} />
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
+
+        <Route path="/reset-password/:token" element={<ResetPassword/>}/>
       </Route>
-    </Routes>
+  
   );
 }

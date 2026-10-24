@@ -17,6 +17,10 @@ export const {
     CLOUDINARY_API_KEY,
 CLOUDINARY_API_SECRET,
 CLOUDINARY_CLOUD_NAME,
+
+RESEND_API_KEY,
+CONTACT_EMAIL,
+CLIENT_URL
 } = process.env; 
 
 cloudinary.config({ 

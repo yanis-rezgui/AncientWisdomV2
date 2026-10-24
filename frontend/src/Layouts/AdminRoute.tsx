@@ -15,5 +15,4 @@ const AdminRoute = ({children} : {children : React.ReactNode}) => {
     return <>{children}</>
 }
 
-
 export default memo(AdminRoute);

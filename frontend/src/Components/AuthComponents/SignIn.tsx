@@ -8,6 +8,7 @@ import {
     linkButtonClass,
     submitClass,
 } from "./AuthUI";
+import { Link } from "react-router-dom";
 
 const SignIn = () => {
     const { signIn, loadingSignIn, setShowSignIn, msg } = useAuthContext();
@@ -43,6 +44,14 @@ const SignIn = () => {
                     placeholder="Enter your password"
                     autoComplete="current-password"
                 />
+                
+                <Link to={"/forgot-password"}
+                className="text-gray-500 cursor-pointer transition-opacity duration-200 hover:opacity-80 active:opacity-60
+                text-[15px] underline
+                "
+                >
+                   Forgot Password?
+                </Link>
 
                 <FormMessage msg={msg} />
 

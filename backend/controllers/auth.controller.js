@@ -14,9 +14,7 @@ export const signUp = async(req, res, next) => {
 
     const session = await mongoose.startSession();
     try{
-
         
-
         session.startTransaction();
 
         const {firstName, lastName, email, password1, password2} = req.body;

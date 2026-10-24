@@ -43,14 +43,24 @@ import helpArticleSeed from "./database/insertData.js";
 import helpArticleRouter from "./routes/Help/helpArticle.routes.js";
 import testimonialRouter from "./routes/testimonial.routes.js";
 
+import rateLimit from "express-rate-limit"
+
 
 const app = express();
+
+
+const apiLimiter  = rateLimit({ windowMs: 60 * 1000, max: 120 });
+
 
 const server = createServer(app)
 
 initializeSocket(server);
 
 app.use(helmet());
+
+app.set("trust proxy", 1);
+
+app.use('/api/v1', apiLimiter);
 
 app.use(cors({
     origin : [
@@ -60,7 +70,7 @@ app.use(cors({
     credentials : true
 }));
 
-app.set("trust proxy", 1);
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true}));
@@ -70,6 +80,7 @@ app.get("/health", (req, res) => {
     status: "ok",
   });
 });
+
 
 app.use('/api/v1/quotes', quotesRouter);
 app.use('/api/v1/era', eraRouter);

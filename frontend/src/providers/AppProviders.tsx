@@ -49,6 +49,7 @@ import { DashboardProvider } from "../AdminContexts/DashboardContext";
 import { HomePageProvider } from "../AdminContexts/HomePageContext";
 import { HelpArticleAdminProvider } from "../AdminContexts/HelpArticleAdminContext";
 import { HelpCategoryAdminProvider } from "../AdminContexts/HelpCategoryAdminContext";
+import { ForgotPasswordProvider } from "../Contexts/ForgotPasswordContext";
 
 
 
@@ -103,6 +104,7 @@ const providers = [
     HelpCategoryAdminProvider,
     HelpCenterProvider,
     TestimonialsProvider,
+    ForgotPasswordProvider
 ];
 
 interface AppProvidersProps extends PropsWithChildren {
