@@ -323,7 +323,7 @@ function AppRoutes() {
               <Route path="/legal-notice" element={<LegalNotice />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       
-              <Route path="/hermes-ai" element={<Hermes />} />
+              <Route path="/hermes/:conversationId?" element={<Hermes />} />
               <Route path="/forgot-password" element={<ForgotPassword/>}/>
       
               <Route path="/reset-password/:token" element={<ResetPassword/>}/>

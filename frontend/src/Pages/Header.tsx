@@ -38,7 +38,7 @@ const Header = () => {
         },
         {
             name : "Hermes AI",
-            path : "/hermes-ai"
+            path : "/hermes"
         },
         {
             name : "Favorites",

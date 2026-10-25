@@ -50,6 +50,8 @@ import { HomePageProvider } from "../AdminContexts/HomePageContext";
 import { HelpArticleAdminProvider } from "../AdminContexts/HelpArticleAdminContext";
 import { HelpCategoryAdminProvider } from "../AdminContexts/HelpCategoryAdminContext";
 import { ForgotPasswordProvider } from "../Contexts/ForgotPasswordContext";
+import { ConversationProvider } from "../Contexts/ConversationContext";
+import { HermesProvider } from "../Contexts/HermesContext";
 
 
 
@@ -104,7 +106,9 @@ const providers = [
     HelpCategoryAdminProvider,
     HelpCenterProvider,
     TestimonialsProvider,
-    ForgotPasswordProvider
+    ForgotPasswordProvider,
+    ConversationProvider,
+    HermesProvider
 ];
 
 interface AppProvidersProps extends PropsWithChildren {

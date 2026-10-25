@@ -42,6 +42,7 @@ import helpCategory from "./routes/Help/helpCategory.routes.js";
 import helpArticleSeed from "./database/insertData.js";
 import helpArticleRouter from "./routes/Help/helpArticle.routes.js";
 import testimonialRouter from "./routes/testimonial.routes.js";
+import hermesRoutes from "./routes/hermes.routes.js";
 
 import rateLimit from "express-rate-limit"
 
@@ -127,6 +128,7 @@ app.use("/api/v1/help/articles", helpArticleRouter);
 app.use("/api/v1/help/categories", helpCategory);
 
 app.use('/api/v1/testimonials', testimonialRouter);
+app.use("/api/v1/hermes", hermesRoutes);
 
 app.use(errorMiddleware);
 
