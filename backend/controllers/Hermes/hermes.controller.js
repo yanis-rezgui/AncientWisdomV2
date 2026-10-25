@@ -144,3 +144,28 @@ export const chatWithHermes = async (req, res) => {
     });
   }
 };
+
+
+
+export const checkHermesHealth = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${HERMES_AI_URL}/health`,
+      {
+        signal: AbortSignal.timeout(65000),
+      }
+    );
+
+    const data = await response.json();
+
+    return res.status(response.ok ? 200 : 502).json({
+      status: response.ok ? "ok" : "unavailable",
+      hermes: data,
+    });
+  } catch (error) {
+    return res.status(502).json({
+      status: "unavailable",
+      message: "Hermes AI is unreachable.",
+    });
+  }
+};

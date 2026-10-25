@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { chatWithHermes } from "../controllers/Hermes/hermes.controller.js";
+import { chatWithHermes, checkHermesHealth } from "../controllers/Hermes/hermes.controller.js";
 import {
   getConversations,
   getConversationMessages,
@@ -11,6 +11,8 @@ import { hermesChatLimiter } from "../middlewares/hermesRateLimit.middleware.js"
 const router = Router();
 
 router.post("/chat", authorize, hermesChatLimiter, chatWithHermes);
+
+router.get("/health", authorize, checkHermesHealth);
 
 router.get("/conversations", authorize, getConversations);
 router.get("/conversations/:id/messages", authorize, getConversationMessages);

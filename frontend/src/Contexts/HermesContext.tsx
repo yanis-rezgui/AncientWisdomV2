@@ -376,6 +376,32 @@ export const HermesProvider = ({
         [deleteConversation, newChat]
     );
 
+
+    const checkHealth = async() => {
+
+        try{
+
+            const res = await fetch(`${API_URL}/health`,{
+                method : "GET",
+                headers : {
+                    Authorization : `Bearer ${token}`
+                }
+            });
+
+            const data = await res.json();
+
+            if(!res.ok) throw new Error(data.error || data.message || "Error in checking health");
+
+            console.log("Hermes AI is Up");
+        }catch(err){
+            console.error(err);
+        }
+    }
+
+    useEffect(()=>{
+        if(token) checkHealth();
+    }, [token]);
+
     // Déconnexion : on vide le chat
     useEffect(() => {
         if (!token) newChat();
