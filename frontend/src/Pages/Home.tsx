@@ -10,6 +10,7 @@ import LearnPaths from "../Components/HomeComponents/LearnPaths";
 import FAQSection from "../Components/HomeComponents/FAQSection";
 import Footer from "../Components/HomeComponents/Footer";
 import TestimonialsSection from "../Components/HomeComponents/TestimonialsSection";
+import HermesSection from "../Components/HomeComponents/HermesSection";
 
 
 
@@ -21,6 +22,7 @@ const Home = () => {
             <CivilisationsSection/>
             <FeaturedFigures/>
             <FeaturedEvents/>
+            <HermesSection/>
             <QuotesOfTheDay/>
             <GamesQuizzesSection/>
             <FeaturedArticles/>
