@@ -25,7 +25,7 @@ const messageSchema = new mongoose.Schema(
             required: true,
             trim: true,
             minlength: 1,
-            maxlength: 4000
+            maxlength: 6000
         },
         sources: [
             {
