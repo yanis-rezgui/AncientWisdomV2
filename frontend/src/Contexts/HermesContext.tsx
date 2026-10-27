@@ -14,6 +14,7 @@ import type {
     ConversationMessagesResponse,
     SendMessageResponse,
 } from "../Types/ChatTypes";
+import { useHermesWarmup, type HermesStatus } from "../Hooks/useHermesWarmup";
 
 export const HERMES_MAX_MESSAGE_LENGTH = 4000;
 const MESSAGES_LIMIT = 30;
@@ -43,6 +44,7 @@ interface HermesContextType {
 
     errorMsg: string;
     clearError: () => void;
+    hermesStatus: HermesStatus;
 }
 
 const HermesContext = createContext<HermesContextType | null>(null);
@@ -77,6 +79,8 @@ export const HermesProvider = ({
     const sessionRef = useRef<number>(0);
 
     const clearError = useCallback(() => setErrorMsg(""), []);
+
+    const hermesStatus = useHermesWarmup(token);
 
     // Nouveau chat
     const newChat = useCallback((): void => {
@@ -425,6 +429,7 @@ export const HermesProvider = ({
                 removeConversation,
                 errorMsg,
                 clearError,
+                hermesStatus
             }}
         >
             {children}

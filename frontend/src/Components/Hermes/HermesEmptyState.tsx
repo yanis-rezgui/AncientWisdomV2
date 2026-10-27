@@ -25,7 +25,7 @@ const itemVariants: Variants = {
 };
 
 const HermesEmptyState = () => {
-    const { sendMessage, sending } = useHermesContext();
+    const { sendMessage, sending , hermesStatus} = useHermesContext();
 
     return (
         <div className="flex flex-col items-center px-2 py-10 text-center">
@@ -76,7 +76,7 @@ const HermesEmptyState = () => {
                     <motion.li key={suggestion} variants={itemVariants} className="list-none">
                         <button
                             type="button"
-                            disabled={sending}
+                            disabled={sending || hermesStatus === "waking"}
                             onClick={() => void sendMessage(suggestion)}
                             className="h-full w-full rounded-lg border border-gray-400 bg-[#F5E6C8] px-4 py-3 text-left
                             text-[13px] font-medium text-gray-800 transition-all duration-300 hover:border-[#8C6A43]

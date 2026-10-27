@@ -7,7 +7,8 @@ import {
 } from "../../Contexts/HermesContext";
 
 const ChatInput = () => {
-    const { sendMessage, sending } = useHermesContext();
+    const { sendMessage, sending , hermesStatus} = useHermesContext();
+    const waking = hermesStatus === "waking";
 
     const [value, setValue] = useState<string>("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -22,12 +23,12 @@ const ChatInput = () => {
         el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
     }, [value]);
 
-    const canSend = value.trim().length > 0 && !sending;
+    const canSend = value.trim().length > 0 && !sending && !waking;
 
     const submit = async () => {
         const content = value.trim();
 
-        if (!content || sending) return;
+        if (!content || sending || waking) return;
 
         setValue("");
         await sendMessage(content);
@@ -58,7 +59,7 @@ const ChatInput = () => {
                 onKeyDown={handleKeyDown}
                 maxLength={HERMES_MAX_MESSAGE_LENGTH}
                 rows={1}
-                placeholder="Ask Hermes anything…"
+                placeholder={waking ? "Hermes is waking up…" : "Ask Hermes anything…"}
                 className="max-h-[160px] flex-1 resize-none bg-transparent px-2 py-1.5 text-[14px] text-gray-900
                 outline-none placeholder:text-gray-500"
             />

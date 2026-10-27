@@ -22,6 +22,7 @@ const ChatWindow = ({ onOpenSidebar }: ChatWindowProps) => {
         loadMoreMessages,
         errorMsg,
         clearError,
+        hermesStatus
     } = useHermesContext();
 
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -182,6 +183,17 @@ const ChatWindow = ({ onOpenSidebar }: ChatWindowProps) => {
                             </button>
                         </div>
                     )}
+
+                    {hermesStatus === "waking" && (
+    <div
+        role="status"
+        className="flex flex-row items-center gap-2 rounded-lg border border-[#8C6A43] bg-[#F5E6C8]
+        px-3 py-2 text-[13px] text-[#3E3025]"
+    >
+        <Loader2 size={14} className="animate-spin shrink-0" aria-hidden="true" />
+        <span>Hermes is waking up, this can take up to a minute…</span>
+    </div>
+)}
 
                     <ChatInput />
 

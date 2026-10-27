@@ -188,19 +188,18 @@ export const chatWithHermes = async (req, res) => {
 
 export const checkHermesHealth = async (req, res) => {
   try {
-    const { response, data } = await callHermes(`${HERMES_AI_URL}/health`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const { response, data } = await callHermes(
+      `${HERMES_AI_URL}/health`,
+      { method: "GET", headers: { Accept: "application/json" } },
+      { maxWaitMs: 8000, retryDelayMs: 2000 }
+    );
 
-    return res.status(response.ok ? 200 : 502).json({
-      status: response.ok ? "ok" : "unavailable",
+    return res.status(200).json({
+      status: response.ok ? "ok" : "waking",
       hermes: data,
     });
-  } catch (error) {
-    return res.status(502).json({
-      status: "unavailable",
-      message: "Hermes AI is unreachable.",
-    });
+  } catch {
+    // FastAPI ne répond pas encore : on dit au front de réessayer
+    return res.status(200).json({ status: "waking" });
   }
 };
