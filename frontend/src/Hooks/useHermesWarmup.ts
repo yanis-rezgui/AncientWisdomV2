@@ -26,10 +26,7 @@ useEffect(() => {
             try {
                 const res = await fetch(HEALTH_URL, {
                     headers: { Authorization: `Bearer ${token}` },
-                    signal: AbortSignal.any([
-                        controller.signal,
-                        AbortSignal.timeout(30_000),
-                    ]),
+                    signal: AbortSignal.any([controller.signal, AbortSignal.timeout(100_000)]),
                 });
 
                 if (res.ok) {

@@ -5,6 +5,11 @@ import Message from "../../models/Hermes/message.model.js";
 
 const HISTORY_LIMIT = 10; // 10 messages = 5 échanges (mets 20 pour 10 échanges)
 
+// Budget de temps d'une requête /chat, sous la limite d'environ 100 s de l'hébergeur
+const REQUEST_BUDGET_MS = 95000;
+const WAKE_WAIT_MS = 80000; // attente maximale du réveil de FastAPI dans /chat
+const LLM_MIN_MS = 15000; // temps minimum laissé au LLM
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Réessaie tant que Hermes renvoie autre chose que du JSON (service en train de se réveiller)
@@ -46,7 +51,65 @@ async function callHermes(url, options, { maxWaitMs = 85000, retryDelayMs = 4000
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Réveil de FastAPI : une seule requête longue, partagée entre tous les appels */
+/* -------------------------------------------------------------------------- */
+
+let hermesAwake = false;
+let lastOkAt = 0;
+let wakeInFlight = null;
+
+const AWAKE_TTL_MS = 10 * 60 * 1000; // l'hébergeur gratuit endort le service après ~15 min d'inactivité
+
+const isAwake = () => hermesAwake && Date.now() - lastOkAt < AWAKE_TTL_MS;
+
+const markAwake = () => {
+  hermesAwake = true;
+  lastOkAt = Date.now();
+};
+
+const markAsleep = () => {
+  hermesAwake = false;
+};
+
+function ensureWake() {
+  if (wakeInFlight) return wakeInFlight;
+
+  wakeInFlight = callHermes(
+    `${HERMES_AI_URL}/health`,
+    { method: "GET", headers: { Accept: "application/json" } },
+    { maxWaitMs: 120000, retryDelayMs: 3000 }
+  )
+    .then(({ response }) => {
+      if (response.ok) markAwake();
+      return response.ok;
+    })
+    .catch(() => false)
+    .finally(() => {
+      wakeInFlight = null;
+    });
+
+  return wakeInFlight;
+}
+
+// Attend le réveil au maximum `ms` millisecondes (ensureWake ne rejette jamais)
+const waitForWake = (ms) =>
+  new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(false), ms);
+
+    ensureWake().then((ok) => {
+      clearTimeout(timer);
+      resolve(ok);
+    });
+  });
+
+/* -------------------------------------------------------------------------- */
+/*  POST /chat                                                                */
+/* -------------------------------------------------------------------------- */
+
 export const chatWithHermes = async (req, res) => {
+  const startedAt = Date.now();
+
   try {
     if (!HERMES_AI_URL || !HERMES_INTERNAL_KEY) {
       return res.status(500).json({
@@ -107,16 +170,37 @@ export const chatWithHermes = async (req, res) => {
       history = lastMessages.reverse(); // ordre chronologique
     }
 
-    // 2. Appel au service FastAPI
-    const { response, data } = await callHermes(`${HERMES_AI_URL}/api/v1/chat/`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "X-Internal-Key": HERMES_INTERNAL_KEY,
-  },
-  body: JSON.stringify({ message: cleanMessage, history }),
-});
+    // 2. S'assurer que FastAPI est réveillé
+    if (!isAwake()) {
+      const awake = await waitForWake(WAKE_WAIT_MS);
+
+      if (!awake) {
+        return res.status(504).json({
+          success: false,
+          message: "Hermes AI is waking up, please retry in a few seconds.",
+        });
+      }
+    }
+
+    // 3. Appel au LLM : il ne dispose que du temps restant du budget global
+    const llmBudgetMs = Math.max(
+      REQUEST_BUDGET_MS - (Date.now() - startedAt),
+      LLM_MIN_MS
+    );
+
+    const { response, data } = await callHermes(
+      `${HERMES_AI_URL}/api/v1/chat/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Internal-Key": HERMES_INTERNAL_KEY,
+        },
+        body: JSON.stringify({ message: cleanMessage, history }),
+      },
+      { maxWaitMs: llmBudgetMs }
+    );
 
     if (!response.ok) {
       return res
@@ -127,7 +211,9 @@ export const chatWithHermes = async (req, res) => {
         });
     }
 
-    // 3. On crée la conversation seulement si l'IA a répondu
+    markAwake();
+
+    // 4. On crée la conversation seulement si l'IA a répondu
     //    (évite les conversations vides en cas d'erreur)
     if (!conversation) {
       conversation = await Conversation.create({
@@ -167,13 +253,23 @@ export const chatWithHermes = async (req, res) => {
       },
     });
   } catch (error) {
+    // Le service s'est rendormi en cours de route : on force un nouveau réveil au prochain appel
+    if (error.name === "WakeTimeoutError") {
+      markAsleep();
 
-    if (error.name === "TimeoutError" || error.name === "WakeTimeoutError") {
-  return res.status(504).json({
-    success: false,
-    message: "Hermes AI is waking up, please retry in a few seconds.",
-  });
-}
+      return res.status(504).json({
+        success: false,
+        message: "Hermes AI is waking up, please retry in a few seconds.",
+      });
+    }
+
+    // Le service est réveillé mais le LLM a mis trop de temps à répondre
+    if (error.name === "TimeoutError") {
+      return res.status(504).json({
+        success: false,
+        message: "Hermes took too long to answer, please try again.",
+      });
+    }
 
     console.error("Hermes AI error:", error.message);
 
@@ -184,22 +280,13 @@ export const chatWithHermes = async (req, res) => {
   }
 };
 
-
+/* -------------------------------------------------------------------------- */
+/*  GET /health                                                               */
+/* -------------------------------------------------------------------------- */
 
 export const checkHermesHealth = async (req, res) => {
-  try {
-    const { response, data } = await callHermes(
-      `${HERMES_AI_URL}/health`,
-      { method: "GET", headers: { Accept: "application/json" } },
-      { maxWaitMs: 8000, retryDelayMs: 2000 }
-    );
+  if (isAwake()) return res.status(200).json({ status: "ok" });
 
-    return res.status(200).json({
-      status: response.ok ? "ok" : "waking",
-      hermes: data,
-    });
-  } catch {
-    // FastAPI ne répond pas encore : on dit au front de réessayer
-    return res.status(200).json({ status: "waking" });
-  }
+  void ensureWake(); // pas de await : on répond tout de suite
+  return res.status(200).json({ status: "waking" });
 };
