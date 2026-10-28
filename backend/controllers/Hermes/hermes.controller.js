@@ -170,9 +170,13 @@ export const chatWithHermes = async (req, res) => {
       history = lastMessages.reverse(); // ordre chronologique
     }
 
+    console.log(`[hermes] chat start, awake=${isAwake()}`);
+
     // 2. S'assurer que FastAPI est réveillé
     if (!isAwake()) {
       const awake = await waitForWake(WAKE_WAIT_MS);
+
+      console.log(`[hermes] wake wait done: ${awake} (${Date.now() - startedAt}ms)`);
 
       if (!awake) {
         return res.status(504).json({
@@ -201,6 +205,8 @@ export const chatWithHermes = async (req, res) => {
       },
       { maxWaitMs: llmBudgetMs }
     );
+
+    console.log(`[hermes] LLM status=${response.status} (${Date.now() - startedAt}ms)`);
 
     if (!response.ok) {
       return res
@@ -253,6 +259,8 @@ export const chatWithHermes = async (req, res) => {
       },
     });
   } catch (error) {
+
+    console.error(`[hermes] ${error.name} after ${Date.now() - startedAt}ms: ${error.message}`);
     // Le service s'est rendormi en cours de route : on force un nouveau réveil au prochain appel
     if (error.name === "WakeTimeoutError") {
       markAsleep();
@@ -287,6 +295,8 @@ export const chatWithHermes = async (req, res) => {
 export const checkHermesHealth = async (req, res) => {
   if (isAwake()) return res.status(200).json({ status: "ok" });
 
-  void ensureWake(); // pas de await : on répond tout de suite
-  return res.status(200).json({ status: "waking" });
+  // Garde la requête ouverte jusqu'au réveil de FastAPI (ou 40 s max)
+  const awake = await waitForWake(40000);
+
+  return res.status(200).json({ status: awake ? "ok" : "waking" });
 };
