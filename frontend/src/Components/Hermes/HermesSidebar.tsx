@@ -24,6 +24,9 @@ const HermesSidebar = ({ onSelect, onNewChat, onClose }: HermesSidebarProps) => 
         errorMsg,
     } = useConversationContext();
 
+    // HermesSidebar
+    console.log({ loadingConversations, loadingMoreConversations });
+
     const { conversationId } = useHermesContext();
 
     return (

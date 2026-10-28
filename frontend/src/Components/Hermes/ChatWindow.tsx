@@ -22,8 +22,14 @@ const ChatWindow = ({ onOpenSidebar }: ChatWindowProps) => {
         loadMoreMessages,
         errorMsg,
         clearError,
-        hermesStatus
+        hermesStatus,
+    
     } = useHermesContext();
+
+    // ChatWindow
+console.log({ hermesStatus, sending, loadingMessages, loadingMoreMessages });
+
+
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const firstIdRef = useRef<string | undefined>(undefined);
