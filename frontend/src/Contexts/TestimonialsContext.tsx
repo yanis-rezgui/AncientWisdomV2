@@ -57,7 +57,7 @@ export const TestimonialsProvider = ({children} : {children : React.ReactNode}) 
     const [showDeleteTestimonialPop, setShowDeleteTestimonialPop] = useState<boolean>(false);
     const [loadingDeleteTestimonial, setLoadingDeleteTestimonial] = useState<boolean>(false);
 
-    const {token} = useAuthContext();
+    const {token, user} = useAuthContext();
 
     const getActiveTestimonials = async() => {
 
@@ -201,7 +201,7 @@ export const TestimonialsProvider = ({children} : {children : React.ReactNode}) 
 
 
     useEffect(()=>{
-        getAllTestimonials();
+       if(user?.role === "ADMIN" && token) getAllTestimonials();
         getActiveTestimonials();
     }, []);
 

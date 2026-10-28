@@ -146,7 +146,7 @@ export const QuizAdminProvider = ({
     children: ReactNode;
 }) => {
     // Auth
-    const { token } = useAuthContext();
+    const { token, user } = useAuthContext();
 
     // Liste
     const [adminQuizzes, setAdminQuizzes] = useState<Quiz[]>([]);
@@ -228,7 +228,7 @@ export const QuizAdminProvider = ({
     }, [page, limit, filters, token]);
 
     useEffect(() => {
-        fetchQuizzes();
+       if(user?.role === "ADMIN") fetchQuizzes();
     }, [fetchQuizzes]);
 
     // Tout changement de filtre ramène à la page 1

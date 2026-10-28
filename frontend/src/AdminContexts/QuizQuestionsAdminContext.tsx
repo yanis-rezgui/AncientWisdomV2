@@ -147,7 +147,7 @@ export const QuizQuestionsAdminProvider = ({
     children: ReactNode;
 }) => {
     // Auth
-    const { token } = useAuthContext();
+    const { token, user } = useAuthContext();
 
     // Liste
     const [questions, setQuestions] = useState<IQuizQuestion[]>([]);
@@ -237,7 +237,7 @@ export const QuizQuestionsAdminProvider = ({
     }, [page, limit, filters, token]);
 
     useEffect(() => {
-        fetchQuestions();
+        if(user?.role === "ADMIN") fetchQuestions();
     }, [fetchQuestions]);
 
     /* ---------- Pagination et filtres ---------- */
